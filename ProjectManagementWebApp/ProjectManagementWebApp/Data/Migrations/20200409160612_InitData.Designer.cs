@@ -10,8 +10,8 @@ using ProjectManagementWebApp.Data;
 namespace ProjectManagementWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200409073204_CreateStudentsTableAndLecturersTable")]
-    partial class CreateStudentsTableAndLecturersTable
+    [Migration("20200409160612_InitData")]
+    partial class InitData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("Gender")
+                    b.Property<bool?>("Gender")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -249,6 +249,32 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Audit", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("KeyValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Audits");
+                });
+
             modelBuilder.Entity("ProjectManagementWebApp.Models.Lecturer", b =>
                 {
                     b.Property<string>("Id")
@@ -257,9 +283,219 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<bool>("IsManager")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LecturerCode")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.HasKey("Id");
 
                     b.ToTable("Lecturers");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Project", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("ProjectTypeId")
+                        .HasColumnType("smallint");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectTypeId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectLecturer", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LecturerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ProjectId", "LecturerId");
+
+                    b.HasIndex("LecturerId");
+
+                    b.ToTable("ProjectLecturers");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectMember", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<float?>("Grade")
+                        .HasColumnType("real");
+
+                    b.HasKey("ProjectId", "StudentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("ProjectMembers");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<float?>("Rating")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime?>("StartedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectSchedules");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectScheduleReport", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProjectScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectScheduleId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("ProjectScheduleReports");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectScheduleReportFile", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("ProjectScheduleReportId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UploadedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectScheduleReportId");
+
+                    b.ToTable("ProjectScheduleReportFiles");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectType", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            IsDisabled = false,
+                            Name = "Đồ án cơ sở"
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            IsDisabled = false,
+                            Name = "Đồ án chuyên ngành"
+                        },
+                        new
+                        {
+                            Id = (short)3,
+                            IsDisabled = false,
+                            Name = "Đồ án tổng hợp"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagementWebApp.Models.Student", b =>
@@ -267,9 +503,13 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ClassName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -336,6 +576,76 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
                         .WithOne("User")
                         .HasForeignKey("ProjectManagementWebApp.Models.ApplicationUser", "StudentId");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Project", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.ProjectType", "ProjectType")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProjectTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectLecturer", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.Lecturer", "Lecturer")
+                        .WithMany("ProjectLecturers")
+                        .HasForeignKey("LecturerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagementWebApp.Models.Project", "Project")
+                        .WithMany("ProjectLecturers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectMember", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.Project", "Project")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectSchedule", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectScheduleReport", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.ProjectSchedule", "ProjectSchedule")
+                        .WithMany("ProjectScheduleReports")
+                        .HasForeignKey("ProjectScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
+                        .WithMany("ProjectScheduleReports")
+                        .HasForeignKey("StudentId");
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectScheduleReportFile", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.ProjectScheduleReport", "ProjectScheduleReport")
+                        .WithMany("ReportFiles")
+                        .HasForeignKey("ProjectScheduleReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

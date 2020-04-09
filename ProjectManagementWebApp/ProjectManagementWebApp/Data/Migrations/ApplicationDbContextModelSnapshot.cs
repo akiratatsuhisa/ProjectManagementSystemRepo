@@ -180,7 +180,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("Gender")
+                    b.Property<bool?>("Gender")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -280,6 +280,10 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.Property<bool>("IsManager")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LecturerCode")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -470,6 +474,26 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            IsDisabled = false,
+                            Name = "Đồ án cơ sở"
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            IsDisabled = false,
+                            Name = "Đồ án chuyên ngành"
+                        },
+                        new
+                        {
+                            Id = (short)3,
+                            IsDisabled = false,
+                            Name = "Đồ án tổng hợp"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagementWebApp.Models.Student", b =>
@@ -477,9 +501,13 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ClassName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -605,7 +633,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("ProjectScheduleReports")
                         .HasForeignKey("StudentId");
                 });
 

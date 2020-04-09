@@ -10,8 +10,8 @@ using ProjectManagementWebApp.Data;
 namespace ProjectManagementWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200409075104_ProjectSchedulesTable")]
-    partial class ProjectSchedulesTable
+    [Migration("20200409160553_InitTables")]
+    partial class InitTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("Gender")
+                    b.Property<bool?>("Gender")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -282,6 +282,10 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.Property<bool>("IsManager")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LecturerCode")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -479,9 +483,13 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ClassName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<string>("StudentCode")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -607,7 +615,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("ProjectScheduleReports")
                         .HasForeignKey("StudentId");
                 });
 

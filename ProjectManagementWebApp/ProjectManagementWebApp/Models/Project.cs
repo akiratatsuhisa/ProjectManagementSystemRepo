@@ -20,21 +20,29 @@ namespace ProjectManagementWebApp.Models
 
         public string Description { get; set; }
 
-        public ProjectStatus Status { get; set; }
+        public ProjectStatus Status { get; set; } = ProjectStatus.Continued;
 
         public DateTime CreatedDate { get; set; }
 
         public DateTime UpdatedDate { get; set; }
 
-        public virtual  ICollection<ProjectMember> ProjectMembers { get; set; }
+        public virtual ICollection<ProjectMember> ProjectMembers { get; set; }
 
         public virtual ICollection<ProjectLecturer> ProjectLecturers { get; set; }
     }
     public enum ProjectStatus : byte
     {
+        Canceled,
         Continued,
         Completed,
         Failed,
         Passed,
+    }
+
+    public static class ProjectStatusExtensions
+    {
+        public static bool IsDone(this ProjectStatus status) => status == ProjectStatus.Completed || status == ProjectStatus.Passed || status == ProjectStatus.Failed;
+
+        public static bool IsContinued(this ProjectStatus status) => status == ProjectStatus.Continued;
     }
 }

@@ -11,13 +11,17 @@ namespace ProjectManagementWebApp.Models
     {
         public string Id { get; set; }
 
-        [StringLength(10)]
+        [StringLength(256)]
         [RegularExpression(@"^\d{10}$")]
         public string StudentCode { get; set; }
+
+        [StringLength(256)]
+        public string ClassName { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<ProjectMember> ProjectMembers { get; set; }
 
+        public virtual ICollection<ProjectScheduleReport> ProjectScheduleReports { get; set; }
     }
 }

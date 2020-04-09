@@ -130,6 +130,7 @@ namespace ProjectManagementWebApp
         {
             var userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
+            var context = service.GetRequiredService<ApplicationDbContext>();
 
             var roleNames = new[] { "Administrator", "Lecturer", "Student" };
             foreach (var roleName in roleNames)
@@ -141,7 +142,6 @@ namespace ProjectManagementWebApp
                 }
             }
 
-            var dob = new DateTime(1998, 8, 18);
             var adminUser = new ApplicationUser
             {
                 Id = "f9852731-c13c-4765-bbb1-9c3321da46ae",
@@ -150,20 +150,75 @@ namespace ProjectManagementWebApp
                 FirstName = "Dat",
                 LastName = "Dang",
                 Gender = true,
-                BirthDate = new DateTime(1998,08,18),
+                BirthDate = new DateTime(1998, 04, 01),
                 EmailConfirmed = true
             };
-
             var user = await userManager.FindByEmailAsync(adminUser.Email);
             if (user == null)
             {
                 var identityResult = await userManager.CreateAsync(adminUser, "1");
                 if (identityResult.Succeeded)
                 {
-                    await userManager.AddToRolesAsync(adminUser, new[] { "Administrator"});
+                    await userManager.AddToRoleAsync(adminUser, "Administrator");
+                }
+            }
+
+            var lecturerUser = new ApplicationUser
+            {
+
+                Id = "902d836b-0531-434c-9e6e-25322eb559d2",
+                UserName = "nguyenmanhhung",
+                Email = "lecturer@hutech.edu.com",
+                FirstName = "Hung",
+                LastName = "Nguyen Manh",
+                Gender = true,
+                BirthDate = new DateTime(1980, 12, 24),
+                EmailConfirmed = true
+            };
+            user = await userManager.FindByEmailAsync(lecturerUser.Email);
+            if (user == null)
+            {
+                var identityResult = await userManager.CreateAsync(lecturerUser, "1");
+                if (identityResult.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(lecturerUser, "Lecturer");
+                    context.Add(new Lecturer
+                    {
+                        Id = lecturerUser.Id,
+                        LecturerCode = lecturerUser.UserName,
+                    });
+                    context.SaveChanges();
+                }
+            }
+
+            var studentUser = new ApplicationUser
+            {
+
+                Id = "8fb607ee-ccc5-4795-afe3-7455f37dedf3",
+                UserName = "1611061191",
+                Email = "dat@dat.com",
+                FirstName = "Dat",
+                LastName = "Dang Minh",
+                Gender = true,
+                BirthDate = new DateTime(1998, 04, 01),
+                EmailConfirmed = true
+            };
+            user = await userManager.FindByEmailAsync(studentUser.Email);
+            if (user == null)
+            {
+                var identityResult = await userManager.CreateAsync(studentUser, "1");
+                if (identityResult.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(studentUser, "Student");
+                    context.Add(new Student
+                    {
+                        Id = studentUser.Id,
+                        StudentCode = studentUser.UserName,
+                    });
+                    context.SaveChanges();
+
                 }
             }
         }
-
     }
 }

@@ -61,6 +61,23 @@ namespace ProjectManagementWebApp.Data
              .WithMany(l => l.ProjectLecturers)
              .HasForeignKey(pl => pl.LecturerId);
 
+            builder.Entity<ProjectType>()
+                .HasData(
+                new ProjectType
+                {
+                    Id = 1,
+                    Name = "Đồ án cơ sở"
+                },
+                new ProjectType
+                {
+                    Id = 2,
+                    Name = "Đồ án chuyên ngành"
+                },
+                new ProjectType
+                {
+                    Id = 3,
+                    Name = "Đồ án tổng hợp"
+                });
             base.OnModelCreating(builder);
         }
 

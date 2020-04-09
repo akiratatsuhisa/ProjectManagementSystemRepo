@@ -19,7 +19,7 @@ namespace ProjectManagementWebApp.Models
         public string LastName { get; set; }
 
         [Display(Name = "Gender", Prompt = "Gender")]
-        public bool Gender { get; set; }
+        public bool? Gender { get; set; }
 
         [Column(TypeName = "date")]
         [Display(Name = "Birth date", Prompt = "Date of birth")]
