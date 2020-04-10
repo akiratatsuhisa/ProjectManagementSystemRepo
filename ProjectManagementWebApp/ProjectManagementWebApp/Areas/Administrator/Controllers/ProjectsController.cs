@@ -80,6 +80,9 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
             }
 
             var projects = new List<Project>();
+            var newStudents = new HashSet<ApplicationUser>();
+            var newLecturers = new HashSet<ApplicationUser>();
+
             var regexStudentCode = new Regex(@"^\d{10}$");
             for (int rowIndex = sheet.FirstRowNum + 1; rowIndex <= sheet.LastRowNum; rowIndex++)
             {
@@ -113,6 +116,11 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     if (regexStudentCode.IsMatch(studentCode))
                     {
                         var user = await _userManager.FindByNameAsync(studentCode);
+                        if (user == null)
+                        {
+                            user = new ApplicationUser { UserName = studentCode };
+                            newStudents.Add(user);
+                        }
                         project.ProjectMembers.Add(new ProjectMember { StudentId = user.Id });
                     }
                 }
@@ -125,6 +133,11 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     if (!string.IsNullOrWhiteSpace(lecturerCode))
                     {
                         var user = await _userManager.FindByNameAsync(lecturerCode);
+                        if (user == null)
+                        {
+                            user = new ApplicationUser { UserName = lecturerCode };
+                            newLecturers.Add(user);
+                        }
                         project.ProjectLecturers.Add(new ProjectLecturer { LecturerId = user.Id });
                     }
                 }
@@ -145,6 +158,30 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 }
                 project.ProjectSchedules = schedules;
                 projects.Add(project);
+            }
+
+            foreach (var user in newStudents)
+            {
+                user.Student = new Student { Id = user.Id, StudentCode = user.UserName };
+                user.Email = $"student{user.UserName}@myweb.com";
+                user.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(user, user.UserName);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Student");
+                }
+            }
+
+            foreach (var user in newLecturers)
+            {
+                user.Lecturer = new Lecturer { Id = user.Id, LecturerCode = user.UserName };
+                user.Email = $"lecturer{user.UserName}@myweb.com";
+                user.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(user, user.UserName);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "Lecturer");
+                }
             }
 
             await _context.Projects.AddRangeAsync(projects);
