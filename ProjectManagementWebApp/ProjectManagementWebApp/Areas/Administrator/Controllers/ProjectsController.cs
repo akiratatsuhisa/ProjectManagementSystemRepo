@@ -112,8 +112,8 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 project.ProjectMembers = new List<ProjectMember>();
                 for (int cellIndex = 4; cellIndex < 7; cellIndex++)
                 {
-                    var studentCode = row.GetCell(cellIndex).ToString();
-                    if (regexStudentCode.IsMatch(studentCode))
+                    var studentCode = row.GetCell(cellIndex)?.ToString();
+                    if (!string.IsNullOrWhiteSpace(studentCode) && regexStudentCode.IsMatch(studentCode))
                     {
                         var user = await _userManager.FindByNameAsync(studentCode);
                         if (user == null)
@@ -129,7 +129,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 project.ProjectLecturers = new List<ProjectLecturer>();
                 for (int cellIndex = 7; cellIndex < 9; cellIndex++)
                 {
-                    var lecturerCode = row.GetCell(cellIndex).ToString();
+                    var lecturerCode = row.GetCell(cellIndex)?.ToString();
                     if (!string.IsNullOrWhiteSpace(lecturerCode))
                     {
                         var user = await _userManager.FindByNameAsync(lecturerCode);
