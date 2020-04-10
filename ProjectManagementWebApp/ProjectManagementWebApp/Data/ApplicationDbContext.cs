@@ -84,16 +84,16 @@ namespace ProjectManagementWebApp.Data
             OnBeforeSaveChangesSetTrackable();
             var auditEntries = OnBeforeSaveChanges();
             var result = base.SaveChanges(acceptAllChangesOnSuccess);
-            OnAfterSaveChanges(auditEntries);
+            OnAfterSaveChanges(auditEntries).Wait();
             return result;
         }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             OnBeforeSaveChangesSetTrackable();
             var auditEntries = OnBeforeSaveChanges();
-            var result = base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-            OnAfterSaveChanges(auditEntries);
+            var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            await OnAfterSaveChanges(auditEntries);
             return result;
         }
 
