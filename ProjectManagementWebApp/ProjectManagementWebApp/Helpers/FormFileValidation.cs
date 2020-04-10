@@ -12,7 +12,7 @@ namespace ProjectManagementWebApp.Helpers
         public static bool IsValidFileSizeLimit(IFormFile file, long fileSizeLimit) => file != null && file.Length > 0 && file.Length < fileSizeLimit;
 
         public static string GetFileExtension(string fileName) => Path.GetExtension(fileName).ToLowerInvariant();
-   
+
         #region validate file extention
         private static readonly string[] _permittedExtensions = {
             ".png", ".jpg", ".jpeg", ".gif", ".bmp",
@@ -22,6 +22,8 @@ namespace ProjectManagementWebApp.Helpers
             ".xlsx", ".xls",
             ".pptx", "ppt",
         };
+
+        private static readonly string[] _excelPermittedExtensions = { ".xlsx", ".xls" };
 
         public static bool IsValidFileExtension(string fileName, out string extension)
         {
@@ -36,6 +38,8 @@ namespace ProjectManagementWebApp.Helpers
         }
 
         public static bool IsValidFileExtension(string extension) => !string.IsNullOrEmpty(extension) && _permittedExtensions.Contains(extension);
+
+        public static bool IsValidExcelFileExtension(string extension) => !string.IsNullOrEmpty(extension) && _excelPermittedExtensions.Contains(extension);
         #endregion
 
         #region validate file signature

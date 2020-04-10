@@ -1,0 +1,29 @@
+﻿@model ImportProjectsFromExcelViewModel
+@{
+    ViewData["Title"] = "ImportProjectsFromExcel";
+}
+
+<h1>Import Projects From File Excel</h1>
+
+<form asp-action="ImportProjectsFromExcel" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="File"></label>
+        <div class="custom-file">
+            <input class="custom-file-input" asp-for="File">
+            <label class="custom-file-label" for="File">Choose file</label>
+        </div>
+        <span class="text-danger" asp-validation-for="File"></span>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-success">Import</button>
+    </div>
+</form>
+
+@section Scripts{
+    <script>
+        $('.custom-file-input').change(function (event) {
+            var text = event.target.files[0].name;
+            $(event.target).closest('.custom-file').find('.custom-file-label').text(text);
+        });
+    </script>
+}

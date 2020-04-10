@@ -106,6 +106,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                     Title = table.Column<string>(maxLength: 256, nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Status = table.Column<byte>(nullable: false),
+                    UniqueId = table.Column<string>(maxLength: 450, nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedDate = table.Column<DateTime>(nullable: false)
                 },
@@ -274,6 +275,13 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "IX_Projects_ProjectTypeId",
                 table: "Projects",
                 column: "ProjectTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_UniqueId",
+                table: "Projects",
+                column: "UniqueId",
+                unique: true,
+                filter: "[UniqueId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectScheduleReportFiles_ProjectScheduleReportId",

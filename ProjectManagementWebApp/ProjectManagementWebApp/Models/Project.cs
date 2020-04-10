@@ -22,6 +22,9 @@ namespace ProjectManagementWebApp.Models
 
         public ProjectStatus Status { get; set; } = ProjectStatus.Continued;
 
+        [StringLength(450)]
+        public string UniqueId { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime UpdatedDate { get; set; }
@@ -29,6 +32,8 @@ namespace ProjectManagementWebApp.Models
         public virtual ICollection<ProjectMember> ProjectMembers { get; set; }
 
         public virtual ICollection<ProjectLecturer> ProjectLecturers { get; set; }
+
+        public virtual ICollection<ProjectSchedule> ProjectSchedules { get; set; }
     }
     public enum ProjectStatus : byte
     {

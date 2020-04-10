@@ -39,6 +39,10 @@ namespace ProjectManagementWebApp.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Project>()
+             .HasIndex(p => p.UniqueId)
+             .IsUnique();
+
             builder.Entity<ProjectMember>()
                 .HasKey(pm => new { pm.ProjectId, pm.StudentId });
             builder.Entity<ProjectMember>()
@@ -61,24 +65,18 @@ namespace ProjectManagementWebApp.Data
              .WithMany(l => l.ProjectLecturers)
              .HasForeignKey(pl => pl.LecturerId);
 
+            InitData(builder);
+            base.OnModelCreating(builder);
+        }
+
+        private void InitData(ModelBuilder builder)
+        {
             builder.Entity<ProjectType>()
                 .HasData(
-                new ProjectType
-                {
-                    Id = 1,
-                    Name = "Đồ án cơ sở"
-                },
-                new ProjectType
-                {
-                    Id = 2,
-                    Name = "Đồ án chuyên ngành"
-                },
-                new ProjectType
-                {
-                    Id = 3,
-                    Name = "Đồ án tổng hợp"
-                });
-            base.OnModelCreating(builder);
+                new ProjectType { Id = 1, Name = "Đồ án cơ sở" },
+                new ProjectType { Id = 2, Name = "Đồ án chuyên ngành" },
+                new ProjectType { Id = 3, Name = "Đồ án tổng hợp" }
+                );
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

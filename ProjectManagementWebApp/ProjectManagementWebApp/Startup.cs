@@ -191,34 +191,61 @@ namespace ProjectManagementWebApp
                 }
             }
 
-            var studentUser = new ApplicationUser
+            var studentUsers = new List<ApplicationUser>
             {
-
-                Id = "8fb607ee-ccc5-4795-afe3-7455f37dedf3",
-                UserName = "1611061191",
-                Email = "dat@dat.com",
-                FirstName = "Dat",
-                LastName = "Dang Minh",
-                Gender = true,
-                BirthDate = new DateTime(1998, 04, 01),
-                EmailConfirmed = true
-            };
-            user = await userManager.FindByEmailAsync(studentUser.Email);
-            if (user == null)
-            {
-                var identityResult = await userManager.CreateAsync(studentUser, "1");
-                if (identityResult.Succeeded)
+                new ApplicationUser
                 {
-                    await userManager.AddToRoleAsync(studentUser, "Student");
-                    context.Add(new Student
+                    Id = "8fb607ee-ccc5-4795-afe3-7455f37dedf3",
+                    UserName = "1611061191",
+                    Email = "dat@hutech.com",
+                    FirstName = "Dat",
+                    LastName = "Dang Minh",
+                    Gender = true,
+                    BirthDate = new DateTime(1998, 04, 01),
+                    EmailConfirmed = true
+                },
+                new ApplicationUser
+                {
+                    Id = "03a7e756-88e9-49c6-88c1-78a00ed61710",
+                    UserName = "1611062192",
+                    Email = "nhat@hutech.com",
+                    FirstName = "Nhat",
+                    LastName = "Hong",
+                    Gender = true,
+                    BirthDate = new DateTime(1998, 06, 02),
+                    EmailConfirmed = true
+                },
+                new ApplicationUser
+                {
+                    Id = "b1555e90-bea8-41b5-8cf7-779c3cd8d5ca",
+                    UserName = "1611060417",
+                    Email = "khiem@hutech.com",
+                    FirstName = "Khiem",
+                    LastName = "Pham",
+                    Gender = true,
+                    BirthDate = new DateTime(1998, 08, 03),
+                    EmailConfirmed = true
+                },
+            };
+            foreach(var studentUser in studentUsers)
+            {
+                var checkUser = await userManager.FindByEmailAsync(studentUser.Email);
+                if (checkUser == null)
+                {
+                    var identityResult = await userManager.CreateAsync(studentUser, "1");
+                    if (identityResult.Succeeded)
                     {
-                        Id = studentUser.Id,
-                        StudentCode = studentUser.UserName,
-                    });
-                    context.SaveChanges();
+                        await userManager.AddToRoleAsync(studentUser, "Student");
+                        context.Add(new Student
+                        {
+                            Id = studentUser.Id,
+                            StudentCode = studentUser.UserName,
+                        });
+                        context.SaveChanges();
 
+                    }
                 }
-            }
+            }     
         }
     }
 }

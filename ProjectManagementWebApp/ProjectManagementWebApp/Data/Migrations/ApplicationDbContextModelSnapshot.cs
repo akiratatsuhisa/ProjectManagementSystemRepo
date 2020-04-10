@@ -314,12 +314,20 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
+                    b.Property<string>("UniqueId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectTypeId");
+
+                    b.HasIndex("UniqueId")
+                        .IsUnique()
+                        .HasFilter("[UniqueId] IS NOT NULL");
 
                     b.ToTable("Projects");
                 });
@@ -618,7 +626,7 @@ namespace ProjectManagementWebApp.Data.Migrations
             modelBuilder.Entity("ProjectManagementWebApp.Models.ProjectSchedule", b =>
                 {
                     b.HasOne("ProjectManagementWebApp.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("ProjectSchedules")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
