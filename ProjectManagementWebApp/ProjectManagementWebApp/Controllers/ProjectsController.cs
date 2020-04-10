@@ -27,15 +27,10 @@ namespace ProjectManagementWebApp.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var projects = await _context.ProjectMembers
-                .Where(pm => pm.StudentId == GetUserId())
-                .Include(pm => pm.Project)
-                .Select(pm => pm.Project)
-                    .Include(p => p.ProjectMembers)
-                    .Include(p => p.ProjectLecturers)
-                        .ThenInclude(pl => pl.Lecturer)
-                            .ThenInclude(l => l.User)
-                    .Include(p => p.ProjectType)
+            var projects = await _context.Projects
+                .Include(p => p.ProjectMembers)
+                .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()))
+                .Include(p => p.ProjectType)
                 .ToListAsync();
             return View(projects);
         }
