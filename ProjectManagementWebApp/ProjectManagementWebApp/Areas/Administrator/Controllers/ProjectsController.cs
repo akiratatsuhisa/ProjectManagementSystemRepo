@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -24,12 +25,18 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
     [Area("Administrator")]
     public class ProjectsController : Controller
     {
+        private readonly ILogger<ProjectsController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public ProjectsController(
+            ILogger<ProjectsController> logger,
+            ApplicationDbContext context,
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<ApplicationUser> userManager)
         {
+            _logger = logger;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
@@ -67,7 +74,6 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
             {
                 viewModel.File.CopyTo(stream);
                 stream.Position = 0;
-
                 if (fileExtension == ".xls")
                 {
                     HSSFWorkbook workbook = new HSSFWorkbook(stream);
@@ -83,8 +89,8 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
             var projects = new List<Project>();
             var newStudents = new List<ApplicationUser>();
             var newLecturers = new List<ApplicationUser>();
-
             var regexStudentCode = new Regex(@"^\d{10}$");
+
             for (int rowIndex = sheet.FirstRowNum + 1; rowIndex <= sheet.LastRowNum; rowIndex++)
             {
                 IRow row = sheet.GetRow(rowIndex);
@@ -161,32 +167,46 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 projects.Add(project);
             }
 
-            foreach (var user in newStudents)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                user.Student = new Student { Id = user.Id, StudentCode = user.UserName };
-                user.Email = $"student{user.UserName}@myweb.com";
-                user.EmailConfirmed = true;
-                var result = await _userManager.CreateAsync(user, user.UserName);
-                if (result.Succeeded)
+                try
                 {
-                    await _userManager.AddToRoleAsync(user, "Student");
+                    foreach (var user in newStudents)
+                    {
+                        user.Student = new Student { Id = user.Id, StudentCode = user.UserName };
+                        user.Email = $"student{user.UserName}@myweb.com";
+                        user.EmailConfirmed = true;
+                        var result = await _userManager.CreateAsync(user, user.UserName);
+                        if (result.Succeeded)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Student");
+                        }
+                    }
+                 
+                    foreach (var user in newLecturers)
+                    {
+                        user.Lecturer = new Lecturer { Id = user.Id, LecturerCode = user.UserName };
+                        user.Email = $"lecturer{user.UserName}@myweb.com";
+                        user.EmailConfirmed = true;
+                        var result = await _userManager.CreateAsync(user, user.UserName);
+                        if (result.Succeeded)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Lecturer");
+                        }
+                    }
+                    
+                    await _context.Projects.AddRangeAsync(projects);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    await transaction.RollbackAsync();
+                    ModelState.AddModelError(string.Empty, "Someone import file as same time with you. Try it later.");
+                    return View();
                 }
             }
-
-            foreach (var user in newLecturers)
-            {
-                user.Lecturer = new Lecturer { Id = user.Id, LecturerCode = user.UserName };
-                user.Email = $"lecturer{user.UserName}@myweb.com";
-                user.EmailConfirmed = true;
-                var result = await _userManager.CreateAsync(user, user.UserName);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "Lecturer");
-                }
-            }
-
-            await _context.Projects.AddRangeAsync(projects);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
