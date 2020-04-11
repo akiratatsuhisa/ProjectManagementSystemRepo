@@ -46,6 +46,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportProjectsFromExcel(ImportProjectsFromExcelViewModel viewModel)
         {
             if (!FormFileValidation.IsValidFileSizeLimit(viewModel.File, 268435456)) // 256 MiB
@@ -80,8 +81,8 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
             }
 
             var projects = new List<Project>();
-            var newStudents = new HashSet<ApplicationUser>();
-            var newLecturers = new HashSet<ApplicationUser>();
+            var newStudents = new List<ApplicationUser>();
+            var newLecturers = new List<ApplicationUser>();
 
             var regexStudentCode = new Regex(@"^\d{10}$");
             for (int rowIndex = sheet.FirstRowNum + 1; rowIndex <= sheet.LastRowNum; rowIndex++)
@@ -115,7 +116,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     var studentCode = row.GetCell(cellIndex)?.ToString();
                     if (!string.IsNullOrWhiteSpace(studentCode) && regexStudentCode.IsMatch(studentCode))
                     {
-                        var user = await _userManager.FindByNameAsync(studentCode);
+                        var user = await _userManager.FindByNameAsync(studentCode) ?? newStudents.FirstOrDefault(u => u.UserName == studentCode);
                         if (user == null)
                         {
                             user = new ApplicationUser { UserName = studentCode };
@@ -132,7 +133,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     var lecturerCode = row.GetCell(cellIndex)?.ToString();
                     if (!string.IsNullOrWhiteSpace(lecturerCode))
                     {
-                        var user = await _userManager.FindByNameAsync(lecturerCode);
+                        var user = await _userManager.FindByNameAsync(lecturerCode) ?? newLecturers.FirstOrDefault(u => u.UserName == lecturerCode);
                         if (user == null)
                         {
                             user = new ApplicationUser { UserName = lecturerCode };
