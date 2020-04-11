@@ -194,7 +194,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                             await _userManager.AddToRoleAsync(user, "Lecturer");
                         }
                     }
-                    
+
                     await _context.Projects.AddRangeAsync(projects);
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();

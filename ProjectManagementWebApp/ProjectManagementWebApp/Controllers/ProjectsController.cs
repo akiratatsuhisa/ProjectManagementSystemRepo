@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagementWebApp.Data;
 using ProjectManagementWebApp.Models;
+using ProjectManagementWebApp.Helpers;
 
 namespace ProjectManagementWebApp.Controllers
 {
-    [Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student, Lecturer")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,48 +25,111 @@ namespace ProjectManagementWebApp.Controllers
             _userManager = userManager;
         }
 
-        // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var projects = await _context.Projects
-                .Include(p => p.ProjectMembers)
-                .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()))
-                .Include(p => p.ProjectType)
-                .ToListAsync();
-            return View(projects);
+            if (User.IsInRole("Student"))
+            {
+                return View(await _context.ProjectMembers
+                    .Where(pm => pm.StudentId == GetUserId())
+                    .Include(pm => pm.Project)
+                    .ThenInclude(p => p.ProjectType)
+                    .Select(p => p.Project).ToListAsync());
+            }
+            else
+            {
+                return View(await _context.ProjectLecturers
+                   .Where(pm => pm.LecturerId == GetUserId())
+                   .Include(pm => pm.Project)
+                    .ThenInclude(p => p.ProjectType)
+                    .Select(p => p.Project).ToListAsync());
+            }
         }
 
-        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || !IsProjectOfUser(id.Value))
             {
                 return NotFound();
             }
 
             var project = await _context.Projects
-                .Include(p => p.ProjectMembers)
-                    .ThenInclude(pm => pm.Student)
-                        .ThenInclude(s => s.User)
-                .Include(p => p.ProjectLecturers)
-                    .ThenInclude(pl => pl.Lecturer)
-                        .ThenInclude(l => l.User)
-                .Include(p => p.ProjectType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (project == null || !project.ProjectMembers.Any(pm => pm.StudentId == GetUserId()))
+            if (project == null)
             {
                 return NotFound();
             }
 
+            ViewBag.ProjectType = _context.ProjectTypes.Find(project.ProjectTypeId);
+            ViewBag.ProjectMembers = _context.ProjectMembers
+                .Where(pm => pm.ProjectId == id)
+                .Include(pm => pm.Student)
+                    .ThenInclude(s => s.User);
+            ViewBag.ProjectLecturers = _context.ProjectLecturers
+                .Where(pl => pl.ProjectId == id)
+                .Include(pl => pl.Lecturer)
+                    .ThenInclude(l => l.User);
+
             return View(project);
         }
 
-        private string GetUserId() => _userManager.GetUserId(User);
-
-        private bool ProjectExists(int id)
+        [Route("[controller]/{projectId:int}/[action]")]
+        public async Task<IActionResult> Schedules(int projectId)
         {
-            return _context.Projects.Any(e => e.Id == id);
+            if (!IsProjectOfUser(projectId))
+            {
+                return NotFound();
+            }
+
+            ViewBag.Project = await _context.Projects.FindAsync(projectId);
+
+            return View(await _context.ProjectSchedules
+                .Where(ps => ps.ProjectId == projectId)
+                .OrderBy(ps => ps.ExpiredDate)
+                .ToListAsync());
         }
+
+        [Route("[controller]/{projectId:int}/Schedules/{id:int}")]
+        public async Task<IActionResult> SchedulesDetails(int projectId, int id)
+        {
+            if (!IsProjectOfUser(projectId))
+            {
+                return NotFound();
+            }
+
+            var schedule = await _context.ProjectSchedules
+                .FirstOrDefaultAsync(ps => ps.Id == id);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Project = _context.Projects.Find(projectId);
+            ViewBag.ProjectScheduleReports = _context.ProjectScheduleReports
+                .Where(psr => psr.ProjectScheduleId == id)
+                .Include(psr => psr.ReportFiles);
+
+            return View(schedule);
+        }
+
+        private bool IsProjectOfUser(int projectId)
+        {
+            if (User.IsInRole("Student"))
+            {
+                return _context
+                    .ProjectMembers
+                    .Any(pm => pm.ProjectId == projectId && pm.StudentId == GetUserId());
+            }
+            if (User.IsInRole("Lecturer"))
+            {
+                return _context
+                    .ProjectLecturers
+                    .Any(pl => pl.ProjectId == projectId && pl.LecturerId == GetUserId());
+            }
+            return false;
+        }
+
+        private string GetUserId() => _userManager.GetUserId(User);
     }
 }
