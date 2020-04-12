@@ -2,10 +2,10 @@
 
 @{
     ViewData["Title"] = "Schedules";
+    var dateTimeNow = DateTime.Now;
 }
 
 <h1>Schedules- @ViewBag.Project.Title</h1>
-
 <hr />
 
 <div class="row">
@@ -45,71 +45,106 @@
                                         </a>
                                     </h2>
                                     <hr />
-                                    <p class="card-subtitle">
-                                        <h5>Started Date: @Model[i].StartedDate</h5>
-                                        <h5>Expired Date: @Model[i].ExpiredDate</h5>
-                                    </p>
 
+                                    <dl class="row card-subtitle">
+                                        <dt class="col-sm-4">
+                                            Started Date
+                                        </dt>
+                                        <dd class="col-sm-8">
+                                            @Model[i].StartedDate
+                                        </dd>
+                                        <dt class="col-sm-4">
+                                            Expired Date
+                                        </dt>
+                                        <dd class="col-sm-8">
+                                            @Model[i].ExpiredDate
+                                        </dd>
+                                    </dl>
                                     <h3 class="card-title">Content</h3>
                                     <hr />
 
-                                    <div class=".ck-content">
+                                    <div class="ck-content">
                                         @Html.Raw(Model[i].Content)
                                     </div>
                                     @if (User.IsInRole("Lecturer"))
                                     {
-                                        <a class="btn btn-warning" asp-action="Edit" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">Edit</a>
+                                        <a class="btn btn-warning btn-block"
+                                           asp-action="Edit" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">
+                                            Edit
+                                        </a>
                                     }
                                 </div>
+
                                 <div class="tab-pane fade" id="week-@(i+1)-reports" role="tabpanel">
                                     <h3 class="card-title">Reports</h3>
-                                    <hr />
                                     @if (User.IsInRole("Student"))
                                     {
-                                        <a class="btn btn-primary @(DateTime.Now < Model[i].StartedDate || DateTime.Now > Model[i].ExpiredDate ? "disabled" : "")"
+                                        <a class="btn btn-primary btn-block @(dateTimeNow < Model[i].StartedDate || dateTimeNow > Model[i].ExpiredDate ? "disabled" : "")"
                                            asp-action="Create" asp-controller="ProjectScheduleReports"
-                                           asp-route-projectId="@Model[i].ProjectId" asp-route-scheduleId="@Model[i].Id">Report</a>
+                                           asp-route-projectId="@Model[i].ProjectId" asp-route-scheduleId="@Model[i].Id">
+                                            New Report
+                                        </a>
                                     }
-                                    @foreach (var report in Model[i].ProjectScheduleReports)
-                                    {
-                                        <hr />
-                                        <h4>@report.Student.StudentCode</h4>
-                                        <hr />
-                                        <div class=".ck-content">
-                                            @Html.Raw(report.Content)
-                                        </div>
-                                        <hr />
-                                        <dl class="row">
-                                            <dt class="col-sm-2">
-                                                Posted Date
-                                            </dt>
-                                            <dd class="col-sm-10">
-                                                @report.CreatedDate
-                                            </dd>
-                                            @if (report.CreatedDate != report.UpdatedDate)
-                                            {
-                                                <dt class="col-sm-2">
-                                                    Last updated
-                                                </dt>
-                                                <dd class="col-sm-10">
-                                                    @report.UpdatedDate
-                                                </dd>
-                                            }
-                                        </dl>
-                                    }
-                                </div>
-                                <div class="tab-pane fade" id="week-@(i+1)-comment" role="tabpanel">
-                                    <h3 class="card-title">Comment</h3>
-                                    <h4 class="card-subtitle">Rating: @Model[i].Rating @(@Model[i].Rating.HasValue ? $"{@Model[i].Rating} point" : "Not-yet")</h4>
                                     <hr />
 
-                                    <div class=".ck-content">
+                                    @foreach (var report in Model[i].ProjectScheduleReports)
+                                    {
+                                        <div class="mb-5">
+                                            <h4>Posted by: @report.Student.StudentCode</h4>
+                                            <dl class="row card-subtitle">
+                                                <dt class="col-sm-4">
+                                                    Posted Date
+                                                </dt>
+                                                <dd class="col-sm-8">
+                                                    @report.CreatedDate
+                                                </dd>
+                                                @if (report.CreatedDate != report.UpdatedDate)
+                                                {
+                                                    <dt class="col-sm-4">
+                                                        Last updated
+                                                    </dt>
+                                                    <dd class="col-sm-8">
+                                                        @report.UpdatedDate
+                                                    </dd>
+                                                }
+                                            </dl>
+                                            <hr />
+                                            @if (report.ReportFiles?.Count > 0)
+                                            {
+                                                <h5>Posted File</h5>
+                                                @foreach (var file in report.ReportFiles)
+                                                {
+                                                    <a class="d-block" href="~/files/@file.Path">@file.FileName</a>
+                                                }
+                                                <hr />
+                                            }
+                                            <div class="ck-content">
+                                                @Html.Raw(report.Content)
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="tab-pane fade" id="week-@(i+1)-comment" role="tabpanel">
+                                    <h3 class="card-title">Comment</h3>
+                                    <dl class="row card-subtitle">
+                                        <dt class="col-sm-4">
+                                            Rating
+                                        </dt>
+                                        <dd class="col-sm-8">
+                                            @Model[i].Rating @(@Model[i].Rating.HasValue ? $"{@Model[i].Rating} point" : "Not-yet")
+                                    </dl>
+                                    <hr />
+
+                                    <div class="ck-content">
                                         @Html.Raw(Model[i].Comment)
                                     </div>
                                     @if (User.IsInRole("Lecturer"))
                                     {
-                                        <a class="btn btn-success @(Model[i].ExpiredDate < DateTime.Now ? "": "disabled")"
-                                           asp-action="Comment" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">Comment</a>
+                                        <a class="btn btn-success btn-block @(dateTimeNow < Model[i].ExpiredDate ? "disabled": "")"
+                                           asp-action="Comment" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">
+                                            Grading
+                                        </a>
                                     }
                                 </div>
                             </div>
@@ -122,10 +157,15 @@
 </div>
 
 @section Scripts{
+    <script src="~/ckeditor5/ckeditor.js"></script>
     <script async defer type="text/javascript">
         $(document).ready(function () {
             $('#schedules-tab').find('.nav-link').first().addClass('active');
             $('#schedules-tab-content').find('.tab-pane').first().addClass('show').addClass('active');
-        })
+        });
+
+        document.querySelectorAll('oembed[url]').forEach(element => {
+            iframely.load(element, element.attributes.url.value);
+        });
     </script>
 }

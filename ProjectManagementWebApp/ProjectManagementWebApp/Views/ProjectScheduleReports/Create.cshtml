@@ -1,0 +1,104 @@
+﻿@model ProjectScheduleReportViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>ProjectScheduleReport</h4>
+<hr />
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ProjectScheduleId" />
+    <div class="form-group">
+        <label asp-for="Content" class="control-label"></label>
+        <textarea id="content" asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ReportFiles"></label>
+        <div class="custom-file">
+            <input class="custom-file-input" asp-for="ReportFiles" multiple>
+            <label class="custom-file-label" for="File">Choose file</label>
+        </div>
+        <span class="text-danger" asp-validation-for="ReportFiles"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/ckeditor5/ckeditor.js"></script>
+    <script async type="text/javascript">
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'link',
+                        'alignment',
+                        'fontBackgroundColor',
+                        'fontColor',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'indent',
+                        'outdent',
+                        '|',
+                        'insertImage',
+                        'blockQuote',
+                        'insertTable',
+                        'mediaEmbed',
+                        'undo',
+                        'redo',
+                        '|',
+                        'codeBlock',
+                        'specialCharacters',
+                        'removeFormat'
+                    ]
+                },
+                language: 'en',
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:full',
+                        'imageStyle:side'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells',
+                        'tableCellProperties',
+                        'tableProperties'
+                    ]
+                },
+                licenseKey: '',
+            })
+            .then(editor => {
+                window.editor = editor;
+            })
+            .catch(err => {
+                console.error(err.stack);
+            });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" async>
+        $('.custom-file-input').change(function (event) {
+            var text = "";
+            var files = event.target.files;
+            for (var i = 0; i < files.length; i++) {
+                text += `${files[i].name}, `;
+            }
+            text = text.substring(0, text.length - 2);
+            $(event.target).closest('.custom-file').find('.custom-file-label').text(text);
+        });
+    </script>
+}

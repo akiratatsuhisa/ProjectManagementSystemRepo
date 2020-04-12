@@ -26,7 +26,7 @@
 </form>
 
 @section Scripts{
-    <script>
+    <script type="text/javascript" async>
         $('.custom-file-input').change(function (event) {
             var text = event.target.files[0].name;
             $(event.target).closest('.custom-file').find('.custom-file-label').text(text);

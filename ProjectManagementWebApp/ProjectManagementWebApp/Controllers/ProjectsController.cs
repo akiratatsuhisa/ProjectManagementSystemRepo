@@ -100,7 +100,7 @@ namespace ProjectManagementWebApp.Controllers
                 .Include(psr => psr.ReportFiles)
                 .Include(psr => psr.Student)
                     .ThenInclude(s => s.User)
-                .OrderBy(psr => psr.CreatedDate)
+                .OrderByDescending(psr => psr.CreatedDate)
                 .AsNoTracking()
                 .ToList();
             });
@@ -128,6 +128,7 @@ namespace ProjectManagementWebApp.Controllers
             ViewBag.ProjectScheduleReports = _context.ProjectScheduleReports
                 .Where(psr => psr.ProjectScheduleId == id)
                 .Include(psr => psr.ReportFiles)
+                .OrderByDescending(psr => psr.CreatedDate)
                 .ToListAsync();
             return View(schedule);
         }

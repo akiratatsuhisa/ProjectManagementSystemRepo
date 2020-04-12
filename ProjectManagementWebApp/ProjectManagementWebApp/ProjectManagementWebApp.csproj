@@ -54,4 +54,69 @@
     <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\ckeditor5\ckeditor.js" />
+    <None Include="wwwroot\ckeditor5\ckeditor.js.map" />
+    <None Include="wwwroot\ckeditor5\translations\af.js" />
+    <None Include="wwwroot\ckeditor5\translations\ar.js" />
+    <None Include="wwwroot\ckeditor5\translations\ast.js" />
+    <None Include="wwwroot\ckeditor5\translations\az.js" />
+    <None Include="wwwroot\ckeditor5\translations\bg.js" />
+    <None Include="wwwroot\ckeditor5\translations\ca.js" />
+    <None Include="wwwroot\ckeditor5\translations\cs.js" />
+    <None Include="wwwroot\ckeditor5\translations\da.js" />
+    <None Include="wwwroot\ckeditor5\translations\de-ch.js" />
+    <None Include="wwwroot\ckeditor5\translations\de.js" />
+    <None Include="wwwroot\ckeditor5\translations\el.js" />
+    <None Include="wwwroot\ckeditor5\translations\en-au.js" />
+    <None Include="wwwroot\ckeditor5\translations\en-gb.js" />
+    <None Include="wwwroot\ckeditor5\translations\eo.js" />
+    <None Include="wwwroot\ckeditor5\translations\es.js" />
+    <None Include="wwwroot\ckeditor5\translations\et.js" />
+    <None Include="wwwroot\ckeditor5\translations\eu.js" />
+    <None Include="wwwroot\ckeditor5\translations\fa.js" />
+    <None Include="wwwroot\ckeditor5\translations\fi.js" />
+    <None Include="wwwroot\ckeditor5\translations\fr.js" />
+    <None Include="wwwroot\ckeditor5\translations\gl.js" />
+    <None Include="wwwroot\ckeditor5\translations\gu.js" />
+    <None Include="wwwroot\ckeditor5\translations\he.js" />
+    <None Include="wwwroot\ckeditor5\translations\hr.js" />
+    <None Include="wwwroot\ckeditor5\translations\hu.js" />
+    <None Include="wwwroot\ckeditor5\translations\id.js" />
+    <None Include="wwwroot\ckeditor5\translations\it.js" />
+    <None Include="wwwroot\ckeditor5\translations\ja.js" />
+    <None Include="wwwroot\ckeditor5\translations\km.js" />
+    <None Include="wwwroot\ckeditor5\translations\kn.js" />
+    <None Include="wwwroot\ckeditor5\translations\ko.js" />
+    <None Include="wwwroot\ckeditor5\translations\ku.js" />
+    <None Include="wwwroot\ckeditor5\translations\lt.js" />
+    <None Include="wwwroot\ckeditor5\translations\lv.js" />
+    <None Include="wwwroot\ckeditor5\translations\ms.js" />
+    <None Include="wwwroot\ckeditor5\translations\nb.js" />
+    <None Include="wwwroot\ckeditor5\translations\ne.js" />
+    <None Include="wwwroot\ckeditor5\translations\nl.js" />
+    <None Include="wwwroot\ckeditor5\translations\no.js" />
+    <None Include="wwwroot\ckeditor5\translations\oc.js" />
+    <None Include="wwwroot\ckeditor5\translations\pl.js" />
+    <None Include="wwwroot\ckeditor5\translations\pt-br.js" />
+    <None Include="wwwroot\ckeditor5\translations\pt.js" />
+    <None Include="wwwroot\ckeditor5\translations\ro.js" />
+    <None Include="wwwroot\ckeditor5\translations\ru.js" />
+    <None Include="wwwroot\ckeditor5\translations\si.js" />
+    <None Include="wwwroot\ckeditor5\translations\sk.js" />
+    <None Include="wwwroot\ckeditor5\translations\sl.js" />
+    <None Include="wwwroot\ckeditor5\translations\sq.js" />
+    <None Include="wwwroot\ckeditor5\translations\sr-latn.js" />
+    <None Include="wwwroot\ckeditor5\translations\sr.js" />
+    <None Include="wwwroot\ckeditor5\translations\sv.js" />
+    <None Include="wwwroot\ckeditor5\translations\th.js" />
+    <None Include="wwwroot\ckeditor5\translations\tr.js" />
+    <None Include="wwwroot\ckeditor5\translations\tt.js" />
+    <None Include="wwwroot\ckeditor5\translations\ug.js" />
+    <None Include="wwwroot\ckeditor5\translations\uk.js" />
+    <None Include="wwwroot\ckeditor5\translations\vi.js" />
+    <None Include="wwwroot\ckeditor5\translations\zh-cn.js" />
+    <None Include="wwwroot\ckeditor5\translations\zh.js" />
+  </ItemGroup>
+
 </Project>
