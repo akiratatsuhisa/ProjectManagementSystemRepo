@@ -41,8 +41,8 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                    <a class="btn btn-info" asp-action="Schedules" asp-route-projectId="@item.Id">Schedule</a>
+                    <a  asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Schedules" asp-route-projectId="@item.Id">Schedule</a>
                 </td>
             </tr>
         }

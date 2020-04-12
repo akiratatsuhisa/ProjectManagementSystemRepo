@@ -9,6 +9,11 @@ namespace ProjectManagementWebApp.Areas.Administrator.ViewModels
 {
     public class ImportProjectsFromExcelViewModel
     {
+        [DataType(DataType.Date)]
+        [Required]
+        [Display(Name = "Date")]
+        public DateTime DateTime { get; set; }
+
         [DataType("file")]
         [Required]
         [Display(Name = "Excel File")]

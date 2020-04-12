@@ -1,60 +1,131 @@
-﻿@model IEnumerable<ProjectManagementWebApp.Models.ProjectSchedule>
+﻿@model IList<ProjectSchedule>
 
 @{
     ViewData["Title"] = "Schedules";
 }
 
-<h1>@ViewBag.Project.Title - Schedules</h1>
+<h1>Schedules- @ViewBag.Project.Title</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpiredDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpiredDate)
-            </td>
-            <td>
-                <a asp-action="SchedulesDetails" asp-route-projectId="@item.ProjectId" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
+<hr />
+
+<div class="row">
+    <div class="col-lg-3 mb-lg-0 mb-3">
+        <div class="nav flex-column nav-pills" id="schedules-tab" role="tablist" aria-orientation="vertical">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <a class="nav-link" id="week-@(i+1)-tab" data-toggle="pill" href="#week-@(i+1)" role="tab">@Model[i].Name</a>
+            }
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="tab-content" id="schedules-tab-content">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="tab-pane fade" id="week-@(i+1)" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" role="tab" href="#week-@(i+1)-details">Details</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-reports">Reports</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-comment">Comment</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="week-@(i+1)-details" role="tabpanel">
+                                    <h2 class="card-title">
+                                        <a asp-action="SchedulesDetails" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">
+                                            Schedule - @Model[i].Name
+                                        </a>
+                                    </h2>
+                                    <hr />
+                                    <p class="card-subtitle">
+                                        <h5>Started Date: @Model[i].StartedDate</h5>
+                                        <h5>Expired Date: @Model[i].ExpiredDate</h5>
+                                    </p>
+
+                                    <h3 class="card-title">Content</h3>
+                                    <hr />
+
+                                    <div class=".ck-content">
+                                        @Html.Raw(Model[i].Content)
+                                    </div>
+                                    @if (User.IsInRole("Lecturer"))
+                                    {
+                                        <a class="btn btn-warning" asp-action="Edit" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">Edit</a>
+                                    }
+                                </div>
+                                <div class="tab-pane fade" id="week-@(i+1)-reports" role="tabpanel">
+                                    <h3 class="card-title">Reports</h3>
+                                    <hr />
+                                    @if (User.IsInRole("Student"))
+                                    {
+                                        <a class="btn btn-primary @(DateTime.Now < Model[i].StartedDate || DateTime.Now > Model[i].ExpiredDate ? "disabled" : "")"
+                                           asp-action="Create" asp-controller="ProjectScheduleReports"
+                                           asp-route-projectId="@Model[i].ProjectId" asp-route-scheduleId="@Model[i].Id">Report</a>
+                                    }
+                                    @foreach (var report in Model[i].ProjectScheduleReports)
+                                    {
+                                        <hr />
+                                        <h4>@report.Student.StudentCode</h4>
+                                        <hr />
+                                        <div class=".ck-content">
+                                            @Html.Raw(report.Content)
+                                        </div>
+                                        <hr />
+                                        <dl class="row">
+                                            <dt class="col-sm-2">
+                                                Posted Date
+                                            </dt>
+                                            <dd class="col-sm-10">
+                                                @report.CreatedDate
+                                            </dd>
+                                            @if (report.CreatedDate != report.UpdatedDate)
+                                            {
+                                                <dt class="col-sm-2">
+                                                    Last updated
+                                                </dt>
+                                                <dd class="col-sm-10">
+                                                    @report.UpdatedDate
+                                                </dd>
+                                            }
+                                        </dl>
+                                    }
+                                </div>
+                                <div class="tab-pane fade" id="week-@(i+1)-comment" role="tabpanel">
+                                    <h3 class="card-title">Comment</h3>
+                                    <h4 class="card-subtitle">Rating: @Model[i].Rating @(@Model[i].Rating.HasValue ? $"{@Model[i].Rating} point" : "Not-yet")</h4>
+                                    <hr />
+
+                                    <div class=".ck-content">
+                                        @Html.Raw(Model[i].Comment)
+                                    </div>
+                                    @if (User.IsInRole("Lecturer"))
+                                    {
+                                        <a class="btn btn-success @(Model[i].ExpiredDate < DateTime.Now ? "": "disabled")"
+                                           asp-action="Comment" asp-controller="ProjectSchedules" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">Comment</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script async defer type="text/javascript">
+        $(document).ready(function () {
+            $('#schedules-tab').find('.nav-link').first().addClass('active');
+            $('#schedules-tab-content').find('.tab-pane').first().addClass('show').addClass('active');
+        })
+    </script>
 }
-    </tbody>
-</table>

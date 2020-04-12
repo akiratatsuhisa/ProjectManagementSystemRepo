@@ -44,7 +44,10 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projects.Include(p => p.ProjectType).ToListAsync());
+            return View(await _context.Projects
+                .Include(p => p.ProjectType)
+                .AsNoTracking()
+                .ToListAsync());
         }
 
         public IActionResult ImportProjectsFromExcel()
@@ -56,6 +59,11 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportProjectsFromExcel(ImportProjectsFromExcelViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
             if (!FormFileValidation.IsValidFileSizeLimit(viewModel.File, 268435456)) // 256 MiB
             {
                 ModelState.AddModelError("File", "File size not greater than or equals 256 MiB.");
@@ -151,17 +159,17 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
                 //Add 10 weeks schedule
                 var schedules = new List<ProjectSchedule>();
-                var dateTimeNow = DateTime.UtcNow;
+                var startedDate = new DateTime(viewModel.DateTime.Year, viewModel.DateTime.Month, viewModel.DateTime.Day);
                 for (int i = 0; i < 10; i++)
                 {
-                    var expiredDate = dateTimeNow.AddDays(7);
+                    var expiredDate = startedDate.AddDays(7);
                     schedules.Add(new ProjectSchedule
                     {
                         Name = $"Tuần {i + 1}",
-                        StartedDate = dateTimeNow,
+                        StartedDate = startedDate,
                         ExpiredDate = expiredDate
                     });
-                    dateTimeNow = expiredDate;
+                    startedDate = expiredDate;
                 }
                 project.ProjectSchedules = schedules;
                 projects.Add(project);
@@ -182,7 +190,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                             await _userManager.AddToRoleAsync(user, "Student");
                         }
                     }
-                 
+
                     foreach (var user in newLecturers)
                     {
                         user.Lecturer = new Lecturer { Id = user.Id, LecturerCode = user.UserName };

@@ -32,19 +32,22 @@ namespace ProjectManagementWebApp.Controllers
                 return View(await _context.ProjectMembers
                     .Where(pm => pm.StudentId == GetUserId())
                     .Include(pm => pm.Project)
-                    .ThenInclude(p => p.ProjectType)
+                        .ThenInclude(p => p.ProjectType)
+                    .AsNoTracking()
                     .Select(p => p.Project).ToListAsync());
             }
             else
             {
                 return View(await _context.ProjectLecturers
-                   .Where(pm => pm.LecturerId == GetUserId())
-                   .Include(pm => pm.Project)
-                    .ThenInclude(p => p.ProjectType)
+                    .Where(pm => pm.LecturerId == GetUserId())
+                    .Include(pm => pm.Project)
+                        .ThenInclude(p => p.ProjectType)
+                    .AsNoTracking()
                     .Select(p => p.Project).ToListAsync());
             }
         }
 
+        [Route("[controller]/{id:int}/[action]")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || !IsProjectOfUser(id.Value))
@@ -61,15 +64,16 @@ namespace ProjectManagementWebApp.Controllers
             }
 
             ViewBag.ProjectType = _context.ProjectTypes.Find(project.ProjectTypeId);
-            ViewBag.ProjectMembers = _context.ProjectMembers
+            ViewBag.ProjectMembers = await _context.ProjectMembers
                 .Where(pm => pm.ProjectId == id)
                 .Include(pm => pm.Student)
-                    .ThenInclude(s => s.User);
-            ViewBag.ProjectLecturers = _context.ProjectLecturers
+                    .ThenInclude(s => s.User)
+                .ToListAsync();
+            ViewBag.ProjectLecturers = await _context.ProjectLecturers
                 .Where(pl => pl.ProjectId == id)
                 .Include(pl => pl.Lecturer)
-                    .ThenInclude(l => l.User);
-
+                    .ThenInclude(l => l.User)
+                .ToListAsync();
             return View(project);
         }
 
@@ -83,10 +87,25 @@ namespace ProjectManagementWebApp.Controllers
 
             ViewBag.Project = await _context.Projects.FindAsync(projectId);
 
-            return View(await _context.ProjectSchedules
+            var schedules = await _context.ProjectSchedules
                 .Where(ps => ps.ProjectId == projectId)
                 .OrderBy(ps => ps.ExpiredDate)
-                .ToListAsync());
+                .AsNoTracking()
+                .ToListAsync();
+
+            schedules.ForEach(schedule =>
+            {
+                schedule.ProjectScheduleReports = _context.ProjectScheduleReports
+                .Where(psr => psr.ProjectScheduleId == schedule.Id)
+                .Include(psr => psr.ReportFiles)
+                .Include(psr => psr.Student)
+                    .ThenInclude(s => s.User)
+                .OrderBy(psr => psr.CreatedDate)
+                .AsNoTracking()
+                .ToList();
+            });
+
+            return View(schedules);
         }
 
         [Route("[controller]/{projectId:int}/Schedules/{id:int}")]
@@ -108,8 +127,8 @@ namespace ProjectManagementWebApp.Controllers
             ViewBag.Project = _context.Projects.Find(projectId);
             ViewBag.ProjectScheduleReports = _context.ProjectScheduleReports
                 .Where(psr => psr.ProjectScheduleId == id)
-                .Include(psr => psr.ReportFiles);
-
+                .Include(psr => psr.ReportFiles)
+                .ToListAsync();
             return View(schedule);
         }
 
