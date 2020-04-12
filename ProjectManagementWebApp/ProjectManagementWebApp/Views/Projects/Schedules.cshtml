@@ -5,7 +5,7 @@
     var dateTimeNow = DateTime.Now;
 }
 
-<h1>Schedules- @ViewBag.Project.Title</h1>
+<h1>Schedules- <a asp-action="Details" asp-route-id="@ViewBag.Project.Id">@ViewBag.Project.Title</a></h1>
 <hr />
 
 <div class="row">

@@ -35,13 +35,14 @@ namespace ProjectManagementWebApp.Models
 
         public virtual ICollection<ProjectSchedule> ProjectSchedules { get; set; }
     }
+ 
     public enum ProjectStatus : byte
     {
-        Canceled,
         Continued,
+        Canceled,
         Completed,
-        Failed,
         Passed,
+        Failed,
     }
 
     public static class ProjectStatusExtensions

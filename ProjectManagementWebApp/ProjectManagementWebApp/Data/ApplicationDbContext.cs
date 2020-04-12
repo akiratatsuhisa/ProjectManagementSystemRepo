@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagementWebApp.Models;
+using ProjectManagementWebApp.ViewModels;
 
 namespace ProjectManagementWebApp.Data
 {
@@ -206,5 +207,7 @@ namespace ProjectManagementWebApp.Data
 
             return SaveChangesAsync();
         }
+
+        public DbSet<ProjectManagementWebApp.ViewModels.ProjectScheduleRequestViewModel> ProjectScheduleRequestViewModel { get; set; }
     }
 }

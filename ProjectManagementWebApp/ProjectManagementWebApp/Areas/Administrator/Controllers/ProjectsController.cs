@@ -157,15 +157,19 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     }
                 }
 
-                //Add 10 weeks schedule
+                //Add weeks schedule
                 var schedules = new List<ProjectSchedule>();
                 var startedDate = new DateTime(viewModel.DateTime.Year, viewModel.DateTime.Month, viewModel.DateTime.Day);
-                for (int i = 0; i < 10; i++)
+                if (!int.TryParse(row.GetCell(9)?.ToString(), out int weeks))
+                {
+                    weeks = 10;
+                }
+                for (int i = 1; i <= weeks; i++)
                 {
                     var expiredDate = startedDate.AddDays(7);
                     schedules.Add(new ProjectSchedule
                     {
-                        Name = $"Tuần {i + 1}",
+                        Name = $"Tuần {i}",
                         StartedDate = startedDate,
                         ExpiredDate = expiredDate
                     });

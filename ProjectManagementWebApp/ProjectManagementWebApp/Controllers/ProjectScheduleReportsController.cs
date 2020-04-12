@@ -31,15 +31,29 @@ namespace ProjectManagementWebApp.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Create(int projectId, int scheduleId)
+        public async Task<IActionResult> Create(int? projectId, int? scheduleId)
         {
-            if (!IsProjectOfUser(projectId) || !IsScheduleOfProject(projectId, scheduleId))
+            if (!projectId.HasValue ||
+                !scheduleId.HasValue ||
+                !IsProjectOfUser(projectId.Value))
             {
                 return NotFound();
             }
+
+            var schedule = await _context.ProjectSchedules.FindAsync(scheduleId);
+            var dateTimeNow = DateTime.Now;
+
+            if (schedule == null ||
+                schedule.ProjectId != projectId ||
+                dateTimeNow < schedule.StartedDate ||
+                dateTimeNow > schedule.ExpiredDate)
+            {
+                return NotFound();
+            }
+
             var viewModel = new ProjectScheduleReportViewModel
             {
-                ProjectScheduleId = scheduleId,
+                ProjectScheduleId = scheduleId.Value,
             };
             return View(viewModel);
         }
@@ -48,18 +62,6 @@ namespace ProjectManagementWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProjectScheduleReportViewModel viewModel)
         {
-            var schedule = await _context.ProjectSchedules.FindAsync(viewModel.ProjectScheduleId);
-
-            if (schedule == null)
-            {
-                return NotFound();
-            }
-
-            if (!IsProjectOfUser(schedule.ProjectId) || !IsScheduleOfProject(schedule.ProjectId, viewModel.ProjectScheduleId))
-            {
-                return NotFound();
-            }
-
             if (viewModel.ReportFiles != null)
             {
                 foreach (var file in viewModel.ReportFiles)
@@ -75,78 +77,57 @@ namespace ProjectManagementWebApp.Controllers
                 }
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var reportFiles = new List<ProjectScheduleReportFile>();
-                if (viewModel.ReportFiles != null)
-                {
-                    var savePath = Path.Combine(_webHostEnvironment.WebRootPath, "files", schedule.ProjectId.ToString());
-
-                    if (!Directory.Exists(savePath))
-                    {
-                        Directory.CreateDirectory(savePath);
-                    }
-
-                    foreach (var file in viewModel.ReportFiles)
-                    {
-                        var fileName = Path.GetRandomFileName() + FormFileValidation.GetFileExtension(file.FileName);
-                        using (var stream = new FileStream(Path.Combine(savePath, fileName), FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                            reportFiles.Add(new ProjectScheduleReportFile
-                            {
-                                FileName = file.FileName,
-                                Path = $"{schedule.ProjectId}/{fileName}"
-                            });
-                        }
-                    }
-                }
-                _context.ProjectScheduleReports.Add(new ProjectScheduleReport
-                {
-                    ProjectScheduleId = viewModel.ProjectScheduleId,
-                    StudentId = GetUserId(),
-                    Content = viewModel.Content,
-                    ReportFiles = reportFiles
-                });
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
+                return View(viewModel);
             }
-            return View(viewModel);
-        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Delete(long? id)
-        //{
-        //    if (!id.HasValue)
-        //    {
-        //        return NotFound();
-        //    }
+            var schedule = await _context.ProjectSchedules.FindAsync(viewModel.ProjectScheduleId);
+            var dateTimeNow = DateTime.Now;
 
-        //    var report = _context.ProjectScheduleReports.Find(id);
-        //    if (report == null || report.StudentId != GetUserId())
-        //    {
-        //        return NotFound();
-        //    }
+            if (schedule == null ||
+                schedule.Id != viewModel.ProjectScheduleId ||
+                !IsProjectOfUser(schedule.ProjectId) ||
+                dateTimeNow < schedule.StartedDate ||
+                dateTimeNow > schedule.ExpiredDate)
+            {
+                return NotFound();
+            }
 
-        //    await _context.Entry(report).Reference(r => r.ProjectSchedule).LoadAsync();
+            var reportFiles = new List<ProjectScheduleReportFile>();
+            if (viewModel.ReportFiles != null)
+            {
+                var savePath = Path.Combine(_webHostEnvironment.WebRootPath, "files", schedule.ProjectId.ToString());
 
-        //    var dateTimeNow = DateTime.Now;
-        //    if (!IsProjectOfUser(report.ProjectSchedule.ProjectId) ||
-        //        report.ProjectSchedule.StartedDate < dateTimeNow ||
-        //        report.ProjectSchedule.ExpiredDate > dateTimeNow)
-        //    {
-        //        return NotFound();
-        //    }
+                if (!Directory.Exists(savePath))
+                {
+                    Directory.CreateDirectory(savePath);
+                }
 
-        //    _context.ProjectScheduleReports.Remove(report);
-        //    return RedirectToAction("Schedules", "Projects", new { projectId = report.ProjectSchedule.ProjectId });
-        //}
+                foreach (var file in viewModel.ReportFiles)
+                {
+                    var fileName = Path.GetRandomFileName() + FormFileValidation.GetFileExtension(file.FileName);
+                    using (var stream = new FileStream(Path.Combine(savePath, fileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                    reportFiles.Add(new ProjectScheduleReportFile
+                    {
+                        FileName = file.FileName,
+                        Path = $"{schedule.ProjectId}/{fileName}"
+                    });
+                }
+            }
 
-        private bool IsScheduleOfProject(int projectId, int scheduleId)
-        {
-            return _context.ProjectSchedules
-                .Find(scheduleId)?.ProjectId == projectId;
+            _context.ProjectScheduleReports.Add(new ProjectScheduleReport
+            {
+                ProjectScheduleId = viewModel.ProjectScheduleId,
+                StudentId = GetUserId(),
+                Content = viewModel.Content,
+                ReportFiles = reportFiles
+            });
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
         }
 
         private bool IsProjectOfUser(int projectId)
