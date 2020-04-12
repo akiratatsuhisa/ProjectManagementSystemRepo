@@ -119,8 +119,8 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 {
                     UniqueId = uniqueId,
                     ProjectTypeId = short.Parse(row.GetCell(1).ToString()),
-                    Title = row.GetCell(2).ToString(),
-                    Description = row.GetCell(3).ToString(),
+                    Title = row.GetCell(2)?.ToString(),
+                    Description = row.GetCell(3)?.ToString(),
                 };
 
                 //Add members to project

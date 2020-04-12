@@ -97,7 +97,7 @@ namespace ProjectManagementWebApp.Controllers
             var reportFiles = new List<ProjectScheduleReportFile>();
             if (viewModel.ReportFiles != null)
             {
-                var savePath = Path.Combine(_webHostEnvironment.WebRootPath, "files", schedule.ProjectId.ToString());
+                var savePath = Path.Combine(_webHostEnvironment.ContentRootPath, "AuthorizeStaticFiles", "Projects", schedule.ProjectId.ToString());
 
                 if (!Directory.Exists(savePath))
                 {

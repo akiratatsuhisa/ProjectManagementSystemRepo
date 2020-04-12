@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using ProjectManagementWebApp.Data;
 using ProjectManagementWebApp.Models;
 using ProjectManagementWebApp.Helpers;
+using System.IO;
+using MimeKit;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -108,29 +110,16 @@ namespace ProjectManagementWebApp.Controllers
             return View(schedules);
         }
 
-        [Route("[controller]/{projectId:int}/Schedules/{id:int}")]
-        public async Task<IActionResult> SchedulesDetails(int projectId, int id)
+        [Route("StaticFiles/Projects/{id:int}/{fileName}")]
+        public IActionResult GetFile(int id, string fileName)
         {
-            if (!IsProjectOfUser(projectId))
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "AuthorizeStaticFiles", "Projects", id.ToString(), fileName);
+            if (!System.IO.File.Exists(filePath) || !IsProjectOfUser(id))
             {
                 return NotFound();
             }
 
-            var schedule = await _context.ProjectSchedules
-                .FirstOrDefaultAsync(ps => ps.Id == id);
-
-            if (schedule == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.Project = _context.Projects.Find(projectId);
-            ViewBag.ProjectScheduleReports = _context.ProjectScheduleReports
-                .Where(psr => psr.ProjectScheduleId == id)
-                .Include(psr => psr.ReportFiles)
-                .OrderByDescending(psr => psr.CreatedDate)
-                .ToListAsync();
-            return View(schedule);
+            return PhysicalFile(filePath, MimeTypes.GetMimeType(fileName));
         }
 
         private bool IsProjectOfUser(int projectId)
