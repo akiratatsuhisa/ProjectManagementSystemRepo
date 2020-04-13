@@ -31,11 +31,9 @@ namespace ProjectManagementWebApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Create(int? projectId, int? scheduleId)
+        public async Task<IActionResult> Create(int? scheduleId)
         {
-            if (!projectId.HasValue ||
-                !scheduleId.HasValue ||
-                !IsProjectOfUser(projectId.Value))
+            if (!scheduleId.HasValue)
             {
                 return NotFound();
             }
@@ -44,9 +42,9 @@ namespace ProjectManagementWebApp.Controllers
             var dateTimeNow = DateTime.Now;
 
             if (schedule == null ||
-                schedule.ProjectId != projectId ||
                 dateTimeNow < schedule.StartedDate ||
-                dateTimeNow > schedule.ExpiredDate)
+                dateTimeNow > schedule.ExpiredDate ||
+                !IsProjectOfUser(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -60,6 +58,7 @@ namespace ProjectManagementWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestSizeLimit(20971520)]
         public async Task<IActionResult> Create(ProjectScheduleReportViewModel viewModel)
         {
             if (viewModel.ReportFiles != null)
@@ -86,7 +85,6 @@ namespace ProjectManagementWebApp.Controllers
             var dateTimeNow = DateTime.Now;
 
             if (schedule == null ||
-                schedule.Id != viewModel.ProjectScheduleId ||
                 !IsProjectOfUser(schedule.ProjectId) ||
                 dateTimeNow < schedule.StartedDate ||
                 dateTimeNow > schedule.ExpiredDate)

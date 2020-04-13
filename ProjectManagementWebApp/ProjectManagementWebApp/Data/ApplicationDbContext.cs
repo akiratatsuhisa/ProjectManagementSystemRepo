@@ -209,5 +209,7 @@ namespace ProjectManagementWebApp.Data
         }
 
         public DbSet<ProjectManagementWebApp.ViewModels.ProjectScheduleRequestViewModel> ProjectScheduleRequestViewModel { get; set; }
+
+        public DbSet<ProjectManagementWebApp.ViewModels.ProjectScheduleCommentViewModel> ProjectScheduleCommentViewModel { get; set; }
     }
 }

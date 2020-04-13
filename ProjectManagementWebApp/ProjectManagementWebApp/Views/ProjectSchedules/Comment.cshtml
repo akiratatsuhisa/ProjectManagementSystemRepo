@@ -1,35 +1,35 @@
-﻿@model ProjectScheduleReportViewModel
+﻿@model ProjectManagementWebApp.ViewModels.ProjectScheduleCommentViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Comment";
 }
 
-<h1>Create</h1>
+<h1>Comment</h1>
 
-<h4>ProjectScheduleReport</h4>
+<h4>ProjectScheduleCommentViewModel</h4>
 <hr />
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+
+<form asp-action="Comment">
     <div asp-validation-summary="All" class="text-danger"></div>
-    <input type="hidden" asp-for="ProjectScheduleId" />
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="ProjectId"/>
     <div class="form-group">
-        <label asp-for="Content" class="control-label"></label>
-        <textarea id="content" asp-for="Content" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
+        <label asp-for="Comment" class="control-label"></label>
+        <textarea id="content" asp-for="Comment" class="form-control"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="ReportFiles"></label>
-        <div class="custom-file">
-            <input class="custom-file-input" asp-for="ReportFiles" multiple>
-            <label class="custom-file-label" for="File">Choose file</label>
-        </div>
-        <span class="text-danger" asp-validation-for="ReportFiles"></span>
+        <label asp-for="Rating" class="control-label"></label>
+        <input asp-for="Rating" class="form-control" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+        <input type="submit" value="Save" class="btn btn-primary" />
     </div>
 </form>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/ckeditor5/ckeditor.js"></script>
     <script async type="text/javascript">
         ClassicEditor
@@ -88,17 +88,5 @@
             .catch(err => {
                 console.error(err.stack);
             });
-    </script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script type="text/javascript" async>
-        $('.custom-file-input').change(function (event) {
-            var text = "";
-            var files = event.target.files;
-            for (var i = 0; i < files.length; i++) {
-                text += `${files[i].name}, `;
-            }
-            text = text.substring(0, text.length - 2);
-            $(event.target).closest('.custom-file').find('.custom-file-label').text(text);
-        });
     </script>
 }

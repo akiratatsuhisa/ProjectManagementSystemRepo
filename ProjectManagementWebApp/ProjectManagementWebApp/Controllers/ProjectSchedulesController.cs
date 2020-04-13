@@ -29,9 +29,9 @@ namespace ProjectManagementWebApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Edit(int? projectId, int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (!projectId.HasValue || !id.HasValue)
+            if (!id.HasValue)
             {
                 return NotFound();
             }
@@ -39,7 +39,6 @@ namespace ProjectManagementWebApp.Controllers
             var schedule = await _context.ProjectSchedules.FindAsync(id);
 
             if (schedule == null ||
-                schedule.ProjectId != projectId ||
                 !IsProjectOfUser(schedule.ProjectId))
             {
                 return NotFound();
@@ -70,11 +69,9 @@ namespace ProjectManagementWebApp.Controllers
             {
                 return View(viewModel);
             }
-          
 
             var schedule = await _context.ProjectSchedules.FindAsync(viewModel.Id);
-            if (schedule == null ||
-                !IsProjectOfUser(schedule.ProjectId))
+            if (schedule == null || !IsProjectOfUser(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -87,9 +84,52 @@ namespace ProjectManagementWebApp.Controllers
             return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
         }
 
-        public IActionResult Comment()
+        public async Task<IActionResult> Comment(int? id)
         {
-            return View();
+            if (!id.HasValue)
+            {
+                return NotFound();
+            }
+
+            var schedule = await _context.ProjectSchedules.FindAsync(id);
+
+            if (schedule == null ||
+                schedule.Rating.HasValue ||
+                schedule.ExpiredDate > DateTime.Now ||
+                !IsProjectOfUser(schedule.ProjectId))
+            {
+                return NotFound();
+            }
+
+            return View(new ProjectScheduleCommentViewModel
+            {
+                Id = schedule.Id,
+                ProjectId = schedule.ProjectId,
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Comment(ProjectScheduleCommentViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var schedule = await _context.ProjectSchedules.FindAsync(viewModel.Id);
+            if (schedule == null ||
+                schedule.Rating.HasValue ||
+                schedule.ExpiredDate > DateTime.Now ||
+                !IsProjectOfUser(viewModel.ProjectId))
+            {
+                return NotFound();
+            }
+
+            schedule.Comment = viewModel.Comment;
+            schedule.Rating = viewModel.Rating;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
         }
 
         private bool IsProjectOfUser(int projectId)

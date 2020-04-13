@@ -58,6 +58,7 @@ namespace ProjectManagementWebApp.Controllers
             }
 
             var project = await _context.Projects
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (project == null)
@@ -65,16 +66,20 @@ namespace ProjectManagementWebApp.Controllers
                 return NotFound();
             }
 
-            ViewBag.ProjectType = _context.ProjectTypes.Find(project.ProjectTypeId);
-            ViewBag.ProjectMembers = await _context.ProjectMembers
+            project.ProjectType = await _context.ProjectTypes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(pt => pt.Id == id);
+            project.ProjectMembers = await _context.ProjectMembers
                 .Where(pm => pm.ProjectId == id)
                 .Include(pm => pm.Student)
                     .ThenInclude(s => s.User)
+                .AsNoTracking()
                 .ToListAsync();
-            ViewBag.ProjectLecturers = await _context.ProjectLecturers
+            project.ProjectLecturers = await _context.ProjectLecturers
                 .Where(pl => pl.ProjectId == id)
                 .Include(pl => pl.Lecturer)
                     .ThenInclude(l => l.User)
+                .AsNoTracking()
                 .ToListAsync();
             return View(project);
         }
@@ -87,7 +92,7 @@ namespace ProjectManagementWebApp.Controllers
                 return NotFound();
             }
 
-            ViewBag.Project = await _context.Projects.FindAsync(projectId);
+            ViewBag.Project = await _context.Projects.AsNoTracking().FirstAsync(p => p.Id == projectId);
 
             var schedules = await _context.ProjectSchedules
                 .Where(ps => ps.ProjectId == projectId)
@@ -108,6 +113,35 @@ namespace ProjectManagementWebApp.Controllers
             });
 
             return View(schedules);
+        }
+
+        [Route("[controller]/{projectId:int}/Schedules/{id:int}")]
+        public async Task<IActionResult> SchedulesDetails(int projectId, int id)
+        {
+            if (!IsProjectOfUser(projectId))
+            {
+                return NotFound();
+            }
+
+            var schedule = await _context.ProjectSchedules
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ps => ps.Id == id);
+
+            if (schedule == null || schedule.ProjectId != projectId)
+            {
+                return NotFound();
+            }
+
+            schedule.Project = await _context.Projects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+            schedule.ProjectScheduleReports = await _context.ProjectScheduleReports
+                .Where(psr => psr.ProjectScheduleId == id)
+                .Include(psr => psr.ReportFiles)
+                .OrderByDescending(psr => psr.CreatedDate)
+                .AsNoTracking()
+                .ToListAsync();
+            return View(schedule);
         }
 
         [Route("StaticFiles/Projects/{id:int}/{fileName}")]
