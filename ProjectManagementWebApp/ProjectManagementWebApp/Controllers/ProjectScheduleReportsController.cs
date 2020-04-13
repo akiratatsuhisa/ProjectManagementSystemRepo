@@ -130,16 +130,10 @@ namespace ProjectManagementWebApp.Controllers
             return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
         }
 
-        private bool IsProjectReportable(int projectId)
-        {
-            return _context.Projects.Find(projectId).Status.IsReportable();
-        }
+        private bool IsProjectReportable(int projectId) => _context.Projects.Find(projectId).Status.IsReportable();
 
-        private bool IsProjectOfUser(int projectId)
-        {
-            return _context.ProjectMembers
-                .Any(pm => pm.ProjectId == projectId && pm.StudentId == GetUserId());
-        }
+        private bool IsProjectOfUser(int projectId) => 
+            _context.ProjectMembers.Any(pm => pm.ProjectId == projectId && pm.StudentId == GetUserId());
 
         private string GetUserId() => _userManager.GetUserId(User);
     }

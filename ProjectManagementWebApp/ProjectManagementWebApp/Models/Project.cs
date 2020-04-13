@@ -35,7 +35,7 @@ namespace ProjectManagementWebApp.Models
 
         public virtual ICollection<ProjectSchedule> ProjectSchedules { get; set; }
     }
- 
+
     public enum ProjectStatus : byte
     {
         Continued,
@@ -47,9 +47,9 @@ namespace ProjectManagementWebApp.Models
 
     public static class ProjectStatusExtensions
     {
-        public static bool IsDone(this ProjectStatus status) => 
+        public static bool IsDone(this ProjectStatus status) =>
             status == ProjectStatus.Completed ||
-            status == ProjectStatus.Passed || 
+            status == ProjectStatus.Passed ||
             status == ProjectStatus.Failed;
 
         public static bool IsReportable(this ProjectStatus status) => status == ProjectStatus.Continued;

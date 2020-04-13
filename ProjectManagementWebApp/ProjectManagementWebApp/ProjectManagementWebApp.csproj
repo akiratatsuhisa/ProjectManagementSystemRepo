@@ -36,6 +36,16 @@
     <Compile Remove="Data\Migrations\20200409160553_InitTables.Designer.cs" />
     <Compile Remove="Data\Migrations\20200409160612_InitData.cs" />
     <Compile Remove="Data\Migrations\20200409160612_InitData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200410085720_InitTables.cs" />
+    <Compile Remove="Data\Migrations\20200410085720_InitTables.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200410085741_InitData.cs" />
+    <Compile Remove="Data\Migrations\20200410085741_InitData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413143718_Test.cs" />
+    <Compile Remove="Data\Migrations\20200413143718_Test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413143931_Test.cs" />
+    <Compile Remove="Data\Migrations\20200413143931_Test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413144836_Test.cs" />
+    <Compile Remove="Data\Migrations\20200413144836_Test.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

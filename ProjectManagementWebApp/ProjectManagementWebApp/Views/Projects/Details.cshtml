@@ -134,24 +134,50 @@
 
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-sm-4">
             Compeleted Schedules
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-8">
             @ratedScheduleCount
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-sm-4">
             Ongoing Schedules
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-8">
             @(Model.ProjectSchedules.Count - ratedScheduleCount)
         </dd>
     </dl>
     @if (User.IsInRole("Lecturer"))
     {
         <div>
-            <a class="btn btn-outline-warning" asp-action="Cancel">Cancel Project</a>
-            <a class="btn btn-outline-success" asp-action="Mark">Mark Project</a>
+            @if (Model.Status.IsMarkable())
+            {
+                <a class="btn btn-success" asp-action="Mark" asp-route-id="@Model.Id">Mark Project</a>
+            }
+            else if(!Model.Status.IsDone())
+            {
+                @if (Model.Status.IsReportable())
+                {
+                    <form asp-action="ChangeStatus" method="post" class="d-inline">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <input type="hidden" name="Status" value="@ProjectStatus.Canceled" />
+                        <button type="submit" class="btn btn-warning">Cancel Project</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="ChangeStatus" method="post" class="d-inline">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <input type="hidden" name="Status" value="@ProjectStatus.Continued" />
+                        <button type="submit" class="btn btn-success">Continue Project</button>
+                    </form>
+                }
+                <form asp-action="ChangeStatus" method="post" class="d-inline">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" name="Status" value="@ProjectStatus.Completed" />
+                    <button type="submit" class="btn btn-primary">Check Complete Project</button>
+                </form>
+            }
         </div>
         <hr />
     }

@@ -137,17 +137,10 @@ namespace ProjectManagementWebApp.Controllers
             return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
         }
 
+        private bool IsProjectEditable(int projectId) => _context.Projects.Find(projectId).Status.IsEditable();
 
-        private bool IsProjectEditable(int projectId)
-        {
-            return _context.Projects.Find(projectId).Status.IsEditable();
-        }
-
-        private bool IsProjectOfUser(int projectId)
-        {
-            return _context.ProjectLecturers
-                .Any(pm => pm.ProjectId == projectId && pm.LecturerId == GetUserId());
-        }
+        private bool IsProjectOfUser(int projectId) =>
+            _context.ProjectLecturers.Any(pm => pm.ProjectId == projectId && pm.LecturerId == GetUserId());
 
         private string GetUserId() => _userManager.GetUserId(User);
     }

@@ -66,6 +66,15 @@ namespace ProjectManagementWebApp.Data
              .WithMany(l => l.ProjectLecturers)
              .HasForeignKey(pl => pl.LecturerId);
 
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Student)
+                .WithOne(s => s.User)
+                .HasForeignKey<Student>(s => s.Id);
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Lecturer)
+                .WithOne(s => s.User)
+                .HasForeignKey<Lecturer>(l => l.Id);
+
             InitData(builder);
             base.OnModelCreating(builder);
         }
@@ -207,9 +216,5 @@ namespace ProjectManagementWebApp.Data
 
             return SaveChangesAsync();
         }
-
-        public DbSet<ProjectManagementWebApp.ViewModels.ProjectScheduleRequestViewModel> ProjectScheduleRequestViewModel { get; set; }
-
-        public DbSet<ProjectManagementWebApp.ViewModels.ProjectScheduleCommentViewModel> ProjectScheduleCommentViewModel { get; set; }
     }
 }

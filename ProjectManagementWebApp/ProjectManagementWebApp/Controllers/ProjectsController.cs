@@ -12,6 +12,7 @@ using ProjectManagementWebApp.Models;
 using ProjectManagementWebApp.Helpers;
 using System.IO;
 using MimeKit;
+using ProjectManagementWebApp.ViewModels;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -147,6 +148,133 @@ namespace ProjectManagementWebApp.Controllers
                 .AsNoTracking()
                 .ToListAsync();
             return View(schedule);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Lecturer")]
+        public async Task<IActionResult> ChangeStatus(int id, ProjectStatus status)
+        {
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null || project.Status.IsDone() || !IsProjectOfUser(project.Id))
+            {
+                return NotFound();
+            }
+
+            ViewBag.Project = project;
+            switch (status)
+            {
+                case ProjectStatus.Continued:
+                case ProjectStatus.Canceled:
+                    {
+                        project.Status = status;
+                        await _context.SaveChangesAsync();
+                        ViewBag.Message = $"Status has changed to: {status}";
+                    }
+                    break;
+                case ProjectStatus.Completed:
+                    if (_context.ProjectSchedules.Where(ps => ps.ProjectId == id).All(ps => ps.Rating.HasValue))
+                    {
+                        project.Status = status;
+                        await _context.SaveChangesAsync();
+                        ViewBag.Message = $"Status has changed to: {status}";
+                    }
+                    else
+                    {
+                        ViewBag.Message = "All project schedules have not been rated yet.";
+                    }
+                    break;
+                default:
+                    ViewBag.Message = "Something wrong.";
+                    break;
+            }
+            return View("ChangeStatus");
+        }
+
+        [Authorize(Roles = "Lecturer")]
+        public async Task<IActionResult> Mark(int id)
+        {
+            var project = await _context.Projects
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null ||
+                !project.Status.IsMarkable() ||
+                !IsProjectOfUser(project.Id))
+            {
+                return NotFound();
+            }
+
+            ViewBag.ProjectSchedules = await _context.ProjectSchedules
+                .Where(ps => ps.ProjectId == project.Id)
+                .OrderBy(ps => ps.ExpiredDate)
+                .AsNoTracking()
+                .ToListAsync();
+            ViewBag.Project = project;
+
+            var projectMembers = await _context.ProjectMembers
+                .Where(pm => pm.ProjectId == project.Id)
+                .Include(pm => pm.Student)
+                    .ThenInclude(s => s.User)
+                .Select(pm => new ProjectMemberViewModel
+                {
+                    StudentId = pm.StudentId,
+                    StudentCode = pm.Student.StudentCode,
+                    StudentName = $"{pm.Student.User.LastName} {pm.Student.User.FirstName}",
+                })
+                .ToListAsync();
+            return View(new ProjectMarkViewModel
+            {
+                Id = project.Id,
+                ProjectMembers = projectMembers
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Lecturer")]
+        public async Task<IActionResult> Mark(ProjectMarkViewModel viewModel)
+        {
+            var project = await _context.Projects
+                   .FirstOrDefaultAsync(p => p.Id == viewModel.Id);
+            if (project == null ||
+                !project.Status.IsMarkable() ||
+                !IsProjectOfUser(project.Id))
+            {
+                return NotFound();
+            }
+
+            ViewBag.ProjectSchedules = await _context.ProjectSchedules
+                .Where(ps => ps.ProjectId == project.Id)
+                .OrderBy(ps => ps.ExpiredDate)
+                .AsNoTracking()
+                .ToListAsync();
+            ViewBag.Project = project;
+
+            var projectMembers = await _context.ProjectMembers
+                .Where(pm => pm.ProjectId == project.Id)
+                .ToListAsync();
+
+            foreach (var member in projectMembers)
+            {
+                if (!viewModel.ProjectMembers.Any(memberViewModel => memberViewModel.StudentId == member.StudentId))
+                {
+                    return NotFound();
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            foreach (var member in projectMembers)
+            {
+                var memberInVM = viewModel.ProjectMembers.First(m => m.StudentId == member.StudentId);
+                member.Grade = memberInVM.Grade;
+            }
+            project.Status = ProjectStatus.Passed;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = viewModel.Id});
         }
 
         [Route("StaticFiles/Projects/{id:int}/{fileName}")]

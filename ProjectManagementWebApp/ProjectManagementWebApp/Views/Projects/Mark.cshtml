@@ -1,0 +1,45 @@
+﻿@model ProjectMarkViewModel
+@{
+    ViewData["Title"] = "Mark";
+    var index = 0;
+}
+
+<h1>Mark</h1>
+
+<form asp-action="Mark" method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label>Project Title</label>
+        <input type="text" class="form-control" value="@ViewBag.Project.Title" readonly />
+    </div>
+    @foreach (var item in Model.ProjectMembers)
+    {
+        <div class="row">
+            <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                    <label>Student Code</label>
+                    <input type="text" class="form-control" name="ProjectMembers[@index].StudentCode" value="@item.StudentCode" readonly />
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" class="form-control" name="ProjectMembers[@index].StudentName" value="@item.StudentName" readonly />
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4">
+                <input type="hidden" name="ProjectMembers[@index].StudentId" value="@item.StudentId" />
+                <div class="form-group">
+                    <label>Grade</label>
+                    <input type="number" class="form-control" name="ProjectMembers[@index].Grade" value="@item.Grade" required min="0" max="10" />
+                    <span asp-validation-for="@item.Grade"></span>
+                </div>
+            </div>
+        </div>
+        index++;
+    }
+    <div class="form-group">
+        <button class="btn btn-success">Mark</button>
+    </div>
+</form>

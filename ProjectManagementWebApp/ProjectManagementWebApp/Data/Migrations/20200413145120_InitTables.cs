@@ -67,6 +67,12 @@ namespace ProjectManagementWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lecturers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Lecturers_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,6 +100,12 @@ namespace ProjectManagementWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Students", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Students_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,20 +260,6 @@ namespace ProjectManagementWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_LecturerId",
-                table: "AspNetUsers",
-                column: "LecturerId",
-                unique: true,
-                filter: "[LecturerId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_StudentId",
-                table: "AspNetUsers",
-                column: "StudentId",
-                unique: true,
-                filter: "[StudentId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ProjectLecturers_LecturerId",
                 table: "ProjectLecturers",
                 column: "LecturerId");
@@ -302,34 +300,10 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "IX_ProjectSchedules_ProjectId",
                 table: "ProjectSchedules",
                 column: "ProjectId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Lecturers_LecturerId",
-                table: "AspNetUsers",
-                column: "LecturerId",
-                principalTable: "Lecturers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Students_StudentId",
-                table: "AspNetUsers",
-                column: "StudentId",
-                principalTable: "Students",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Lecturers_LecturerId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Students_StudentId",
-                table: "AspNetUsers");
-
             migrationBuilder.DropTable(
                 name: "Audits");
 
@@ -359,14 +333,6 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectTypes");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_LecturerId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_StudentId",
-                table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "BirthDate",

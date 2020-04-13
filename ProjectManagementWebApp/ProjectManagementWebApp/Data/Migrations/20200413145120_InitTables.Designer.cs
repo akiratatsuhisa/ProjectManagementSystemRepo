@@ -10,7 +10,7 @@ using ProjectManagementWebApp.Data;
 namespace ProjectManagementWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200410085720_InitTables")]
+    [Migration("20200413145120_InitTables")]
     partial class InitTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,7 +190,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("LecturerId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -219,7 +219,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -230,10 +230,6 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LecturerId")
-                        .IsUnique()
-                        .HasFilter("[LecturerId] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -241,10 +237,6 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("StudentId")
-                        .IsUnique()
-                        .HasFilter("[StudentId] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -555,15 +547,13 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectManagementWebApp.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Lecturer", b =>
                 {
-                    b.HasOne("ProjectManagementWebApp.Models.Lecturer", "Lecturer")
-                        .WithOne("User")
-                        .HasForeignKey("ProjectManagementWebApp.Models.ApplicationUser", "LecturerId");
-
-                    b.HasOne("ProjectManagementWebApp.Models.Student", "Student")
-                        .WithOne("User")
-                        .HasForeignKey("ProjectManagementWebApp.Models.ApplicationUser", "StudentId");
+                    b.HasOne("ProjectManagementWebApp.Models.ApplicationUser", "User")
+                        .WithOne("Lecturer")
+                        .HasForeignKey("ProjectManagementWebApp.Models.Lecturer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectManagementWebApp.Models.Project", b =>
@@ -632,6 +622,15 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.HasOne("ProjectManagementWebApp.Models.ProjectScheduleReport", "ProjectScheduleReport")
                         .WithMany("ReportFiles")
                         .HasForeignKey("ProjectScheduleReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Student", b =>
+                {
+                    b.HasOne("ProjectManagementWebApp.Models.ApplicationUser", "User")
+                        .WithOne("Student")
+                        .HasForeignKey("ProjectManagementWebApp.Models.Student", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
