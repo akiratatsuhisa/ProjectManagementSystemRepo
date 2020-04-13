@@ -47,8 +47,15 @@ namespace ProjectManagementWebApp.Models
 
     public static class ProjectStatusExtensions
     {
-        public static bool IsDone(this ProjectStatus status) => status == ProjectStatus.Completed || status == ProjectStatus.Passed || status == ProjectStatus.Failed;
+        public static bool IsDone(this ProjectStatus status) => 
+            status == ProjectStatus.Completed ||
+            status == ProjectStatus.Passed || 
+            status == ProjectStatus.Failed;
 
-        public static bool IsContinued(this ProjectStatus status) => status == ProjectStatus.Continued;
+        public static bool IsReportable(this ProjectStatus status) => status == ProjectStatus.Continued;
+
+        public static bool IsEditable(this ProjectStatus status) => status == ProjectStatus.Continued || status == ProjectStatus.Canceled;
+
+        public static bool IsMarkable(this ProjectStatus status) => status == ProjectStatus.Completed;
     }
 }

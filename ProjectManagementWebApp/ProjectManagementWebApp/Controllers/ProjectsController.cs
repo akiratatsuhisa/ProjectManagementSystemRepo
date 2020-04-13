@@ -81,6 +81,11 @@ namespace ProjectManagementWebApp.Controllers
                     .ThenInclude(l => l.User)
                 .AsNoTracking()
                 .ToListAsync();
+            project.ProjectSchedules = await _context.ProjectSchedules
+                .Where(ps => ps.ProjectId == id)
+                .OrderBy(ps => ps.ExpiredDate)
+                .AsNoTracking()
+                .ToListAsync();
             return View(project);
         }
 

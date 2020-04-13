@@ -44,7 +44,8 @@ namespace ProjectManagementWebApp.Controllers
             if (schedule == null ||
                 dateTimeNow < schedule.StartedDate ||
                 dateTimeNow > schedule.ExpiredDate ||
-                !IsProjectOfUser(schedule.ProjectId))
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectReportable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -85,9 +86,10 @@ namespace ProjectManagementWebApp.Controllers
             var dateTimeNow = DateTime.Now;
 
             if (schedule == null ||
-                !IsProjectOfUser(schedule.ProjectId) ||
                 dateTimeNow < schedule.StartedDate ||
-                dateTimeNow > schedule.ExpiredDate)
+                dateTimeNow > schedule.ExpiredDate ||
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectReportable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -126,6 +128,11 @@ namespace ProjectManagementWebApp.Controllers
             });
             await _context.SaveChangesAsync();
             return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
+        }
+
+        private bool IsProjectReportable(int projectId)
+        {
+            return _context.Projects.Find(projectId).Status.IsReportable();
         }
 
         private bool IsProjectOfUser(int projectId)

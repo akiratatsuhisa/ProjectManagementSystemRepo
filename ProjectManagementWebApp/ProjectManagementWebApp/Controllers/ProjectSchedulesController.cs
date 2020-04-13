@@ -39,7 +39,8 @@ namespace ProjectManagementWebApp.Controllers
             var schedule = await _context.ProjectSchedules.FindAsync(id);
 
             if (schedule == null ||
-                !IsProjectOfUser(schedule.ProjectId))
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectEditable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -71,7 +72,9 @@ namespace ProjectManagementWebApp.Controllers
             }
 
             var schedule = await _context.ProjectSchedules.FindAsync(viewModel.Id);
-            if (schedule == null || !IsProjectOfUser(schedule.ProjectId))
+            if (schedule == null ||
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectEditable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -96,7 +99,8 @@ namespace ProjectManagementWebApp.Controllers
             if (schedule == null ||
                 schedule.Rating.HasValue ||
                 schedule.ExpiredDate > DateTime.Now ||
-                !IsProjectOfUser(schedule.ProjectId))
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectEditable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -121,7 +125,8 @@ namespace ProjectManagementWebApp.Controllers
             if (schedule == null ||
                 schedule.Rating.HasValue ||
                 schedule.ExpiredDate > DateTime.Now ||
-                !IsProjectOfUser(viewModel.ProjectId))
+                !IsProjectOfUser(schedule.ProjectId) ||
+                !IsProjectEditable(schedule.ProjectId))
             {
                 return NotFound();
             }
@@ -130,6 +135,12 @@ namespace ProjectManagementWebApp.Controllers
             schedule.Rating = viewModel.Rating;
             await _context.SaveChangesAsync();
             return RedirectToAction("Schedules", "Projects", new { projectId = schedule.ProjectId });
+        }
+
+
+        private bool IsProjectEditable(int projectId)
+        {
+            return _context.Projects.Find(projectId).Status.IsEditable();
         }
 
         private bool IsProjectOfUser(int projectId)

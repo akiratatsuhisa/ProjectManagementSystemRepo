@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Schedules";
     var dateTimeNow = DateTime.Now;
+    Project project = ViewBag.Project;
 }
 
 <h1>Schedules- <a asp-action="Details" asp-route-id="@ViewBag.Project.Id">@ViewBag.Project.Title</a></h1>
@@ -36,6 +37,7 @@
                                 </li>
                             </ul>
                         </div>
+
                         <div class="card-body">
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="week-@(i+1)-details" role="tabpanel">
@@ -68,7 +70,7 @@
                                     </div>
                                     @if (User.IsInRole("Lecturer"))
                                     {
-                                        <a class="btn btn-warning btn-block"
+                                        <a class="btn btn-warning btn-block @(!project.Status.IsEditable() ? "disabled": "")"
                                            asp-action="Edit" asp-controller="ProjectSchedules" asp-route-id="@Model[i].Id">
                                             Edit
                                         </a>
@@ -79,7 +81,7 @@
                                     <h3 class="card-title">Reports</h3>
                                     @if (User.IsInRole("Student"))
                                     {
-                                        <a class="btn btn-primary btn-block @(dateTimeNow < Model[i].StartedDate || dateTimeNow > Model[i].ExpiredDate ? "disabled" : "")"
+                                        <a class="btn btn-primary btn-block @(dateTimeNow < Model[i].StartedDate || dateTimeNow > Model[i].ExpiredDate || !project.Status.IsReportable() ? "disabled" : "")"
                                            asp-action="Create" asp-controller="ProjectScheduleReports" asp-route-scheduleId="@Model[i].Id">
                                             New Report
                                         </a>
@@ -141,9 +143,9 @@
                                     </div>
                                     @if (User.IsInRole("Lecturer"))
                                     {
-                                        <a class="btn btn-success btn-block @(dateTimeNow < Model[i].ExpiredDate || Model[i].Rating.HasValue ? "disabled": "")"
+                                        <a class="btn btn-success btn-block @(dateTimeNow < Model[i].ExpiredDate || Model[i].Rating.HasValue || !project.Status.IsEditable() ? "disabled": "")"
                                            asp-action="Comment" asp-controller="ProjectSchedules" asp-route-id="@Model[i].Id">
-                                            Grading
+                                            Comment
                                         </a>
                                     }
                                 </div>

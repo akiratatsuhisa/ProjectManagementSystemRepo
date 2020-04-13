@@ -39,46 +39,122 @@
 
 <div>
     <h3>Project Members</h3>
-    <hr />
-    <dl class="row">
-        @foreach (var item in Model.ProjectMembers)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(modelItem => item.Student.StudentCode)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Student.StudentCode)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(modelItem => item.Student.ClassName)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Student.ClassName)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(modelItem => item.Grade)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Grade)
-            </dd>
-        }
-    </dl>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    StudentCode
+                </th>
+                <th>
+                    ClassName
+                </th>
+                <th>
+                    Grade
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ProjectMembers)
+            {
+                <tr>
+                    <td>
+                        @item.Student.StudentCode
+                    </td>
+                    <td>
+                        @item.Student.ClassName
+                    </td>
+                    <td>
+                        @item.Grade
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 <div>
     <h3>Project Lecturers</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    LecturerCode
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ProjectLecturers)
+            {
+                <tr>
+                    <td>
+                        @item.Lecturer.LecturerCode
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>Project Schedules</h3>
+    @{
+        var ratedScheduleCount = 0;
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Rating
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ProjectSchedules)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @if (item.Rating.HasValue)
+                        {
+                            ratedScheduleCount++;
+                        }
+                        @(item.Rating.HasValue ? $"{item.Rating} point" : "Not-yet")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
     <hr />
     <dl class="row">
-        @foreach (var item in Model.ProjectLecturers)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(modelItem => item.Lecturer.LecturerCode)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Lecturer.LecturerCode)
-            </dd>
-        }
+        <dt class="col-sm-2">
+            Compeleted Schedules
+        </dt>
+        <dd class="col-sm-10">
+            @ratedScheduleCount
+        </dd>
+        <dt class="col-sm-2">
+            Ongoing Schedules
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.ProjectSchedules.Count - ratedScheduleCount)
+        </dd>
     </dl>
+    @if (User.IsInRole("Lecturer"))
+    {
+        <div>
+            <a class="btn btn-outline-warning" asp-action="Cancel">Cancel Project</a>
+            <a class="btn btn-outline-success" asp-action="Mark">Mark Project</a>
+        </div>
+        <hr />
+    }
 </div>
 
 <div>
