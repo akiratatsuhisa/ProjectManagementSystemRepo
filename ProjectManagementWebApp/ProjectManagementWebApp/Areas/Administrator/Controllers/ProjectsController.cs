@@ -220,7 +220,6 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     return View();
                 }
             }
-
             return RedirectToAction(nameof(Index));
         }
     }
