@@ -175,6 +175,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     });
                     startedDate = expiredDate;
                 }
+                schedules.Reverse();
                 project.ProjectSchedules = schedules;
                 projects.Add(project);
             }

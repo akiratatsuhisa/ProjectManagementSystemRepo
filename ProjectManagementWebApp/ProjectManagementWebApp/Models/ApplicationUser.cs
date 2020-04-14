@@ -32,5 +32,8 @@ namespace ProjectManagementWebApp.Models
         public string LecturerId { get; set; }
 
         public virtual Lecturer Lecturer { get; set; }
+
+        [NotMapped]
+        public string FullName { get => $"{LastName} {FirstName}"; }
     }
 }

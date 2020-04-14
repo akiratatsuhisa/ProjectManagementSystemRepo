@@ -43,10 +43,13 @@
         <thead>
             <tr>
                 <th>
-                    StudentCode
+                    Student Code
                 </th>
                 <th>
-                    ClassName
+                    Name
+                </th>
+                <th>
+                    Class
                 </th>
                 <th>
                     Grade
@@ -59,6 +62,9 @@
                 <tr>
                     <td>
                         @item.Student.StudentCode
+                    </td>
+                    <td>
+                        @item.Student.User.FullName
                     </td>
                     <td>
                         @item.Student.ClassName
@@ -78,9 +84,11 @@
         <thead>
             <tr>
                 <th>
-                    LecturerCode
+                    Lecturer Code
                 </th>
-
+                <th>
+                    Name
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -90,7 +98,9 @@
                     <td>
                         @item.Lecturer.LecturerCode
                     </td>
-
+                    <td>
+                        @item.Lecturer.User.FullName
+                    </td>
                 </tr>
             }
         </tbody>
@@ -154,7 +164,7 @@
             {
                 <a class="btn btn-success" asp-action="Mark" asp-route-id="@Model.Id">Mark Project</a>
             }
-            else if(!Model.Status.IsDone())
+            else if (!Model.Status.IsDone())
             {
                 @if (Model.Status.IsReportable())
                 {
