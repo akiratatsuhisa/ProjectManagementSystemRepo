@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<Project>
 
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = Localizer["Projects"];
 }
 
-<h1>Projects</h1>
+<h1>@Localizer["Projects"]</h1>
 
 <p>
-    <a class="btn btn-outline-success" asp-action="ImportProjectsFromExcel">Import File</a>
+    <a class="btn btn-outline-success" asp-action="ImportProjectsFromExcel">@Localizer["Import File"]</a>
 </p>
 
 <table class="table">
@@ -57,7 +57,7 @@
                     @Html.DisplayFor(modelItem => item.UpdatedDate)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["Details"]</a>
                 </td>
             </tr>
         }

@@ -10,12 +10,12 @@ namespace ProjectManagementWebApp.Areas.Administrator.ViewModels
     public class ImportProjectsFromExcelViewModel
     {
         [DataType(DataType.Date)]
-        [Required]
-        [Display(Name = "Date")]
-        public DateTime DateTime { get; set; }
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [Display(Name = "Started Date")]
+        public DateTime? StartedDate { get; set; }
 
         [DataType("file")]
-        [Required]
+        [Required(ErrorMessage = "The {0} field is required.")]
         [Display(Name = "Excel File")]
         public IFormFile File { get; set; }
     }

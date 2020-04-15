@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -29,17 +30,21 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<ProjectsController> _localizer;
 
         public ProjectsController(
             ILogger<ProjectsController> logger,
             ApplicationDbContext context,
             IWebHostEnvironment webHostEnvironment,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IStringLocalizer<ProjectsController> localizer)
+
         {
             _logger = logger;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Index()
@@ -66,14 +71,14 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
             if (!FormFileValidation.IsValidFileSizeLimit(viewModel.File, 268435456)) // 256 MiB
             {
-                ModelState.AddModelError("File", "File size not greater than or equals 256 MiB.");
+                ModelState.AddModelError("File", _localizer["File size not greater than or equals 256 MiB."]);
                 return View(viewModel);
             }
 
             var fileExtension = FormFileValidation.GetFileExtension(viewModel.File.FileName).ToLower();
             if (!FormFileValidation.IsValidExcelFileExtension(fileExtension))
             {
-                ModelState.AddModelError("File", "Invalid file exntesion(.xls, .xlsx).");
+                ModelState.AddModelError("File", _localizer["Invalid file extension(.xls, .xlsx)."]);
                 return View(viewModel);
             }
 
@@ -159,7 +164,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
                 //Add weeks schedule
                 var schedules = new List<ProjectSchedule>();
-                var startedDate = new DateTime(viewModel.DateTime.Year, viewModel.DateTime.Month, viewModel.DateTime.Day);
+                var startedDate = new DateTime(viewModel.StartedDate.Value.Year, viewModel.StartedDate.Value.Month, viewModel.StartedDate.Value.Day);
                 if (!int.TryParse(row.GetCell(9)?.ToString(), out int weeks))
                 {
                     weeks = 10;
@@ -216,7 +221,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 {
                     _logger.LogError(ex.Message);
                     await transaction.RollbackAsync();
-                    ModelState.AddModelError(string.Empty, "Someone import file as same time with you. Try it later.");
+                    ModelState.AddModelError(string.Empty, _localizer["Someone import file as same time with you. Try it later."]);
                     return View();
                 }
             }

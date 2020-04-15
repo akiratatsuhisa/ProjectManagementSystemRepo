@@ -1,27 +1,27 @@
 ﻿@model ImportProjectsFromExcelViewModel
 @{
-    ViewData["Title"] = "ImportProjectsFromExcel";
+    ViewData["Title"] = Localizer["Import Projects From Excel"];
 }
 
-<h1>Import Projects From File Excel</h1>
+<h1>@Localizer["Import Projects From Excel"]</h1>
 
 <form asp-action="ImportProjectsFromExcel" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
-        <label asp-for="DateTime"></label>
-        <input class="form-control" asp-for="DateTime" />
-        <span class="text-danger" asp-validation-for="DateTime"></span>
+        <label asp-for="StartedDate"></label>
+        <input class="form-control" asp-for="StartedDate" />
+        <span class="text-danger" asp-validation-for="StartedDate"></span>
     </div>
     <div class="form-group">
         <label asp-for="File"></label>
         <div class="custom-file">
             <input class="custom-file-input" asp-for="File">
-            <label class="custom-file-label" for="File">Choose file</label>
+            <label class="custom-file-label" for="File">@Localizer["Choose file"]</label>
         </div>
         <span class="text-danger" asp-validation-for="File"></span>
     </div>
     <div class="form-group">
-        <button class="btn btn-success">Import</button>
+        <button class="btn btn-success">@Localizer["Import"]</button>
     </div>
 </form>
 
