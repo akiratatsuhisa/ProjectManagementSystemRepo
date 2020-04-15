@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using ProjectManagementWebApp.Data;
 using ProjectManagementWebApp.Models;
 using ProjectManagementWebApp.ViewModels;
@@ -16,17 +17,17 @@ namespace ProjectManagementWebApp.Controllers
     public class ProjectSchedulesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<ProjectSchedulesController> _localizer;
 
         public ProjectSchedulesController(
             ApplicationDbContext context,
-            IWebHostEnvironment webHostEnvironment,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IStringLocalizer<ProjectSchedulesController> localizer)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -62,8 +63,8 @@ namespace ProjectManagementWebApp.Controllers
         {
             if (viewModel.StartedDate > viewModel.ExpiredDate)
             {
-                ModelState.AddModelError("StartedDate", "Started Date must be less than or equals Expired Date.");
-                ModelState.AddModelError("ExpiredDate", "Expired Date must be greater than or equals Started Date.");
+                ModelState.AddModelError("StartedDate", _localizer["Started Date must be less than or equals Expired Date."]);
+                ModelState.AddModelError("ExpiredDate", _localizer["Expired Date must be greater than or equals Started Date."]);
             }
 
             if (!ModelState.IsValid)

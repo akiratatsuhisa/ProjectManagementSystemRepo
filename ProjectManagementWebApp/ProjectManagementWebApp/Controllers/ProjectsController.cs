@@ -13,6 +13,7 @@ using ProjectManagementWebApp.Helpers;
 using System.IO;
 using MimeKit;
 using ProjectManagementWebApp.ViewModels;
+using Microsoft.Extensions.Localization;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -21,11 +22,16 @@ namespace ProjectManagementWebApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<ProjectsController> _localizer;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ProjectsController(
+            ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            IStringLocalizer<ProjectsController> localizer)
         {
             _context = context;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Index()
@@ -169,7 +175,7 @@ namespace ProjectManagementWebApp.Controllers
                     {
                         project.Status = status;
                         await _context.SaveChangesAsync();
-                        ViewBag.Message = $"Status has changed to: {status}";
+                        ViewBag.Message = _localizer["Status has changed to: {0}", status];
                     }
                     break;
                 case ProjectStatus.Completed:
@@ -177,15 +183,15 @@ namespace ProjectManagementWebApp.Controllers
                     {
                         project.Status = status;
                         await _context.SaveChangesAsync();
-                        ViewBag.Message = $"Status has changed to: {status}";
+                        ViewBag.Message = _localizer["Status has changed to: {0}", status];
                     }
                     else
                     {
-                        ViewBag.Message = "All project schedules have not been rated yet.";
+                        ViewBag.Message = _localizer["All project schedules have not been rated yet."];
                     }
                     break;
                 default:
-                    ViewBag.Message = "Something wrong.";
+                    ViewBag.Message = _localizer["Something wrong."];
                     break;
             }
             return View("ChangeStatus");

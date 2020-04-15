@@ -1,12 +1,12 @@
 ﻿@model ProjectManagementWebApp.ViewModels.ProjectScheduleCommentViewModel
 
 @{
-    ViewData["Title"] = "Comment";
+    ViewData["Title"] = Localizer["Comment"];
 }
 
-<h1>Comment</h1>
+<h1>@Localizer["Comment"]</h1>
 
-<h4>ProjectScheduleCommentViewModel</h4>
+<h4>@Localizer["Project Schedule Comment"]</h4>
 <hr />
 
 <form asp-action="Comment">
@@ -24,7 +24,7 @@
         <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Rate" class="btn btn-success btn-block" />
+        <input type="submit" value="@Localizer["Comment"]" class="btn btn-success btn-block" />
     </div>
 </form>
 

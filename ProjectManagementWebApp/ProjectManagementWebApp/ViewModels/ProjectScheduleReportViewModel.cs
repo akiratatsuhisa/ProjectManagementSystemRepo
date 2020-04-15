@@ -13,8 +13,10 @@ namespace ProjectManagementWebApp.ViewModels
 
         public string StudentId { get; set; }
 
+        [Display(Name = "Content")]
         public string Content { get; set; }
 
+        [Display(Name = "Report Files")]
         public IFormFile[] ReportFiles { get; set; }
     }
 }

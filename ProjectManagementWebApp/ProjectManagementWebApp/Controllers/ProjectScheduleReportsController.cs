@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using ProjectManagementWebApp.Data;
 using ProjectManagementWebApp.Helpers;
 using ProjectManagementWebApp.Models;
@@ -20,15 +21,18 @@ namespace ProjectManagementWebApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<ProjectScheduleReportsController> _localizer;
 
         public ProjectScheduleReportsController(
             ApplicationDbContext context,
             IWebHostEnvironment webHostEnvironment,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IStringLocalizer<ProjectScheduleReportsController> localizer)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public async Task<IActionResult> Create(int? scheduleId)
@@ -68,11 +72,11 @@ namespace ProjectManagementWebApp.Controllers
                 {
                     if (!FormFileValidation.IsValidFileSizeLimit(file, 2097152))
                     {
-                        ModelState.AddModelError("ReportFiles", $"Size of {file.FileName} is over 2MiB.");
+                        ModelState.AddModelError("ReportFiles", _localizer["Size of {0} is over 2MiB.", file.FileName]);
                     }
                     if (!FormFileValidation.IsValidFileExtension(FormFileValidation.GetFileExtension(file.FileName)))
                     {
-                        ModelState.AddModelError("ReportFiles", $"Extension of {file.FileName} is invalid.");
+                        ModelState.AddModelError("ReportFiles", _localizer["Extension of {0} is invalid.", file.FileName]);
                     }
                 }
             }
@@ -132,7 +136,7 @@ namespace ProjectManagementWebApp.Controllers
 
         private bool IsProjectReportable(int projectId) => _context.Projects.Find(projectId).Status.IsReportable();
 
-        private bool IsProjectOfUser(int projectId) => 
+        private bool IsProjectOfUser(int projectId) =>
             _context.ProjectMembers.Any(pm => pm.ProjectId == projectId && pm.StudentId == GetUserId());
 
         private string GetUserId() => _userManager.GetUserId(User);

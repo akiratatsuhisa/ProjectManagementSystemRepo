@@ -62,7 +62,8 @@
 
   <ItemGroup>
     <Folder Include="AuthorizeStaticFiles\Projects\" />
-    <Folder Include="Resources\" />
+    <Folder Include="Resources\Models\" />
+    <Folder Include="Resources\Areas\" />
     <Folder Include="wwwroot\files\" />
   </ItemGroup>
 

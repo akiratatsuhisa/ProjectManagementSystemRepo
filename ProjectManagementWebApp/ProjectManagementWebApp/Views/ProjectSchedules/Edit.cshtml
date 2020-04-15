@@ -1,12 +1,12 @@
 ﻿@model ProjectManagementWebApp.ViewModels.ProjectScheduleRequestViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = Localizer["Edit"];
 }
 
-<h1>Edit</h1>
+<h1>@Localizer["Edit"]</h1>
 
-<h4>Project Schedule Request</h4>
+<h4>@Localizer["Project Schedule Request"]</h4>
 <hr />
 
 <form asp-action="Edit">
@@ -34,7 +34,7 @@
         <span asp-validation-for="ExpiredDate" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <input type="submit" value="Edit" class="btn btn-warning btn-block" />
+        <input type="submit" value="@Localizer["Edit"]" class="btn btn-warning btn-block" />
     </div>
 </form>
 

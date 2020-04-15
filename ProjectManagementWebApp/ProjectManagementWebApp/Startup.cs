@@ -130,7 +130,6 @@ namespace ProjectManagementWebApp
         {
             var userManager = service.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
-            var context = service.GetRequiredService<ApplicationDbContext>();
 
             var roleNames = new[] { "Administrator", "Lecturer", "Student" };
             foreach (var roleName in roleNames)

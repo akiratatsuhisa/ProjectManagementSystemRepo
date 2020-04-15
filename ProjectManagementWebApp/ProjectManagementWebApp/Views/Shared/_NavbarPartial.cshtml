@@ -1,17 +1,17 @@
 ﻿<ul class="navbar-nav flex-grow-1">
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
     </li>
     @if (User.IsInRole("Administrator"))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Administrator" asp-controller="Projects" asp-action="Index">Projects</a>
+            <a class="nav-link text-dark" asp-area="Administrator" asp-controller="Projects" asp-action="Index">@Localizer["Projects"]</a>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">Projects</a>
+            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">@Localizer["Projects"]</a>
         </li>
     }
 </ul>

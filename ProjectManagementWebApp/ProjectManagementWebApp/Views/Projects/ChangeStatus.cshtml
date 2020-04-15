@@ -1,16 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Change Status";
+    ViewData["Title"] = Localizer["Change Status"];
     Project project = ViewBag.Project;
 }
 
-<h1>Change Status</h1>
-<h2>Message</h2>
+<h1>@Localizer["Change Status"]</h1>
+<h2>@Localizer["Message"]</h2>
 <p>
     @ViewBag.Message
 </p>
 
-<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@project.Id">Back to Project - @project.Title</a>
+<a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@project.Id">@Localizer["Back to Project"] - @project.Title</a>
 @if (project.Status.IsMarkable())
 {
-    <a class="btn btn-success" asp-action="Mark" asp-route-id="@project.Id">Mark Project</a>
+    <a class="btn btn-success" asp-action="Mark" asp-route-id="@project.Id">@Localizer["Mark Project"]</a>
 }
