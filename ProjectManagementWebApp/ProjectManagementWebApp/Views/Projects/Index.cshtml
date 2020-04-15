@@ -1,10 +1,10 @@
-﻿@model IEnumerable<ProjectManagementWebApp.Models.Project>
+﻿@model IEnumerable<Project>
 
 @{
-    ViewData["Title"] = "Projects";
+    ViewData["Title"] = Localizer["Projects"];
 }
 
-<h1>Projects</h1>
+<h1>@Localizer["Projects"]</h1>
 
 <table class="table">
     <thead>
@@ -41,8 +41,8 @@
                     @Html.DisplayFor(modelItem => item.Status)
                 </td>
                 <td>
-                    <a  asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Schedules" asp-route-projectId="@item.Id">Schedule</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">@Localizer["Details"]</a> |
+                    <a asp-action="Schedules" asp-route-projectId="@item.Id">@Localizer["Schedules"]</a>
                 </td>
             </tr>
         }

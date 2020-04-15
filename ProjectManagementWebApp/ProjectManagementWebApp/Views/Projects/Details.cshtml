@@ -1,13 +1,13 @@
-﻿@model ProjectManagementWebApp.Models.Project
+﻿@model Project
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Localizer["Details"];
 }
 
-<h1>Details</h1>
+<h1>@Localizer["Details"]</h1>
 
 <div>
-    <h2>Project</h2>
+    <h2>@Localizer["Project"]</h2>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -38,21 +38,21 @@
 </div>
 
 <div>
-    <h3>Project Members</h3>
+    <h3>@Localizer["Project Members"]</h3>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    Student Code
+                    @Localizer["Student Code"]
                 </th>
                 <th>
-                    Name
+                    @Localizer["Student Name"]
                 </th>
                 <th>
-                    Class
+                    @Localizer["Class Name"]
                 </th>
                 <th>
-                    Grade
+                    @Localizer["Grade"]
                 </th>
             </tr>
         </thead>
@@ -70,7 +70,7 @@
                         @item.Student.ClassName
                     </td>
                     <td>
-                        @item.Grade
+                        @(item.Grade.HasValue ? Localizer["{0} point", item.Grade] : Localizer["Not-yet"])
                     </td>
                 </tr>
             }
@@ -79,15 +79,15 @@
 </div>
 
 <div>
-    <h3>Project Lecturers</h3>
+    <h3>@Localizer["Project Lecturers"]</h3>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    Lecturer Code
+                    @Localizer["Lecturer Code"]
                 </th>
                 <th>
-                    Name
+                    @Localizer["Lecturer Name"]
                 </th>
             </tr>
         </thead>
@@ -108,7 +108,7 @@
 </div>
 
 <div>
-    <h3>Project Schedules</h3>
+    <h3>@Localizer["Project Schedules"]</h3>
     @{
         var ratedScheduleCount = 0;
     }
@@ -116,10 +116,10 @@
         <thead>
             <tr>
                 <th>
-                    Name
+                    @Localizer["Name"]
                 </th>
                 <th>
-                    Rating
+                    @Localizer["Rating"]
                 </th>
             </tr>
         </thead>
@@ -135,7 +135,7 @@
                         {
                             ratedScheduleCount++;
                         }
-                        @(item.Rating.HasValue ? $"{item.Rating} point" : "Not-yet")
+                        @(item.Rating.HasValue ? Localizer["{0} point", item.Rating] : Localizer["Not-yet"])
                     </td>
                 </tr>
             }
@@ -145,13 +145,13 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-4">
-            Compeleted Schedules
+            @Localizer["Completed Schedules"]
         </dt>
         <dd class="col-sm-8">
             @ratedScheduleCount
         </dd>
         <dt class="col-sm-4">
-            Ongoing Schedules
+            @Localizer["Ongoing Schedules"]
         </dt>
         <dd class="col-sm-8">
             @(Model.ProjectSchedules.Count - ratedScheduleCount)
@@ -162,7 +162,9 @@
         <div>
             @if (Model.Status.IsMarkable())
             {
-                <a class="btn btn-success" asp-action="Mark" asp-route-id="@Model.Id">Mark Project</a>
+                <a class="btn btn-success" asp-action="Mark" asp-route-id="@Model.Id">
+                    @Localizer["Mark Project"]
+                </a>
             }
             else if (!Model.Status.IsDone())
             {
@@ -171,7 +173,9 @@
                     <form asp-action="ChangeStatus" method="post" class="d-inline">
                         <input type="hidden" name="Id" value="@Model.Id" />
                         <input type="hidden" name="Status" value="@ProjectStatus.Canceled" />
-                        <button type="submit" class="btn btn-warning">Cancel Project</button>
+                        <button type="submit" class="btn btn-warning">
+                            @Localizer["Cancel Project"]
+                        </button>
                     </form>
                 }
                 else
@@ -179,13 +183,17 @@
                     <form asp-action="ChangeStatus" method="post" class="d-inline">
                         <input type="hidden" name="Id" value="@Model.Id" />
                         <input type="hidden" name="Status" value="@ProjectStatus.Continued" />
-                        <button type="submit" class="btn btn-success">Continue Project</button>
+                        <button type="submit" class="btn btn-success">
+                            @Localizer["Continue Project"]
+                        </button>
                     </form>
                 }
                 <form asp-action="ChangeStatus" method="post" class="d-inline">
                     <input type="hidden" name="Id" value="@Model.Id" />
                     <input type="hidden" name="Status" value="@ProjectStatus.Completed" />
-                    <button type="submit" class="btn btn-primary">Check Complete Project</button>
+                    <button type="submit" class="btn btn-primary">
+                        @Localizer["Check Complete Project"]
+                    </button>
                 </form>
             }
         </div>
@@ -194,6 +202,10 @@
 </div>
 
 <div>
-    <a class="btn btn-outline-primary" asp-action="Index">Back to List</a>
-    <a class="btn btn-primary" asp-action="Schedules" asp-route-projectId="@Model.Id">Schedule</a>
+    <a class="btn btn-outline-primary" asp-action="Index">
+        @Localizer["Back to List"]
+    </a>
+    <a class="btn btn-primary" asp-action="Schedules" asp-route-projectId="@Model.Id">
+        @Localizer["Schedules"]
+    </a>
 </div>

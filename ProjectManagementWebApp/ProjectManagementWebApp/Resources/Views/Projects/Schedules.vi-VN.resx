@@ -117,16 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Change Status" xml:space="preserve">
-    <value>Thay đổi trạng thái</value>
+  <data name="Schedules" xml:space="preserve">
+    <value>Lịch trình</value>
   </data>
-  <data name="Message" xml:space="preserve">
-    <value>Tin nhắn</value>
+  <data name="Details" xml:space="preserve">
+    <value>Chi tiết</value>
   </data>
-  <data name="Back to Project" xml:space="preserve">
-    <value>Quay lại đồ án</value>
+  <data name="Reports" xml:space="preserve">
+    <value>Báo cáo</value>
   </data>
-  <data name="Mark Project" xml:space="preserve">
-    <value>Chấm điểm đồ án</value>
+  <data name="Comment" xml:space="preserve">
+    <value>Nhận xét</value>
+  </data>
+  <data name="Schedule" xml:space="preserve">
+    <value>Lịch trình</value>
+  </data>
+  <data name="Started Date" xml:space="preserve">
+    <value>Ngày bắt đầu</value>
+  </data>
+  <data name="Expired Date" xml:space="preserve">
+    <value>Ngày hết hạn</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Nội dung</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Sửa</value>
+  </data>
+  <data name="New Report" xml:space="preserve">
+    <value>Báo cáo mới</value>
+  </data>
+  <data name="Posted by: {0}" xml:space="preserve">
+    <value>Đăng bởi: {0}</value>
+  </data>
+  <data name="Posted Date" xml:space="preserve">
+    <value>Ngày đăng</value>
+  </data>
+  <data name="Last updated" xml:space="preserve">
+    <value>Cập nhật lần cuối</value>
+  </data>
+  <data name="Posted Files" xml:space="preserve">
+    <value>Tập tin đã đăng</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>Đánh giá</value>
+  </data>
+  <data name="{0} point" xml:space="preserve">
+    <value>{0} điểm</value>
+  </data>
+  <data name="Not-yet" xml:space="preserve">
+    <value>Chưa có</value>
   </data>
 </root>

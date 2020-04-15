@@ -12,21 +12,28 @@ namespace ProjectManagementWebApp.Models
 
         public short ProjectTypeId { get; set; }
 
+        [Display(Name = "Project Type")]
         public virtual ProjectType ProjectType { get; set; }
 
         [StringLength(256)]
         [Required]
+        [Display(Name = "Title")]
         public string Title { get; set; }
 
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
+        [Display(Name = "Status")]
         public ProjectStatus Status { get; set; } = ProjectStatus.Continued;
 
         [StringLength(450)]
+        [Display(Name = "Unique Id")]
         public string UniqueId { get; set; }
 
+        [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+        [Display(Name = "Updated Date")]
         public DateTime UpdatedDate { get; set; }
 
         public virtual ICollection<ProjectMember> ProjectMembers { get; set; }

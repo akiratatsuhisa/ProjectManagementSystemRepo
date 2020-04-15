@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Change Status" xml:space="preserve">
-    <value>Thay đổi trạng thái</value>
+  <data name="Project Type" xml:space="preserve">
+    <value>Loại đồ án</value>
   </data>
-  <data name="Message" xml:space="preserve">
-    <value>Tin nhắn</value>
+  <data name="Title" xml:space="preserve">
+    <value>Tiêu đề</value>
   </data>
-  <data name="Back to Project" xml:space="preserve">
-    <value>Quay lại đồ án</value>
+  <data name="Description" xml:space="preserve">
+    <value>Mô tả</value>
   </data>
-  <data name="Mark Project" xml:space="preserve">
-    <value>Chấm điểm đồ án</value>
+  <data name="Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Unique Id" xml:space="preserve">
+    <value>Id độc nhất</value>
+  </data>
+  <data name="Created Date" xml:space="preserve">
+    <value>Ngày tạo</value>
+  </data>
+  <data name="Updated Date" xml:space="preserve">
+    <value>Ngày cập nhật</value>
   </data>
 </root>

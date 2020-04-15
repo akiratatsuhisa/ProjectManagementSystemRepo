@@ -117,16 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Change Status" xml:space="preserve">
-    <value>Thay đổi trạng thái</value>
+  <data name="Schedule Details" xml:space="preserve">
+    <value>Chi tiết lịch trình</value>
   </data>
-  <data name="Message" xml:space="preserve">
-    <value>Tin nhắn</value>
+  <data name="Schedule" xml:space="preserve">
+    <value>Lịch trình</value>
   </data>
-  <data name="Back to Project" xml:space="preserve">
-    <value>Quay lại đồ án</value>
+  <data name="Back to List" xml:space="preserve">
+    <value>Quay lại danh sách</value>
   </data>
-  <data name="Mark Project" xml:space="preserve">
-    <value>Chấm điểm đồ án</value>
+  <data name="{0} point" xml:space="preserve">
+    <value>{0} điểm</value>
+  </data>
+  <data name="Not-yet" xml:space="preserve">
+    <value>Chưa có</value>
   </data>
 </root>

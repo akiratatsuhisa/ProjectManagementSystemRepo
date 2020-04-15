@@ -128,7 +128,7 @@ namespace ProjectManagementWebApp.Controllers
         }
 
         [Route("[controller]/{projectId:int}/Schedules/{id:int}")]
-        public async Task<IActionResult> SchedulesDetails(int projectId, int id)
+        public async Task<IActionResult> ScheduleDetails(int projectId, int id)
         {
             if (!IsProjectOfUser(projectId))
             {

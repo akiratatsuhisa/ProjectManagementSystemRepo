@@ -1,12 +1,12 @@
 ﻿@model IList<ProjectSchedule>
 
 @{
-    ViewData["Title"] = "Schedules";
+    ViewData["Title"] = Localizer["Schedules"];
     var dateTimeNow = DateTime.Now;
     Project project = ViewBag.Project;
 }
 
-<h1>Schedules- <a asp-action="Details" asp-route-id="@ViewBag.Project.Id">@ViewBag.Project.Title</a></h1>
+<h1>@Localizer["Schedules"]- <a asp-action="Details" asp-route-id="@ViewBag.Project.Id">@ViewBag.Project.Title</a></h1>
 <hr />
 
 <div class="row">
@@ -27,13 +27,13 @@
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
                                 <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" role="tab" href="#week-@(i+1)-details">Details</a>
+                                    <a class="nav-link active" data-toggle="tab" role="tab" href="#week-@(i+1)-details">@Localizer["Details"]</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-reports">Reports</a>
+                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-reports">@Localizer["Reports"]</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-comment">Comment</a>
+                                    <a class="nav-link" data-toggle="tab" role="tab" href="#week-@(i+1)-comment">@Localizer["Comment"]</a>
                                 </li>
                             </ul>
                         </div>
@@ -42,27 +42,27 @@
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="week-@(i+1)-details" role="tabpanel">
                                     <h2 class="card-title">
-                                        <a asp-action="SchedulesDetails" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">
-                                            Schedule - @Model[i].Name
+                                        <a asp-action="ScheduleDetails" asp-route-projectId="@Model[i].ProjectId" asp-route-id="@Model[i].Id">
+                                            @Localizer["Schedule"] - @Model[i].Name
                                         </a>
                                     </h2>
                                     <hr />
 
                                     <dl class="row card-subtitle">
                                         <dt class="col-sm-4">
-                                            Started Date
+                                            @Localizer["Started Date"]
                                         </dt>
                                         <dd class="col-sm-8">
                                             @Model[i].StartedDate
                                         </dd>
                                         <dt class="col-sm-4">
-                                            Expired Date
+                                            @Localizer["Expired Date"]
                                         </dt>
                                         <dd class="col-sm-8">
                                             @Model[i].ExpiredDate
                                         </dd>
                                     </dl>
-                                    <h3 class="card-title">Content</h3>
+                                    <h3 class="card-title">@Localizer["Content"]</h3>
                                     <hr />
 
                                     <div class="ck-content">
@@ -72,18 +72,18 @@
                                     {
                                         <a class="btn btn-warning btn-block @(!project.Status.IsEditable() ? "disabled": "")"
                                            asp-action="Edit" asp-controller="ProjectSchedules" asp-route-id="@Model[i].Id">
-                                            Edit
+                                            @Localizer["Edit"]
                                         </a>
                                     }
                                 </div>
 
                                 <div class="tab-pane fade" id="week-@(i+1)-reports" role="tabpanel">
-                                    <h3 class="card-title">Reports</h3>
+                                    <h3 class="card-title">@Localizer["Reports"]</h3>
                                     @if (User.IsInRole("Student"))
                                     {
                                         <a class="btn btn-primary btn-block @(dateTimeNow < Model[i].StartedDate || dateTimeNow > Model[i].ExpiredDate || !project.Status.IsReportable() ? "disabled" : "")"
                                            asp-action="Create" asp-controller="ProjectScheduleReports" asp-route-scheduleId="@Model[i].Id">
-                                            New Report
+                                            @Localizer["New Report"]
                                         </a>
                                     }
                                     <hr />
@@ -91,10 +91,10 @@
                                     @foreach (var report in Model[i].ProjectScheduleReports)
                                     {
                                         <div class="mb-5">
-                                            <h4>Posted by: @report.Student.StudentCode</h4>
+                                            <h4>@Localizer["Posted by: {0}", report.Student.StudentCode]</h4>
                                             <dl class="row card-subtitle">
                                                 <dt class="col-sm-4">
-                                                    Posted Date
+                                                    @Localizer["Posted Date"]
                                                 </dt>
                                                 <dd class="col-sm-8">
                                                     @report.CreatedDate
@@ -102,7 +102,7 @@
                                                 @if (report.CreatedDate != report.UpdatedDate)
                                                 {
                                                     <dt class="col-sm-4">
-                                                        Last updated
+                                                        @Localizer["Last updated"]
                                                     </dt>
                                                     <dd class="col-sm-8">
                                                         @report.UpdatedDate
@@ -112,7 +112,7 @@
                                             <hr />
                                             @if (report.ReportFiles?.Count > 0)
                                             {
-                                                <h5>Posted File</h5>
+                                                <h5>@Localizer["Posted Files"]</h5>
                                                 @foreach (var file in report.ReportFiles)
                                                 {
                                                     <a class="d-block" href="~/StaticFiles/Projects/@file.Path">@file.FileName</a>
@@ -127,13 +127,13 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="week-@(i+1)-comment" role="tabpanel">
-                                    <h3 class="card-title">Comment</h3>
+                                    <h3 class="card-title">@Localizer["Comment"]</h3>
                                     <dl class="row card-subtitle">
                                         <dt class="col-sm-4">
-                                            Rating
+                                            @Localizer["Rating"]
                                         </dt>
                                         <dd class="col-sm-8">
-                                            @(@Model[i].Rating.HasValue ? $"{@Model[i].Rating} point" : "Not-yet")
+                                            @(Model[i].Rating.HasValue ? Localizer["{0} point", Model[i].Rating] : Localizer["Not-yet"])
                                         </dd>
                                     </dl>
                                     <hr />
@@ -145,7 +145,7 @@
                                     {
                                         <a class="btn btn-success btn-block @(dateTimeNow < Model[i].ExpiredDate || Model[i].Rating.HasValue || !project.Status.IsEditable() ? "disabled": "")"
                                            asp-action="Comment" asp-controller="ProjectSchedules" asp-route-id="@Model[i].Id">
-                                            Comment
+                                            @Localizer["Comment"]
                                         </a>
                                     }
                                 </div>
