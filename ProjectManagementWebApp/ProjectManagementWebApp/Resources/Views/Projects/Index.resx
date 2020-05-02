@@ -106,4 +106,13 @@
   <data name="Schedules" xml:space="preserve">
     <value>Schedules</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="--Status--" xml:space="preserve">
+    <value>--Status--</value>
+  </data>
+  <data name="--Order By--" xml:space="preserve">
+    <value>--Order By--</value>
+  </data>
 </root>

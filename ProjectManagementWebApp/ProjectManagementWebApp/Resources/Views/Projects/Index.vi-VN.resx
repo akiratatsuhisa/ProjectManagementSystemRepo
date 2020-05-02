@@ -126,4 +126,13 @@
   <data name="Schedules" xml:space="preserve">
     <value>Lịch trình</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="--Status--" xml:space="preserve">
+    <value>--Trạng thái--</value>
+  </data>
+  <data name="--Order By--" xml:space="preserve">
+    <value>--Sắp xếp--</value>
+  </data>
 </root>

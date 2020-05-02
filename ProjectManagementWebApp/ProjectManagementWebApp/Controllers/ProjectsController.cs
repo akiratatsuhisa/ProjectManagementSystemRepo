@@ -14,6 +14,7 @@ using System.IO;
 using MimeKit;
 using ProjectManagementWebApp.ViewModels;
 using Microsoft.Extensions.Localization;
+using System.Linq.Expressions;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -34,26 +35,54 @@ namespace ProjectManagementWebApp.Controllers
             _localizer = localizer;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, ProjectStatus? status, string orderBy)
         {
+            var projects = _context.Projects.AsQueryable();
             if (User.IsInRole("Student"))
             {
-                return View(await _context.ProjectMembers
-                    .Where(pm => pm.StudentId == GetUserId())
-                    .Include(pm => pm.Project)
-                        .ThenInclude(p => p.ProjectType)
-                    .AsNoTracking()
-                    .Select(p => p.Project).ToListAsync());
+                projects = projects
+                    .Include(p => p.ProjectMembers)
+                    .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()));
             }
-            else
+            else if (User.IsInRole("Lecturer"))
             {
-                return View(await _context.ProjectLecturers
-                    .Where(pm => pm.LecturerId == GetUserId())
-                    .Include(pm => pm.Project)
-                        .ThenInclude(p => p.ProjectType)
-                    .AsNoTracking()
-                    .Select(p => p.Project).ToListAsync());
+                projects = projects
+                  .Include(p => p.ProjectLecturers)
+                  .Where(p => p.ProjectLecturers.Any(pl => pl.LecturerId == GetUserId()));
             }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                projects = projects.Where(p => p.Title.Contains(search));
+            }
+
+            if (status.HasValue)
+            {
+                projects = projects.Where(p => p.Status == status);
+            }
+
+            switch (orderBy)
+            {
+                case "title-asc":
+                    projects = projects.OrderBy(p => p.Title);
+                    break;
+                case "title-desc":
+                    projects = projects.OrderByDescending(p => p.Title);
+                    break;
+                case "date-asc":
+                    projects = projects.OrderBy(p => p.CreatedDate);
+                    break;
+                case "date-desc":
+                default:
+                    projects = projects.OrderByDescending(p => p.CreatedDate);
+                    break;
+            }
+
+            return View(await projects
+                .Include(p => p.ProjectType)
+                .AsNoTracking()
+                .ToListAsync());
+
         }
 
         [Route("[controller]/{id:int}/[action]")]
@@ -280,7 +309,7 @@ namespace ProjectManagementWebApp.Controllers
             }
             project.Status = ProjectStatus.Passed;
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Details), new { id = viewModel.Id});
+            return RedirectToAction(nameof(Details), new { id = viewModel.Id });
         }
 
         [Route("StaticFiles/Projects/{id:int}/{fileName}")]
