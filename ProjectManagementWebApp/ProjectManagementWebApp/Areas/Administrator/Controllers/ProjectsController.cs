@@ -13,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using ProjectManagementWebApp.Areas.Administrator.ViewModels;
 using ProjectManagementWebApp.Data;
@@ -64,6 +66,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportProjectsFromExcel(ImportProjectsFromExcelViewModel viewModel)
         {
+            #region Validate ViewModel
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
@@ -81,7 +84,9 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 ModelState.AddModelError("File", _localizer["Invalid file extension(.xls, .xlsx)."]);
                 return View(viewModel);
             }
+            #endregion
 
+            //set sheet
             ISheet sheet;
             using (var stream = new MemoryStream())
             {
@@ -99,14 +104,19 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 }
             }
 
+            #region Read Sheet
             var projects = new List<Project>();
             var newStudents = new List<ApplicationUser>();
             var newLecturers = new List<ApplicationUser>();
             var regexStudentCode = new Regex(@"^\d{10}$");
 
-            for (int rowIndex = sheet.FirstRowNum + 1; rowIndex <= sheet.LastRowNum; rowIndex++)
+            var rowIndex = sheet.FirstRowNum + 1;
+            while (rowIndex <= sheet.LastRowNum)
             {
                 IRow row = sheet.GetRow(rowIndex);
+
+               
+                rowIndex = getMegreRowLastRowIndex(sheet, rowIndex) + 1;
                 if (row == null || row.Cells.All(d => d.CellType == CellType.Blank))
                 {
                     continue;
@@ -117,7 +127,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 if (_context.Projects.Any(p => p.UniqueId == uniqueId))
                 {
                     continue;
-                };
+                }
 
                 //Init project
                 var project = new Project
@@ -126,46 +136,82 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     ProjectTypeId = short.Parse(row.GetCell(1).ToString()),
                     Title = row.GetCell(2)?.ToString(),
                     Description = row.GetCell(3)?.ToString(),
+                    FacultyId = short.Parse(row.GetCell(4).ToString()),
                 };
 
                 //Add members to project
                 project.ProjectMembers = new List<ProjectMember>();
-                for (int cellIndex = 4; cellIndex < 7; cellIndex++)
+                for (int localRowIndex = row.RowNum; localRowIndex < rowIndex; localRowIndex++)
                 {
-                    var studentCode = row.GetCell(cellIndex)?.ToString();
+                    IRow localRow = sheet.GetRow(localRowIndex);
+
+                    var studentCode = localRow.GetCell(5)?.ToString();
                     if (!string.IsNullOrWhiteSpace(studentCode) && regexStudentCode.IsMatch(studentCode))
                     {
-                        var user = await _userManager.FindByNameAsync(studentCode) ?? newStudents.FirstOrDefault(u => u.UserName == studentCode);
+                        var user = newStudents.FirstOrDefault(u => u.UserName == studentCode) ?? await _userManager.FindByNameAsync(studentCode);
                         if (user == null)
                         {
-                            user = new ApplicationUser { UserName = studentCode };
+                            user = new ApplicationUser
+                            {
+                                UserName = studentCode,
+                                Student = new Student
+                                {
+                                    ClassName = localRow.GetCell(6)?.ToString(),
+                                    StudentCode = studentCode,
+                                },
+                                LastName = localRow.GetCell(7)?.ToString(),
+                                FirstName = localRow.GetCell(8)?.ToString(),
+                                Email = localRow.GetCell(9)?.ToString(),
+                                EmailConfirmed = true,
+                            };
                             newStudents.Add(user);
                         }
-                        project.ProjectMembers.Add(new ProjectMember { StudentId = user.Id });
+                        project.ProjectMembers.Add(new ProjectMember
+                        {
+                            StudentId = user.Id,
+                            Type = (ProjectMemberType)byte.Parse(localRow.GetCell(10)?.ToString() ?? "0")
+                        });
                     }
                 }
 
                 //Add lecturers to project
                 project.ProjectLecturers = new List<ProjectLecturer>();
-                for (int cellIndex = 7; cellIndex < 9; cellIndex++)
+                for (int localRowIndex = row.RowNum; localRowIndex < rowIndex; localRowIndex++)
                 {
-                    var lecturerCode = row.GetCell(cellIndex)?.ToString();
+                    IRow localRow = sheet.GetRow(localRowIndex);
+
+                    var lecturerCode = localRow.GetCell(11)?.ToString();
                     if (!string.IsNullOrWhiteSpace(lecturerCode))
                     {
-                        var user = await _userManager.FindByNameAsync(lecturerCode) ?? newLecturers.FirstOrDefault(u => u.UserName == lecturerCode);
+                        var user = newLecturers.FirstOrDefault(u => u.UserName == lecturerCode) ?? await _userManager.FindByNameAsync(lecturerCode);
                         if (user == null)
                         {
-                            user = new ApplicationUser { UserName = lecturerCode };
+                            user = new ApplicationUser
+                            {
+                                UserName = lecturerCode,
+                                Lecturer = new Lecturer
+                                {
+                                    LecturerCode = lecturerCode,
+                                },
+                                LastName = localRow.GetCell(12)?.ToString(),
+                                FirstName = localRow.GetCell(13)?.ToString(),
+                                Email = localRow.GetCell(14)?.ToString(),
+                                EmailConfirmed = true,
+                            };
                             newLecturers.Add(user);
                         }
-                        project.ProjectLecturers.Add(new ProjectLecturer { LecturerId = user.Id });
+                        project.ProjectLecturers.Add(new ProjectLecturer
+                        {
+                            LecturerId = user.Id,
+                            Type = (ProjectLecturerType)byte.Parse(localRow.GetCell(15)?.ToString() ?? "0")
+                        });
                     }
                 }
 
                 //Add weeks schedule
                 var schedules = new List<ProjectSchedule>();
                 var startedDate = new DateTime(viewModel.StartedDate.Value.Year, viewModel.StartedDate.Value.Month, viewModel.StartedDate.Value.Day);
-                if (!int.TryParse(row.GetCell(9)?.ToString(), out int weeks))
+                if (!int.TryParse(row.GetCell(16)?.ToString(), out int weeks))
                 {
                     weeks = 10;
                 }
@@ -184,16 +230,16 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 project.ProjectSchedules = schedules;
                 projects.Add(project);
             }
+            #endregion
 
+            #region Insert To Database
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
                     foreach (var user in newStudents)
                     {
-                        user.Student = new Student { Id = user.Id, StudentCode = user.UserName };
-                        user.Email = $"student{user.UserName}@myweb.com";
-                        user.EmailConfirmed = true;
+                        user.Email = string.IsNullOrWhiteSpace(user.Email) ? $"student{user.UserName}@myweb.com" : user.Email;
                         var result = await _userManager.CreateAsync(user, user.UserName);
                         if (result.Succeeded)
                         {
@@ -203,9 +249,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
                     foreach (var user in newLecturers)
                     {
-                        user.Lecturer = new Lecturer { Id = user.Id, LecturerCode = user.UserName };
-                        user.Email = $"lecturer{user.UserName}@myweb.com";
-                        user.EmailConfirmed = true;
+                        user.Email = string.IsNullOrWhiteSpace(user.Email) ? $"lecturer{user.UserName}@myweb.com" : user.Email;
                         var result = await _userManager.CreateAsync(user, user.UserName);
                         if (result.Succeeded)
                         {
@@ -225,7 +269,19 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     return View();
                 }
             }
+            #endregion
             return RedirectToAction(nameof(Index));
+        }
+
+        private int getMegreRowLastRowIndex(ISheet sheet, int row)
+        {
+            for (int i = 0; i < sheet.NumMergedRegions; ++i)
+            {
+                CellRangeAddress range = sheet.GetMergedRegion(i);
+                if (range.FirstColumn == 0 && range.FirstRow == row)
+                    return range.LastRow;
+            }
+            return row;
         }
     }
 }

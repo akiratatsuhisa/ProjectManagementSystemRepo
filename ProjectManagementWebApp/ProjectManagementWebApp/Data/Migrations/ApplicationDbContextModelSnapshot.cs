@@ -265,6 +265,30 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.ToTable("Audits");
                 });
 
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Faculty", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Faculty");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "Công nghệ thông tin"
+                        });
+                });
+
             modelBuilder.Entity("ProjectManagementWebApp.Models.Lecturer", b =>
                 {
                     b.Property<string>("Id")
@@ -295,11 +319,15 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<short>("FacultyId")
+                        .HasColumnType("smallint");
+
                     b.Property<short>("ProjectTypeId")
                         .HasColumnType("smallint");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -314,6 +342,8 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FacultyId");
 
                     b.HasIndex("ProjectTypeId");
 
@@ -332,6 +362,16 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("LecturerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ProjectId", "LecturerId");
 
                     b.HasIndex("LecturerId");
@@ -347,8 +387,18 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<float?>("Grade")
                         .HasColumnType("real");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ProjectId", "StudentId");
 
@@ -576,6 +626,12 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             modelBuilder.Entity("ProjectManagementWebApp.Models.Project", b =>
                 {
+                    b.HasOne("ProjectManagementWebApp.Models.Faculty", "Faculty")
+                        .WithMany("Projects")
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ProjectManagementWebApp.Models.ProjectType", "ProjectType")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectTypeId")

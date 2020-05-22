@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,11 @@ namespace ProjectManagementWebApp.Models
         [Display(Name = "Project Type")]
         public virtual ProjectType ProjectType { get; set; }
 
+        public short FacultyId { get; set; }
+
+        [Display(Name = "Faculty")]
+        public virtual Faculty Faculty { get; set; }
+
         [StringLength(256)]
         [Required]
         [Display(Name = "Title")]
@@ -23,6 +29,7 @@ namespace ProjectManagementWebApp.Models
         [Display(Name = "Description")]
         public string Description { get; set; }
 
+        [Column(TypeName = "nvarchar(30)")]
         [Display(Name = "Status")]
         public ProjectStatus Status { get; set; } = ProjectStatus.Continued;
 

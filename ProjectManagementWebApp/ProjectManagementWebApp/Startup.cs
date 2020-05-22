@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Localization;
 using ProjectManagementWebApp.Models;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using ProjectManagementWebApp.Helpers;
 
 namespace ProjectManagementWebApp
 {
@@ -38,6 +39,12 @@ namespace ProjectManagementWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Configure Smtp
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
+            #endregion
+
+            #region Configure Services Identity
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -76,6 +83,8 @@ namespace ProjectManagementWebApp
                 options.SupportedCultures = _supportedCultures;
                 options.SupportedUICultures = _supportedCultures;
             });
+            #endregion
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)

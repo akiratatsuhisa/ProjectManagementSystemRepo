@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjectManagementWebApp.Data.Migrations
 {
-    public partial class InitTables : Migration
+    public partial class InitTablesAndData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,6 +54,19 @@ namespace ProjectManagementWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Audits", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Faculty",
+                columns: table => new
+                {
+                    Id = table.Column<short>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(maxLength: 256, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Faculty", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -115,9 +128,10 @@ namespace ProjectManagementWebApp.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectTypeId = table.Column<short>(nullable: false),
+                    FacultyId = table.Column<short>(nullable: false),
                     Title = table.Column<string>(maxLength: 256, nullable: false),
                     Description = table.Column<string>(nullable: true),
-                    Status = table.Column<byte>(nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     UniqueId = table.Column<string>(maxLength: 450, nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedDate = table.Column<DateTime>(nullable: false)
@@ -125,6 +139,12 @@ namespace ProjectManagementWebApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_Faculty_FacultyId",
+                        column: x => x.FacultyId,
+                        principalTable: "Faculty",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Projects_ProjectTypes_ProjectTypeId",
                         column: x => x.ProjectTypeId,
@@ -138,7 +158,10 @@ namespace ProjectManagementWebApp.Data.Migrations
                 columns: table => new
                 {
                     ProjectId = table.Column<int>(nullable: false),
-                    LecturerId = table.Column<string>(nullable: false)
+                    LecturerId = table.Column<string>(nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -163,7 +186,10 @@ namespace ProjectManagementWebApp.Data.Migrations
                 {
                     ProjectId = table.Column<int>(nullable: false),
                     StudentId = table.Column<string>(nullable: false),
-                    Grade = table.Column<float>(nullable: true)
+                    Grade = table.Column<float>(nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    UpdatedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,6 +285,21 @@ namespace ProjectManagementWebApp.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Faculty",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { (short)1, "Công nghệ thông tin" });
+
+            migrationBuilder.InsertData(
+                table: "ProjectTypes",
+                columns: new[] { "Id", "IsDisabled", "Name" },
+                values: new object[,]
+                {
+                    { (short)1, false, "Đồ án cơ sở" },
+                    { (short)2, false, "Đồ án chuyên ngành" },
+                    { (short)3, false, "Đồ án tổng hợp" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectLecturers_LecturerId",
                 table: "ProjectLecturers",
@@ -268,6 +309,11 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "IX_ProjectMembers_StudentId",
                 table: "ProjectMembers",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_FacultyId",
+                table: "Projects",
+                column: "FacultyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ProjectTypeId",
@@ -330,6 +376,9 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Faculty");
 
             migrationBuilder.DropTable(
                 name: "ProjectTypes");

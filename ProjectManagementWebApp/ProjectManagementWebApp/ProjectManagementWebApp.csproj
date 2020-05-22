@@ -46,6 +46,16 @@
     <Compile Remove="Data\Migrations\20200413143931_Test.Designer.cs" />
     <Compile Remove="Data\Migrations\20200413144836_Test.cs" />
     <Compile Remove="Data\Migrations\20200413144836_Test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413145120_InitTables.cs" />
+    <Compile Remove="Data\Migrations\20200413145120_InitTables.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413145142_InitData.cs" />
+    <Compile Remove="Data\Migrations\20200413145142_InitData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522080835_AlteProjectMembersTableAndProjectLecturersTable.cs" />
+    <Compile Remove="Data\Migrations\20200522080835_AlteProjectMembersTableAndProjectLecturersTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522081602_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522081602_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectManagementWebApp.Models;
 using ProjectManagementWebApp.ViewModels;
 
@@ -18,6 +19,8 @@ namespace ProjectManagementWebApp.Data
         public virtual DbSet<Lecturer> Lecturers { get; set; }
 
         public virtual DbSet<Audit> Audits { get; set; }
+
+        public virtual DbSet<Faculty> Faculties { get; set; }
 
         public virtual DbSet<ProjectType> ProjectTypes { get; set; }
 
@@ -40,10 +43,16 @@ namespace ProjectManagementWebApp.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region Config Entity Project 
             builder.Entity<Project>()
              .HasIndex(p => p.UniqueId)
              .IsUnique();
+            builder.Entity<Project>()
+                .Property(p => p.Status)
+                .HasConversion(new EnumToStringConverter<ProjectStatus>());
+            #endregion
 
+            #region Config Entity Project Member
             builder.Entity<ProjectMember>()
                 .HasKey(pm => new { pm.ProjectId, pm.StudentId });
             builder.Entity<ProjectMember>()
@@ -54,7 +63,12 @@ namespace ProjectManagementWebApp.Data
              .HasOne(pm => pm.Student)
              .WithMany(s => s.ProjectMembers)
              .HasForeignKey(pm => pm.StudentId);
+            builder.Entity<ProjectMember>()
+              .Property(pm => pm.Type)
+              .HasConversion(new EnumToStringConverter<ProjectMemberType>());
+            #endregion
 
+            #region Config Entity Project Lecturer
             builder.Entity<ProjectLecturer>()
                 .HasKey(pl => new { pl.ProjectId, pl.LecturerId });
             builder.Entity<ProjectLecturer>()
@@ -65,7 +79,12 @@ namespace ProjectManagementWebApp.Data
              .HasOne(pl => pl.Lecturer)
              .WithMany(l => l.ProjectLecturers)
              .HasForeignKey(pl => pl.LecturerId);
+            builder.Entity<ProjectLecturer>()
+                .Property(pl => pl.Type)
+                .HasConversion(new EnumToStringConverter<ProjectLecturerType>());
+            #endregion
 
+            #region Config Entity User
             builder.Entity<ApplicationUser>()
                 .HasOne(u => u.Student)
                 .WithOne(s => s.User)
@@ -74,6 +93,7 @@ namespace ProjectManagementWebApp.Data
                 .HasOne(u => u.Lecturer)
                 .WithOne(s => s.User)
                 .HasForeignKey<Lecturer>(l => l.Id);
+            #endregion
 
             InitData(builder);
             base.OnModelCreating(builder);
@@ -86,6 +106,10 @@ namespace ProjectManagementWebApp.Data
                 new ProjectType { Id = 1, Name = "Đồ án cơ sở" },
                 new ProjectType { Id = 2, Name = "Đồ án chuyên ngành" },
                 new ProjectType { Id = 3, Name = "Đồ án tổng hợp" }
+                );
+            builder.Entity<Faculty>()
+                .HasData(
+                new Faculty { Id = 1, Name = "Công nghệ thông tin" }
                 );
         }
 
