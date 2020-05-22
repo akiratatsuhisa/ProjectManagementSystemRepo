@@ -10,17 +10,21 @@ namespace ProjectManagementWebApp.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        [PersonalData]
         [StringLength(256)]
         [Display(Name = "First name", Prompt = "First name")]
         public string FirstName { get; set; }
 
+        [PersonalData]
         [StringLength(256)]
         [Display(Name = "Last name", Prompt = "Last name")]
         public string LastName { get; set; }
 
+        [PersonalData]
         [Display(Name = "Gender", Prompt = "Gender")]
         public bool? Gender { get; set; }
 
+        [PersonalData]
         [Column(TypeName = "date")]
         [Display(Name = "Birth date", Prompt = "Date of birth")]
         public DateTime? BirthDate { get; set; }

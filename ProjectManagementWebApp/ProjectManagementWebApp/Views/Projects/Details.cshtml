@@ -54,6 +54,9 @@
                 <th>
                     @Localizer["Grade"]
                 </th>
+                <th>
+                    @Localizer["Type"]
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -72,6 +75,9 @@
                     <td>
                         @(item.Grade.HasValue ? Localizer["{0} point", item.Grade] : Localizer["Not-yet"])
                     </td>
+                    <td>
+                        @item.Type
+                    </td>
                 </tr>
             }
         </tbody>
@@ -89,19 +95,25 @@
                 <th>
                     @Localizer["Lecturer Name"]
                 </th>
+                <th>
+                    @Localizer["Type"]
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.ProjectLecturers)
             {
-                <tr>
-                    <td>
-                        @item.Lecturer.LecturerCode
-                    </td>
-                    <td>
-                        @item.Lecturer.User.FullName
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @item.Lecturer.LecturerCode
+                </td>
+                <td>
+                    @item.Lecturer.User.FullName
+                </td>
+                <td>
+                    @item.Type
+                </td>
+            </tr>
             }
         </tbody>
     </table>

@@ -162,8 +162,15 @@
     <script src="~/ckeditor5/ckeditor.js"></script>
     <script async defer type="text/javascript">
         $(document).ready(function () {
-            $('#schedules-tab').find('.nav-link').first().addClass('active');
-            $('#schedules-tab-content').find('.tab-pane').first().addClass('show').addClass('active');
+            var hash = location.hash;
+            if (hash == "" || !(/^#week-\d+/).test(hash)) {
+                $('a[href^="#week"]').first().tab('show');
+            }
+            else {
+                var week = hash.match(/^#week-\d+/)[0];
+                $(`a[href="${week}"]`).tab('show');
+                $(`a[href="${hash}"]`).tab('show');
+            }
         });
 
         document.querySelectorAll('oembed[url]').forEach(element => {

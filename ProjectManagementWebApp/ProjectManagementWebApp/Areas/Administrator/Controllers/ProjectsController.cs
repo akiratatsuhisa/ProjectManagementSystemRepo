@@ -163,13 +163,14 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                                 FirstName = localRow.GetCell(8)?.ToString(),
                                 Email = localRow.GetCell(9)?.ToString(),
                                 EmailConfirmed = true,
+                                PhoneNumber = localRow.GetCell(10)?.ToString(),
                             };
                             newStudents.Add(user);
                         }
                         project.ProjectMembers.Add(new ProjectMember
                         {
                             StudentId = user.Id,
-                            Type = (ProjectMemberType)byte.Parse(localRow.GetCell(10)?.ToString() ?? "0")
+                            Type = (ProjectMemberType)byte.Parse(localRow.GetCell(11)?.ToString() ?? "0")
                         });
                     }
                 }
@@ -180,7 +181,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 {
                     IRow localRow = sheet.GetRow(localRowIndex);
 
-                    var lecturerCode = localRow.GetCell(11)?.ToString();
+                    var lecturerCode = localRow.GetCell(12)?.ToString();
                     if (!string.IsNullOrWhiteSpace(lecturerCode))
                     {
                         var user = newLecturers.FirstOrDefault(u => u.UserName == lecturerCode) ?? await _userManager.FindByNameAsync(lecturerCode);
@@ -193,17 +194,18 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                                 {
                                     LecturerCode = lecturerCode,
                                 },
-                                LastName = localRow.GetCell(12)?.ToString(),
-                                FirstName = localRow.GetCell(13)?.ToString(),
-                                Email = localRow.GetCell(14)?.ToString(),
+                                LastName = localRow.GetCell(13)?.ToString(),
+                                FirstName = localRow.GetCell(14)?.ToString(),
+                                Email = localRow.GetCell(15)?.ToString(),
                                 EmailConfirmed = true,
+                                PhoneNumber = localRow.GetCell(16)?.ToString(),
                             };
                             newLecturers.Add(user);
                         }
                         project.ProjectLecturers.Add(new ProjectLecturer
                         {
                             LecturerId = user.Id,
-                            Type = (ProjectLecturerType)byte.Parse(localRow.GetCell(15)?.ToString() ?? "0")
+                            Type = (ProjectLecturerType)byte.Parse(localRow.GetCell(17)?.ToString() ?? "0")
                         });
                     }
                 }
@@ -211,7 +213,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 //Add weeks schedule
                 var schedules = new List<ProjectSchedule>();
                 var startedDate = new DateTime(viewModel.StartedDate.Value.Year, viewModel.StartedDate.Value.Month, viewModel.StartedDate.Value.Day);
-                if (!int.TryParse(row.GetCell(16)?.ToString(), out int weeks))
+                if (!int.TryParse(row.GetCell(18)?.ToString(), out int weeks))
                 {
                     weeks = 10;
                 }

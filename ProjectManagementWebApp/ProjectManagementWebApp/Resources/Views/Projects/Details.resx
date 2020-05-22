@@ -166,4 +166,7 @@
   <data name="Schedules" xml:space="preserve">
     <value>Schedules</value>
   </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>

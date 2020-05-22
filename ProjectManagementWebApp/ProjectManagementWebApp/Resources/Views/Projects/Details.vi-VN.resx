@@ -186,4 +186,7 @@
   <data name="Schedules" xml:space="preserve">
     <value>Lịch trình</value>
   </data>
+  <data name="Type" xml:space="preserve">
+    <value>Loại</value>
+  </data>
 </root>

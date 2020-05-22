@@ -8,15 +8,15 @@
 
 <form class="my-3">
     <div class="form-row">
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <div class="form-group">
                 <select class="form-control" name="orderBy" asp-items="@ViewBag.OrderBy">
                     <option value="">@Localizer["--Order By--"]</option>
                 </select>
             </div>
-        </div> 
-        
-        <div class="col-4">
+        </div>
+
+        <div class="col-12 col-lg-4">
             <div class="form-group">
                 <select class="form-control" name="type" asp-items="@ViewBag.TypeId">
                     <option value="">@Localizer["--Type By--"]</option>
@@ -24,9 +24,9 @@
             </div>
         </div>
 
-        <div class="col-4">
+        <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="status"asp-items="@ViewBag.Status">
+                <select class="form-control" name="status" asp-items="@ViewBag.Status">
                     <option value="">@Localizer["--Status--"]</option>
                 </select>
             </div>
@@ -34,7 +34,7 @@
 
         <div class="col-12">
             <div class="input-group">
-                <input class="form-control" name="search" placeholder="@Localizer["Search"]" value="@ViewBag.Search"/>
+                <input class="form-control" name="search" placeholder="@Localizer["Search"]" value="@ViewBag.Search" />
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary">@Localizer["Search"]</button>
                 </div>

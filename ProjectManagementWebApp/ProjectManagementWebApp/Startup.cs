@@ -17,6 +17,8 @@ using ProjectManagementWebApp.Models;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using ProjectManagementWebApp.Helpers;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using ProjectManagementWebApp.Services;
 
 namespace ProjectManagementWebApp
 {
@@ -41,7 +43,7 @@ namespace ProjectManagementWebApp
         {
             #region Configure Smtp
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-
+            services.AddTransient<IEmailSender, AuthMessageSender>();
             #endregion
 
             #region Configure Services Identity
@@ -88,7 +90,7 @@ namespace ProjectManagementWebApp
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization(); 
+                .AddDataAnnotationsLocalization();
             services.AddRazorPages()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
@@ -211,6 +213,7 @@ namespace ProjectManagementWebApp
                     Gender = true,
                     BirthDate = new DateTime(1998, 04, 01),
                     EmailConfirmed = true,
+                    PhoneNumber = "0798059927",
                     Student = new Student
                     {
                         StudentCode = "1611061191",
