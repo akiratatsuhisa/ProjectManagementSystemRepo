@@ -135,4 +135,7 @@
   <data name="--Order By--" xml:space="preserve">
     <value>--Sắp xếp--</value>
   </data>
+  <data name="--Project Type--" xml:space="preserve">
+    <value>--Loại đồ án--</value>
+  </data>
 </root>

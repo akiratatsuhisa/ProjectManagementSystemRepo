@@ -71,5 +71,15 @@ namespace ProjectManagementWebApp.Models
         public static bool IsEditable(this ProjectStatus status) => status == ProjectStatus.Continued || status == ProjectStatus.Canceled;
 
         public static bool IsMarkable(this ProjectStatus status) => status == ProjectStatus.Completed;
+
+        public static string GetTableBackGroundColor(this ProjectStatus status) =>
+            status switch
+            {
+                ProjectStatus.Completed => "table-info",
+                ProjectStatus.Passed => "table-success",
+                ProjectStatus.Canceled => "table-warning",
+                ProjectStatus.Failed => "table-danger",
+                _ => ""
+            };
     }
 }
