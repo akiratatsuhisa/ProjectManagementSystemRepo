@@ -15,6 +15,8 @@ using MimeKit;
 using ProjectManagementWebApp.ViewModels;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.Options;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -35,7 +37,7 @@ namespace ProjectManagementWebApp.Controllers
             _localizer = localizer;
         }
 
-        public async Task<IActionResult> Index(string search, ProjectStatus? status, string orderBy)
+        public async Task<IActionResult> Index(string search, short? type, ProjectStatus? status, string orderBy)
         {
             var projects = _context.Projects.AsQueryable();
             if (User.IsInRole("Student"))
@@ -54,6 +56,11 @@ namespace ProjectManagementWebApp.Controllers
             if (!string.IsNullOrWhiteSpace(search))
             {
                 projects = projects.Where(p => p.Title.Contains(search));
+            }
+
+            if (type.HasValue)
+            {
+                projects = projects.Where(p => p.ProjectTypeId == type);
             }
 
             if (status.HasValue)
@@ -78,6 +85,19 @@ namespace ProjectManagementWebApp.Controllers
                     break;
             }
 
+            var orderByList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = "Title Asc", Value = "title-asc" },
+                new SelectListItem{ Text = "Title Desc", Value = "title-desc" },
+                new SelectListItem{ Text = "Date Asc", Value = "date-asc" },
+                new SelectListItem{ Text = "Date Desc", Value = "date-desc" },
+            };
+
+            ViewBag.Search = search;
+            ViewBag.Status = status;
+            ViewBag.Status = new SelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text", status);
+            ViewBag.OrderBy = new SelectList(orderByList, "Value", "Text", orderBy);
+            ViewBag.TypeId = new SelectList(await _context.ProjectTypes.ToListAsync(), "Id", "Name", type);
             return View(await projects
                 .Include(p => p.ProjectType)
                 .AsNoTracking()
