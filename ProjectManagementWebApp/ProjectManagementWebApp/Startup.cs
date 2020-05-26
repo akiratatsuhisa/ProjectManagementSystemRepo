@@ -52,7 +52,7 @@ namespace ProjectManagementWebApp
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = true;
                 options.Password = new PasswordOptions
                 {
                     RequireDigit = false,
@@ -69,7 +69,7 @@ namespace ProjectManagementWebApp
                     DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)
                 };
 
-                options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedAccount = false;
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -158,7 +158,7 @@ namespace ProjectManagementWebApp
             {
                 Id = "f9852731-c13c-4765-bbb1-9c3321da46ae",
                 UserName = "admin",
-                Email = "admin@myweb.com",
+                Email = "akiratatsuhisa@gmail.com",
                 FirstName = "Dat",
                 LastName = "Dang",
                 Gender = true,
@@ -185,7 +185,7 @@ namespace ProjectManagementWebApp
                 LastName = "Nguyễn Mạnh",
                 Gender = true,
                 BirthDate = new DateTime(1980, 12, 24),
-                EmailConfirmed = true,
+                EmailConfirmed = false,
                 Lecturer = new Lecturer
                 {
                     LecturerCode = "nguyenmanhhung",
@@ -207,7 +207,7 @@ namespace ProjectManagementWebApp
                 {
                     Id = "8fb607ee-ccc5-4795-afe3-7455f37dedf3",
                     UserName = "1611061191",
-                    Email = "student1611061191@myweb.com",
+                    Email = "dmdattadmd@gmail.com",
                     FirstName = "Đạt",
                     LastName = "Đặng Minh",
                     Gender = true,
@@ -229,7 +229,7 @@ namespace ProjectManagementWebApp
                     LastName = "Nguyễn Hồng",
                     Gender = true,
                     BirthDate = new DateTime(1998, 06, 02),
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     Student = new Student
                     {
                         StudentCode = "1611062192",
@@ -245,7 +245,7 @@ namespace ProjectManagementWebApp
                     LastName = "Phạm Minh",
                     Gender = true,
                     BirthDate = new DateTime(1998, 08, 03),
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     Student = new Student
                     {
                         StudentCode = "1611062192",

@@ -115,7 +115,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
             {
                 IRow row = sheet.GetRow(rowIndex);
 
-               
+
                 rowIndex = getMegreRowLastRowIndex(sheet, rowIndex) + 1;
                 if (row == null || row.Cells.All(d => d.CellType == CellType.Blank))
                 {
@@ -162,9 +162,16 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                                 LastName = localRow.GetCell(7)?.ToString(),
                                 FirstName = localRow.GetCell(8)?.ToString(),
                                 Email = localRow.GetCell(9)?.ToString(),
-                                EmailConfirmed = true,
                                 PhoneNumber = localRow.GetCell(10)?.ToString(),
                             };
+                            if (RegexUtilities.IsValidEmail(user.Email))
+                            {
+                                user.EmailConfirmed = true;
+                            }
+                            else
+                            {
+                                user.Email = $"student{user.UserName}@myweb.com";
+                            }
                             newStudents.Add(user);
                         }
                         project.ProjectMembers.Add(new ProjectMember
@@ -197,9 +204,16 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                                 LastName = localRow.GetCell(13)?.ToString(),
                                 FirstName = localRow.GetCell(14)?.ToString(),
                                 Email = localRow.GetCell(15)?.ToString(),
-                                EmailConfirmed = true,
                                 PhoneNumber = localRow.GetCell(16)?.ToString(),
                             };
+                            if (RegexUtilities.IsValidEmail(user.Email))
+                            {
+                                user.EmailConfirmed = true;
+                            }
+                            else
+                            {
+                                user.Email = $"lecturer{user.UserName}@myweb.com";
+                            }
                             newLecturers.Add(user);
                         }
                         project.ProjectLecturers.Add(new ProjectLecturer
@@ -241,7 +255,6 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 {
                     foreach (var user in newStudents)
                     {
-                        user.Email = string.IsNullOrWhiteSpace(user.Email) ? $"student{user.UserName}@myweb.com" : user.Email;
                         var result = await _userManager.CreateAsync(user, user.UserName);
                         if (result.Succeeded)
                         {
@@ -251,7 +264,6 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
 
                     foreach (var user in newLecturers)
                     {
-                        user.Email = string.IsNullOrWhiteSpace(user.Email) ? $"lecturer{user.UserName}@myweb.com" : user.Email;
                         var result = await _userManager.CreateAsync(user, user.UserName);
                         if (result.Succeeded)
                         {
