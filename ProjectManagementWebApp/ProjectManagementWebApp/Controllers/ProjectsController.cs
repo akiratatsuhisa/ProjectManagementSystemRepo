@@ -344,6 +344,38 @@ namespace ProjectManagementWebApp.Controllers
             return PhysicalFile(filePath, MimeTypes.GetMimeType(fileName));
         }
 
+        public async Task<IActionResult> SchedulesInWeek()
+        {
+            var today = DateTime.Today;
+            var startDate = today.AddDays(1 - (int)today.DayOfWeek);
+            var endDate = startDate.AddDays(7);
+            startDate = startDate.AddSeconds(-1);
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
+            var projectsInWeek = _context.Projects.AsQueryable();
+            if (User.IsInRole("Student"))
+            {
+                projectsInWeek = projectsInWeek
+                    .Include(p => p.ProjectMembers)
+                    .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()));
+            }
+            if (User.IsInRole("Lecturer"))
+            {
+                projectsInWeek = projectsInWeek
+                    .Include(p => p.ProjectLecturers)
+                    .Where(p => p.ProjectLecturers.Any(pl => pl.LecturerId == GetUserId()));
+            }
+            await projectsInWeek.Include(p => p.ProjectSchedules).Where(p => p.ProjectSchedules.Any(ps => ps.StartedDate > startDate && ps.StartedDate < endDate)).ToListAsync();
+            return View(projectsInWeek);
+        }
+
+        [Authorize(Roles = "Lecturer")]
+        public async Task<IActionResult> Statistics()
+        {
+            await _context.Projects.ToListAsync();
+            return View();
+        }
+
         private bool IsProjectOfUser(int projectId)
         {
             if (User.IsInRole("Student"))
