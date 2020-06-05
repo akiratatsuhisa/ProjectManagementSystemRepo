@@ -132,4 +132,10 @@
   <data name="Grade" xml:space="preserve">
     <value>Điểm</value>
   </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Thất bại</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Thông qua</value>
+  </data>
 </root>

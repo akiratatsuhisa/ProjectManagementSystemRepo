@@ -103,17 +103,17 @@
         <tbody>
             @foreach (var item in Model.ProjectLecturers)
             {
-            <tr>
-                <td>
-                    @item.Lecturer.LecturerCode
-                </td>
-                <td>
-                    @item.Lecturer.User.FullName
-                </td>
-                <td>
-                    @item.Type
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @item.Lecturer.LecturerCode
+                    </td>
+                    <td>
+                        @item.Lecturer.User.FullName
+                    </td>
+                    <td>
+                        @item.Type
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
@@ -207,6 +207,20 @@
                         @Localizer["Check Complete Project"]
                     </button>
                 </form>
+
+                var countSchedules = Model.ProjectSchedules.Count;
+                var flagSchedule = Math.Round(countSchedules * 0.8);
+                var isFailedable = Model.ProjectSchedules.Count(p => p.Rating.HasValue) == flagSchedule;
+                if (!Model.Status.IsDone() && isFailedable)
+                {
+                    <form asp-action="ChangeStatus" method="post" class="d-inline">
+                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <input type="hidden" name="Status" value="@ProjectStatus.Failed" />
+                        <button type="submit" class="btn btn-danger">
+                            @Localizer["Failed"]
+                        </button>
+                    </form>
+                }
             }
         </div>
         <hr />

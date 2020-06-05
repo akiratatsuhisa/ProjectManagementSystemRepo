@@ -221,6 +221,7 @@ namespace ProjectManagementWebApp.Controllers
             {
                 case ProjectStatus.Continued:
                 case ProjectStatus.Canceled:
+                case ProjectStatus.Failed:
                     {
                         project.Status = status;
                         await _context.SaveChangesAsync();
@@ -327,7 +328,7 @@ namespace ProjectManagementWebApp.Controllers
                 var memberInVM = viewModel.ProjectMembers.First(m => m.StudentId == member.StudentId);
                 member.Grade = memberInVM.Grade;
             }
-            project.Status = ProjectStatus.Passed;
+            project.Status = viewModel.Status == ProjectStatus.Passed || viewModel.Status == ProjectStatus.Failed ? viewModel.Status : ProjectStatus.Failed;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { id = viewModel.Id });
         }
@@ -370,10 +371,11 @@ namespace ProjectManagementWebApp.Controllers
         }
 
         [Authorize(Roles = "Lecturer")]
-        public async Task<IActionResult> Statistics()
+        public async Task<IActionResult> Statistics(StatisticsViewModel viewModel)
         {
+            ViewBag.Statuses = new SelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text");
             await _context.Projects.ToListAsync();
-            return View();
+            return View(viewModel);
         }
 
         private bool IsProjectOfUser(int projectId)

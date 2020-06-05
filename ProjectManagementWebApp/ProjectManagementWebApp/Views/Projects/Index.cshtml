@@ -10,7 +10,7 @@
     <div class="form-row">
         <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="orderBy" asp-items="@ViewBag.OrderBy">
+                <select class="custom-select" name="orderBy" asp-items="@ViewBag.OrderBy">
                     <option value="">@Localizer["--Order By--"]</option>
                 </select>
             </div>
@@ -18,7 +18,7 @@
 
         <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="type" asp-items="@ViewBag.TypeId">
+                <select class="custom-select" name="type" asp-items="@ViewBag.TypeId">
                     <option value="">@Localizer["--Project Type--"]</option>
                 </select>
             </div>
@@ -26,7 +26,7 @@
 
         <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="status" asp-items="@ViewBag.Status">
+                <select class="custom-select" name="status" asp-items="@ViewBag.Status">
                     <option value="">@Localizer["--Status--"]</option>
                 </select>
             </div>
