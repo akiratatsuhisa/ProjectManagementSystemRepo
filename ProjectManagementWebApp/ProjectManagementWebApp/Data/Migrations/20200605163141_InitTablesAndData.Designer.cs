@@ -10,7 +10,7 @@ using ProjectManagementWebApp.Data;
 namespace ProjectManagementWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200522083220_InitTablesAndData")]
+    [Migration("20200605163141_InitTablesAndData")]
     partial class InitTablesAndData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,7 +281,7 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Faculty");
+                    b.ToTable("Faculties");
 
                     b.HasData(
                         new

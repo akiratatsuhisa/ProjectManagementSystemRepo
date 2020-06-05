@@ -17,6 +17,7 @@ using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.Data.SqlClient;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -39,6 +40,7 @@ namespace ProjectManagementWebApp.Controllers
 
         public async Task<IActionResult> Index(string search, short? type, ProjectStatus? status, string orderBy)
         {
+            #region LINQ
             var projects = _context.Projects.AsQueryable();
             if (User.IsInRole("Student"))
             {
@@ -46,12 +48,23 @@ namespace ProjectManagementWebApp.Controllers
                     .Include(p => p.ProjectMembers)
                     .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()));
             }
-            else if (User.IsInRole("Lecturer"))
+            else
             {
                 projects = projects
                   .Include(p => p.ProjectLecturers)
                   .Where(p => p.ProjectLecturers.Any(pl => pl.LecturerId == GetUserId()));
             }
+            #endregion
+
+            //#region FromSqlRaw
+            //var tableName = User.IsInRole("Student") ? "ProjectMembers" : "ProjectLecturers";
+            //var columnName = User.IsInRole("Student") ? "StudentId" : "LecturerId";
+            //var userId = new SqlParameter("UserId", GetUserId());
+            //var projects = _context.Projects.FromSqlRaw(
+            //    "Select [Projects].* From [Projects] " +
+            //    $"Inner Join (Select [ProjectId] From [{tableName}] Where [{columnName}] = @UserId) [UserProjects] " +
+            //    "On [Projects].Id = [UserProjects].ProjectId", userId);
+            //#endregion
 
             if (!string.IsNullOrWhiteSpace(search))
             {

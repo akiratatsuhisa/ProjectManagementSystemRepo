@@ -279,7 +279,7 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Faculty");
+                    b.ToTable("Faculties");
 
                     b.HasData(
                         new

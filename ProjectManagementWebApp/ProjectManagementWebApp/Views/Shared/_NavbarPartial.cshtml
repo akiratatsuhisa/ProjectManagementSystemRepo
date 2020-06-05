@@ -14,13 +14,16 @@
             <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Index">@Localizer["Projects"]</a>
         </li>
     }
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="SchedulesInWeek">@Localizer["Schedules In Week"]</a>
-    </li>
+    @if (User.IsInRole("Student") || User.IsInRole("Lecturer"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="SchedulesInWeek">@Localizer["Schedules In Week"]</a>
+        </li>
+    }
     @if (User.IsInRole("Lecturer"))
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="" asp-controller="Projects" asp-action="Statistics">@Localizer["Statistics"]</a>
         </li>
-   }
+    }
 </ul>

@@ -56,6 +56,10 @@
     <Compile Remove="Data\Migrations\20200522081602_InitTablesAndData.Designer.cs" />
     <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.cs" />
     <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522083220_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522083220_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200605162834_x.cs" />
+    <Compile Remove="Data\Migrations\20200605162834_x.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

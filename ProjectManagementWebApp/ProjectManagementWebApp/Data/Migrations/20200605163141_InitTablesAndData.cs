@@ -57,7 +57,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Faculty",
+                name: "Faculties",
                 columns: table => new
                 {
                     Id = table.Column<short>(nullable: false)
@@ -66,7 +66,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Faculty", x => x.Id);
+                    table.PrimaryKey("PK_Faculties", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,9 +140,9 @@ namespace ProjectManagementWebApp.Data.Migrations
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_Faculty_FacultyId",
+                        name: "FK_Projects_Faculties_FacultyId",
                         column: x => x.FacultyId,
-                        principalTable: "Faculty",
+                        principalTable: "Faculties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -286,7 +286,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Faculty",
+                table: "Faculties",
                 columns: new[] { "Id", "Name" },
                 values: new object[] { (short)1, "Công nghệ thông tin" });
 
@@ -378,7 +378,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Faculty");
+                name: "Faculties");
 
             migrationBuilder.DropTable(
                 name: "ProjectTypes");
