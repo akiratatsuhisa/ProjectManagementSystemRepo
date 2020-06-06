@@ -393,14 +393,6 @@ namespace ProjectManagementWebApp.Controllers
             return View(projectsInWeek);
         }
 
-        [Authorize(Roles = "Lecturer")]
-        public async Task<IActionResult> Statistics(StatisticsViewModel viewModel)
-        {
-            ViewBag.Statuses = new SelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text");
-            await _context.Projects.ToListAsync();
-            return View(viewModel);
-        }
-
         private bool IsProjectOfUser(int projectId)
         {
             if (User.IsInRole("Student"))

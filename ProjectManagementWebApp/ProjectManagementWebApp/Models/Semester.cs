@@ -20,6 +20,6 @@ namespace ProjectManagementWebApp.Models
         public DateTime StartedDate { get; set; } = DateTime.Today;
 
         [Column(TypeName = "date")]
-        public DateTime EndedDate { get; set; } = DateTime.Today.AddMonths(5).AddDays(-1);
+        public DateTime EndedDate { get; set; } = DateTime.Today.AddMonths(5);
     }
 }

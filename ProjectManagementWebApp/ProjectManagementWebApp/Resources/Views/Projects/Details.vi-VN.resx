@@ -192,4 +192,7 @@
   <data name="Failed" xml:space="preserve">
     <value>Thất bại</value>
   </data>
+  <data name="Discontinue" xml:space="preserve">
+    <value>Ngưng</value>
+  </data>
 </root>

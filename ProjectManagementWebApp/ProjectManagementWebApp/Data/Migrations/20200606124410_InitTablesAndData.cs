@@ -328,8 +328,8 @@ namespace ProjectManagementWebApp.Data.Migrations
                 columns: new[] { "Id", "EndedDate", "Name", "StartedDate" },
                 values: new object[,]
                 {
-                    { (short)1, new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-1", new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { (short)2, new DateTime(2020, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-2", new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { (short)1, new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-1", new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { (short)2, new DateTime(2020, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-2", new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(
