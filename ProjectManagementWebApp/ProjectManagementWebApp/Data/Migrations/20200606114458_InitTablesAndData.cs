@@ -109,7 +109,8 @@ namespace ProjectManagementWebApp.Data.Migrations
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "varchar(10)", nullable: true),
-                    StartedDate = table.Column<DateTime>(type: "date", nullable: false)
+                    StartedDate = table.Column<DateTime>(type: "date", nullable: false),
+                    EndedDate = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,6 +149,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                     Description = table.Column<string>(nullable: true),
                     Status = table.Column<string>(type: "nvarchar(30)", nullable: false),
                     UniqueId = table.Column<string>(maxLength: 450, nullable: true),
+                    Note = table.Column<string>(maxLength: 450, nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     UpdatedDate = table.Column<DateTime>(nullable: false)
                 },
@@ -323,11 +325,11 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Semesters",
-                columns: new[] { "Id", "Name", "StartedDate" },
+                columns: new[] { "Id", "EndedDate", "Name", "StartedDate" },
                 values: new object[,]
                 {
-                    { (short)1, "2019-1", new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { (short)2, "2019-2", new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { (short)1, new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-1", new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { (short)2, new DateTime(2020, 6, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "2019-2", new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(

@@ -138,4 +138,7 @@
   <data name="--Project Type--" xml:space="preserve">
     <value>--Loại đồ án--</value>
   </data>
+  <data name="--Semester--" xml:space="preserve">
+    <value>--Học kỳ--</value>
+  </data>
 </root>

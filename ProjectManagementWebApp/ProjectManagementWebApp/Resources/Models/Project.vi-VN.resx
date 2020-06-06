@@ -138,4 +138,10 @@
   <data name="Updated Date" xml:space="preserve">
     <value>Ngày cập nhật</value>
   </data>
+  <data name="Note" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Học kỳ</value>
+  </data>
 </root>

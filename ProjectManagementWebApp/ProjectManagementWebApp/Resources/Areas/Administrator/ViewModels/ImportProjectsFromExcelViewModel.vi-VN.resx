@@ -126,4 +126,7 @@
   <data name="The {0} field is required." xml:space="preserve">
     <value>Trường {0} là bắt buộc.</value>
   </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Học kỳ</value>
+  </data>
 </root>

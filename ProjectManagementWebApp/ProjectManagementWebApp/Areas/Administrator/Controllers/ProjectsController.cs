@@ -54,6 +54,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         {
             return View(await _context.Projects
                 .Include(p => p.ProjectType)
+                .Include(p => p.Semester)
                 .AsNoTracking()
                 .ToListAsync());
         }

@@ -38,7 +38,7 @@ namespace ProjectManagementWebApp.Controllers
             _localizer = localizer;
         }
 
-        public async Task<IActionResult> Index(string search, short? type, ProjectStatus? status, string orderBy)
+        public async Task<IActionResult> Index(string search, short? type, ProjectStatus? status, string orderBy, short? semester)
         {
             #region LINQ
             var projects = _context.Projects.AsQueryable();
@@ -81,6 +81,11 @@ namespace ProjectManagementWebApp.Controllers
                 projects = projects.Where(p => p.Status == status);
             }
 
+            if (semester.HasValue)
+            {
+                projects = projects.Where(p => p.SemesterId == semester);
+            }
+
             switch (orderBy)
             {
                 case "title-asc":
@@ -109,10 +114,12 @@ namespace ProjectManagementWebApp.Controllers
             ViewBag.Search = search;
             ViewBag.Status = status;
             ViewBag.Status = new SelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text", status);
+            ViewBag.Semester = new SelectList(await _context.Semesters.OrderByDescending(s => s.StartedDate).ToListAsync(), "Id", "Name", semester);
             ViewBag.OrderBy = new SelectList(orderByList, "Value", "Text", orderBy);
             ViewBag.TypeId = new SelectList(await _context.ProjectTypes.ToListAsync(), "Id", "Name", type);
             return View(await projects
                 .Include(p => p.ProjectType)
+                .Include(p => p.Semester)
                 .AsNoTracking()
                 .ToListAsync());
 
@@ -137,7 +144,10 @@ namespace ProjectManagementWebApp.Controllers
 
             project.ProjectType = await _context.ProjectTypes
                 .AsNoTracking()
-                .FirstOrDefaultAsync(pt => pt.Id == id);
+                .FirstOrDefaultAsync(pt => pt.Id == project.ProjectTypeId);
+            project.Semester = await _context.Semesters
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == project.SemesterId);
             project.ProjectMembers = await _context.ProjectMembers
                 .Where(pm => pm.ProjectId == id)
                 .Include(pm => pm.Student)
@@ -234,7 +244,7 @@ namespace ProjectManagementWebApp.Controllers
             {
                 case ProjectStatus.Continued:
                 case ProjectStatus.Canceled:
-                case ProjectStatus.Failed:
+                case ProjectStatus.Discontinued:
                     {
                         project.Status = status;
                         await _context.SaveChangesAsync();

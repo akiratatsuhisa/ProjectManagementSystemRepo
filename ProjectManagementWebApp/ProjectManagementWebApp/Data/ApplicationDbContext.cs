@@ -120,8 +120,8 @@ namespace ProjectManagementWebApp.Data
                 );
             builder.Entity<Semester>()
                .HasData(
-               new Semester { Id = 1, Name = "2019-1", StartedDate = new DateTime(2019, 9, 1) },
-               new Semester { Id = 2, Name = "2019-2", StartedDate = new DateTime(2020, 2, 1) }
+               new Semester { Id = 1, Name = "2019-1", StartedDate = new DateTime(2019, 9, 1), EndedDate = new DateTime(2020, 2, 1).AddDays(-1) },
+               new Semester { Id = 2, Name = "2019-2", StartedDate = new DateTime(2020, 2, 1), EndedDate = new DateTime(2020, 7, 1).AddDays(-1) }
                );
         }
 

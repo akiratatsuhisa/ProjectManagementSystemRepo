@@ -42,6 +42,10 @@ namespace ProjectManagementWebApp.Models
         [Display(Name = "Unique Id")]
         public string UniqueId { get; set; }
 
+        [StringLength(450)]
+        [Display(Name = "Note")]
+        public string Note { get; set; }
+
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
@@ -58,6 +62,7 @@ namespace ProjectManagementWebApp.Models
     public enum ProjectStatus : byte
     {
         Continued,
+        Discontinued,
         Canceled,
         Completed,
         Passed,
@@ -69,7 +74,8 @@ namespace ProjectManagementWebApp.Models
         public static bool IsDone(this ProjectStatus status) =>
             status == ProjectStatus.Completed ||
             status == ProjectStatus.Passed ||
-            status == ProjectStatus.Failed;
+            status == ProjectStatus.Failed ||
+            status == ProjectStatus.Discontinued;
 
         public static bool IsReportable(this ProjectStatus status) => status == ProjectStatus.Continued;
 
@@ -84,6 +90,7 @@ namespace ProjectManagementWebApp.Models
                 ProjectStatus.Passed => "table-success",
                 ProjectStatus.Canceled => "table-warning",
                 ProjectStatus.Failed => "table-danger",
+                ProjectStatus.Discontinued => "table-danger",
                 _ => ""
             };
     }

@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.ProjectType)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Semester)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -40,6 +43,9 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)

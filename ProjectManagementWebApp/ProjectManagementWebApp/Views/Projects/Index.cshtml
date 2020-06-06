@@ -32,7 +32,15 @@
             </div>
         </div>
 
-        <div class="col-12">
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <select class="custom-select" name="semester" asp-items="@ViewBag.Semester">
+                    <option value="">@Localizer["--Semester--"]</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
             <div class="input-group">
                 <input class="form-control" name="search" placeholder="@Localizer["Search"]" value="@ViewBag.Search" />
                 <div class="input-group-append">
@@ -48,6 +56,9 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.ProjectType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Semester)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
@@ -70,6 +81,9 @@
             <tr class="@item.Status.GetTableBackGroundColor()">
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
