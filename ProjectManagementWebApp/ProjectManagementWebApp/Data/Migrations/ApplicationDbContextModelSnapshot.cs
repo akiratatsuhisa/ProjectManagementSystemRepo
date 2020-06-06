@@ -566,6 +566,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(10)");
 
                     b.Property<DateTime>("StartedDate")

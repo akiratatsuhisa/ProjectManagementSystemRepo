@@ -10,7 +10,7 @@ using ProjectManagementWebApp.Data;
 namespace ProjectManagementWebApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200606114458_InitTablesAndData")]
+    [Migration("20200606121944_InitTablesAndData")]
     partial class InitTablesAndData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -568,6 +568,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(10)");
 
                     b.Property<DateTime>("StartedDate")

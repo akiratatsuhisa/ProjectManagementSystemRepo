@@ -108,7 +108,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                 {
                     Id = table.Column<short>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "varchar(10)", nullable: true),
+                    Name = table.Column<string>(type: "varchar(10)", nullable: false),
                     StartedDate = table.Column<DateTime>(type: "date", nullable: false),
                     EndedDate = table.Column<DateTime>(type: "date", nullable: false)
                 },

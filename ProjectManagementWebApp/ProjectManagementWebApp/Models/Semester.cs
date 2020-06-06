@@ -13,6 +13,7 @@ namespace ProjectManagementWebApp.Models
 
         [Column(TypeName = "varchar(10)")]
         [RegularExpression(@"^\d{4}-\d{1}$")]
+        [Required]
         public string Name { get; set; }
 
         [Column(TypeName = "date")]
