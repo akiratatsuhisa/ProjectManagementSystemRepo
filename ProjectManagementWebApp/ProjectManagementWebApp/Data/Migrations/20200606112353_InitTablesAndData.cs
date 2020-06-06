@@ -103,6 +103,20 @@ namespace ProjectManagementWebApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Semesters",
+                columns: table => new
+                {
+                    Id = table.Column<short>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "varchar(10)", nullable: true),
+                    StartedDate = table.Column<DateTime>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Semesters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -129,6 +143,7 @@ namespace ProjectManagementWebApp.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectTypeId = table.Column<short>(nullable: false),
                     FacultyId = table.Column<short>(nullable: false),
+                    SemesterId = table.Column<short>(nullable: false),
                     Title = table.Column<string>(maxLength: 256, nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Status = table.Column<string>(type: "nvarchar(30)", nullable: false),
@@ -149,6 +164,12 @@ namespace ProjectManagementWebApp.Data.Migrations
                         name: "FK_Projects_ProjectTypes_ProjectTypeId",
                         column: x => x.ProjectTypeId,
                         principalTable: "ProjectTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Projects_Semesters_SemesterId",
+                        column: x => x.SemesterId,
+                        principalTable: "Semesters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -300,6 +321,15 @@ namespace ProjectManagementWebApp.Data.Migrations
                     { (short)3, false, "Đồ án tổng hợp" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "Semesters",
+                columns: new[] { "Id", "Name", "StartedDate" },
+                values: new object[,]
+                {
+                    { (short)1, "2019-1", new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { (short)2, "2019-2", new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectLecturers_LecturerId",
                 table: "ProjectLecturers",
@@ -319,6 +349,11 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "IX_Projects_ProjectTypeId",
                 table: "Projects",
                 column: "ProjectTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_SemesterId",
+                table: "Projects",
+                column: "SemesterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_UniqueId",
@@ -346,6 +381,11 @@ namespace ProjectManagementWebApp.Data.Migrations
                 name: "IX_ProjectSchedules_ProjectId",
                 table: "ProjectSchedules",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Semesters_StartedDate",
+                table: "Semesters",
+                column: "StartedDate");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -382,6 +422,9 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectTypes");
+
+            migrationBuilder.DropTable(
+                name: "Semesters");
 
             migrationBuilder.DropColumn(
                 name: "BirthDate",

@@ -325,6 +325,9 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<short>("ProjectTypeId")
                         .HasColumnType("smallint");
 
+                    b.Property<short>("SemesterId")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
@@ -346,6 +349,8 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.HasIndex("FacultyId");
 
                     b.HasIndex("ProjectTypeId");
+
+                    b.HasIndex("SemesterId");
 
                     b.HasIndex("UniqueId")
                         .IsUnique()
@@ -546,6 +551,40 @@ namespace ProjectManagementWebApp.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Semester", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTime>("StartedDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StartedDate");
+
+                    b.ToTable("Semesters");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "2019-1",
+                            StartedDate = new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            Name = "2019-2",
+                            StartedDate = new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
             modelBuilder.Entity("ProjectManagementWebApp.Models.Student", b =>
                 {
                     b.Property<string>("Id")
@@ -635,6 +674,12 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.HasOne("ProjectManagementWebApp.Models.ProjectType", "ProjectType")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagementWebApp.Models.Semester", "Semester")
+                        .WithMany()
+                        .HasForeignKey("SemesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

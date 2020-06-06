@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
@@ -57,8 +58,9 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                 .ToListAsync());
         }
 
-        public IActionResult ImportProjectsFromExcel()
+        public async Task<IActionResult> ImportProjectsFromExcel()
         {
+            ViewBag.SemesterId = new SelectList(await _context.Semesters.OrderByDescending(s => s.StartedDate).ToListAsync(), "Id", "Name");
             return View();
         }
 
@@ -67,6 +69,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
         public async Task<IActionResult> ImportProjectsFromExcel(ImportProjectsFromExcelViewModel viewModel)
         {
             #region Validate ViewModel
+            ViewBag.SemesterId = new SelectList(await _context.Semesters.OrderByDescending(s => s.StartedDate).ToListAsync(), "Id", "Name", viewModel.SemesterId);
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
@@ -137,6 +140,7 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     Title = row.GetCell(2)?.ToString(),
                     Description = row.GetCell(3)?.ToString(),
                     FacultyId = short.Parse(row.GetCell(4).ToString()),
+                    SemesterId = viewModel.SemesterId
                 };
 
                 //Add members to project

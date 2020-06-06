@@ -21,6 +21,11 @@ namespace ProjectManagementWebApp.Models
         [Display(Name = "Faculty")]
         public virtual Faculty Faculty { get; set; }
 
+        public short SemesterId { get; set; }
+
+        [Display(Name = "Semester")]
+        public virtual Semester Semester { get; set; }
+
         [StringLength(256)]
         [Required]
         [Display(Name = "Title")]

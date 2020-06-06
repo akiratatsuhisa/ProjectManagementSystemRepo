@@ -14,6 +14,9 @@ namespace ProjectManagementWebApp.Areas.Administrator.ViewModels
         [Display(Name = "Started Date")]
         public DateTime? StartedDate { get; set; }
 
+        [Display(Name = "Semester")]
+        public short SemesterId { get; set; }
+
         [DataType("file")]
         [Required(ErrorMessage = "The {0} field is required.")]
         [Display(Name = "Excel File")]

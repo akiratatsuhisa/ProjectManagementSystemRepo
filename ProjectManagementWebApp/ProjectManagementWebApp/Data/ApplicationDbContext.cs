@@ -22,6 +22,8 @@ namespace ProjectManagementWebApp.Data
 
         public virtual DbSet<Faculty> Faculties { get; set; }
 
+        public virtual DbSet<Semester> Semesters { get; set; }
+
         public virtual DbSet<ProjectType> ProjectTypes { get; set; }
 
         public virtual DbSet<Project> Projects { get; set; }
@@ -95,6 +97,11 @@ namespace ProjectManagementWebApp.Data
                 .HasForeignKey<Lecturer>(l => l.Id);
             #endregion
 
+            #region Config Another Entity
+            builder.Entity<Semester>()
+              .HasIndex(s => s.StartedDate);
+            #endregion
+
             InitData(builder);
             base.OnModelCreating(builder);
         }
@@ -111,6 +118,11 @@ namespace ProjectManagementWebApp.Data
                 .HasData(
                 new Faculty { Id = 1, Name = "Công nghệ thông tin" }
                 );
+            builder.Entity<Semester>()
+               .HasData(
+               new Semester { Id = 1, Name = "2019-1", StartedDate = new DateTime(2019, 9, 1) },
+               new Semester { Id = 2, Name = "2019-2", StartedDate = new DateTime(2020, 2, 1) }
+               );
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
