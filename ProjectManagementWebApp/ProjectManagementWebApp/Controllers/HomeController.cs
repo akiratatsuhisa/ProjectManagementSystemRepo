@@ -34,8 +34,21 @@ namespace ProjectManagementWebApp.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async  Task<IActionResult> Index()
         {
+            var today = DateTime.Today;
+            var semester = await _context.Semesters.FirstOrDefaultAsync(s => s.StartedDate <= today && s.EndedDate >= today);
+            ViewBag.SemesterName = semester?.Name;
+            if (semester != null)
+            {
+                ViewBag.DiscontinuedProjects = await _context
+                    .Projects.Where(p => p.Status == ProjectStatus.Discontinued)
+                    .Include(p => p.ProjectMembers)
+                        .ThenInclude(pm => pm.Student)
+                            .ThenInclude(s => s.User)
+                    .ToListAsync();
+
+            }
             return View();
         }
 

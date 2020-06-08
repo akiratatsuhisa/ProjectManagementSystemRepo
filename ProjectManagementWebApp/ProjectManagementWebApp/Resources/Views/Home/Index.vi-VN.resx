@@ -123,4 +123,19 @@
   <data name="Welcome" xml:space="preserve">
     <value>Chào mừng</value>
   </data>
+  <data name="Discontinued projects in semester {0}" xml:space="preserve">
+    <value>Các đồ án bị ngừng trong học kỳ {0}</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Đồ án</value>
+  </data>
+  <data name="Student Code" xml:space="preserve">
+    <value>MSSV</value>
+  </data>
+  <data name="Full Name" xml:space="preserve">
+    <value>Họ và tên</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Lớp</value>
+  </data>
 </root>

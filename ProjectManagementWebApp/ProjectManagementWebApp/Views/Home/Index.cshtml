@@ -1,8 +1,37 @@
 ﻿@{
     ViewData["Title"] = Localizer["Home Page"];
-
 }
 
 <div class="text-center">
     <h1 class="display-4">@Localizer["Welcome"]</h1>
 </div>
+
+@if (ViewBag.SemesterName != null && ViewBag.DiscontinuedProjects.Count > 0)
+{
+    IEnumerable<Project> projects = ViewBag.DiscontinuedProjects;
+
+    <div>
+        <hr />
+        <h2 class="text-center text-danger">@Localizer["Discontinued projects in semester {0}", ViewBag.SemesterName]</h2>
+        <table class="table">
+            @foreach (var project in projects)
+            {
+                <tr class="table-info">
+                    <th colspan="2">@Localizer["Project"]</th>
+                    <td colspan="4">@project.Title</td>
+                </tr>
+                @foreach (var member in project.ProjectMembers)
+                {
+                    <tr>
+                        <th>@Localizer["Student Code"]</th>
+                        <td>@member.Student.StudentCode</td>
+                        <th>@Localizer["Full Name"]</th>
+                        <td>@member.Student.User.FullName</td>
+                        <th>@Localizer["Class"]</th>
+                        <td>@member.Student.ClassName</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+}
