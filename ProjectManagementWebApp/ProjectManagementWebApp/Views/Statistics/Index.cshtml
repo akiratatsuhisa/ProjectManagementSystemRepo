@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = Localizer["Statistics"];
+}
+
+<h1>@Localizer["Statistics"]</h1>
+
+<h2>@Localizer["Summary"]</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="summary-form">
+            <div class="form-group">
+                <label>@Localizer["Semester"]</label>
+                <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">@Localizer["Fetch Summary"]</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-lg-4 mb-3">
+        <div class="card" id="summary-statuses">
+            <h5 class="card-header">@Localizer["Summary Projects"]</h5>
+            <div class="card-body">
+                <h5 class="card-title"><span></span> @Localizer["projects in Semester"]</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Count"]</th>
+                            <th>@Localizer["Percent"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted">
+                5 minutes ago
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 mb-3">
+        <div class="card" id="summary-types">
+            <h5 class="card-header">@Localizer["Summary Types"]</h5>
+            <div class="card-body">
+                <h5 class="card-title"><span></span> @Localizer["types in Semester"]</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["Count"]</th>
+                            <th>@Localizer["Percent"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted">
+                5 minutes ago
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 mb-3">
+        <div class="card" id="summary-grading-points">
+            <h5 class="card-header">@Localizer["Summary Students"]</h5>
+            <div class="card-body">
+                <h5 class="card-title"><span></span> @Localizer["students in Semester"]</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Grade"]</th>
+                            <th>@Localizer["Count"]</th>
+                            <th>@Localizer["Percent"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted">
+                5 minutes ago
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-12 mb-3">
+        <div class="card">
+            <h5 class="card-header  bg-success">Featured</h5>
+            <div class="card-body">
+                <canvas id="myChart1" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+ </div>
+
+
+@section Scripts {
+    <script type="text/javascript" src="~/chartjs/Chart.min.js"></script>
+    <script async defer>
+        var form = $('#summary-form');
+
+        form.submit(function (event) {
+            event.preventDefault();
+            fetchSummary();
+        });
+
+        function fetchSummary() {
+            var selectedSemester = form.find('select[name="SemesterId"]').val();
+            $.get('/Statistics/Summary', { "semesterId": selectedSemester })
+                .done(data => {
+                    console.log(data);
+                    var dateNow = new Date();
+                    var date = `Last update: ${dateNow.toLocaleDateString()} ${dateNow.toLocaleTimeString()}`;
+                    const { statuses, types, gradingPoints } = data;
+                    //Statuses
+                    var cardStatuses = $('#summary-statuses');
+                    cardStatuses.find('.card-title span').text(statuses.reduce((total, currentValue) => total += currentValue.count, 0));
+                    var tbodyStatuses = "";
+                    statuses.forEach(s =>
+                        tbodyStatuses +=
+                        `<tr class="${s.tableBackGroundColor}"><th>${s.status}</th><td>${s.count}</td><td>${s.percent}%</td></tr>`
+                    );
+                    cardStatuses.find('table tbody').html(tbodyStatuses);
+                    cardStatuses.find('.card-footer').text(date);
+                    
+                    //Types
+                    var cardTypes = $('#summary-types');
+                    cardTypes.find('.card-title span').text(types.length);
+                    var tbodyTypes = "";
+                    types.forEach(t =>
+                        tbodyTypes +=
+                        `<tr><th>${t.name}</th><td>${t.count}</td><td>${t.percent}%</td></tr>`
+                    );
+                    cardTypes.find('table tbody').html(tbodyTypes);
+                    cardTypes.find('.card-footer').text(date);
+
+                    //Grading Points
+                    
+                    var cardGradingPoints = $('#summary-grading-points');
+                    cardGradingPoints.find('.card-title span').text(gradingPoints.reduce((total, currentValue) => total += currentValue.count, 0));
+                    var tbodyGradingPoints = "";
+                    gradingPoints.forEach(gp =>
+                        tbodyGradingPoints +=
+                        `<tr><th>${gp.name}</th><td>${gp.count}</td><td>${gp.percent}%</td></tr>`
+                    );
+                    cardGradingPoints.find('table tbody').html(tbodyGradingPoints);
+                    cardGradingPoints.find('.card-footer').text(date);
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+
+        $(document).ready(function () {
+            fetchSummary();
+        });
+
+        var ctx1 = document.getElementById('myChart1').getContext('2d');
+         renderChart(ctx1);
+
+        
+        function renderChart(context) {
+            return new Chart(context, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+        }
+    </script>
+}
+

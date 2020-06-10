@@ -186,4 +186,13 @@
   <data name="Schedules" xml:space="preserve">
     <value>Lịch trình</value>
   </data>
+  <data name="Type" xml:space="preserve">
+    <value>Loại</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Thất bại</value>
+  </data>
+  <data name="Discontinue" xml:space="preserve">
+    <value>Ngưng</value>
+  </data>
 </root>

@@ -106,4 +106,7 @@
   <data name="The {0} field is required." xml:space="preserve">
     <value>The {0} field is required.</value>
   </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Semester</value>
+  </data>
 </root>

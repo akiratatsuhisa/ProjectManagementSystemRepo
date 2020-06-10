@@ -123,4 +123,10 @@
   <data name="Projects" xml:space="preserve">
     <value>Đồ án</value>
   </data>
+  <data name="Schedules In Week" xml:space="preserve">
+    <value>Lịch trình trong tuần</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>Thống kê</value>
+  </data>
 </root>

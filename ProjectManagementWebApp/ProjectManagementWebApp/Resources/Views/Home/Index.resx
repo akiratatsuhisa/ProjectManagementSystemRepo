@@ -103,4 +103,19 @@
   <data name="Welcome" xml:space="preserve">
     <value>Welcome</value>
   </data>
+  <data name="Discontinued projects in semester {0}" xml:space="preserve">
+    <value>Discontinued projects in semester {0}</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="Student Code" xml:space="preserve">
+    <value>Student Code</value>
+  </data>
+  <data name="Full Name" xml:space="preserve">
+    <value>Full Name</value>
+  </data>
+  <data name="Class" xml:space="preserve">
+    <value>Class</value>
+  </data>
 </root>

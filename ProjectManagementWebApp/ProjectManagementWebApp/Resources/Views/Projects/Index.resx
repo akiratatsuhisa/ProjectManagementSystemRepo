@@ -115,4 +115,10 @@
   <data name="--Order By--" xml:space="preserve">
     <value>--Order By--</value>
   </data>
+  <data name="--Project Type--" xml:space="preserve">
+    <value>--Project Type--</value>
+  </data>
+  <data name="--Semester--" xml:space="preserve">
+    <value>--Semester--</value>
+  </data>
 </root>

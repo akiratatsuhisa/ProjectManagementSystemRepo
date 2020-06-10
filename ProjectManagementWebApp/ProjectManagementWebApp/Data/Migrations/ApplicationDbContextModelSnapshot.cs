@@ -265,6 +265,30 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.ToTable("Audits");
                 });
 
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Faculty", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Faculties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            Name = "Công nghệ thông tin"
+                        });
+                });
+
             modelBuilder.Entity("ProjectManagementWebApp.Models.Lecturer", b =>
                 {
                     b.Property<string>("Id")
@@ -295,11 +319,22 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<short>("FacultyId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(450)")
+                        .HasMaxLength(450);
+
                     b.Property<short>("ProjectTypeId")
                         .HasColumnType("smallint");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
+                    b.Property<short>("SemesterId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -315,7 +350,11 @@ namespace ProjectManagementWebApp.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FacultyId");
+
                     b.HasIndex("ProjectTypeId");
+
+                    b.HasIndex("SemesterId");
 
                     b.HasIndex("UniqueId")
                         .IsUnique()
@@ -332,6 +371,16 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("LecturerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ProjectId", "LecturerId");
 
                     b.HasIndex("LecturerId");
@@ -347,8 +396,18 @@ namespace ProjectManagementWebApp.Data.Migrations
                     b.Property<string>("StudentId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<float?>("Grade")
                         .HasColumnType("real");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ProjectId", "StudentId");
 
@@ -496,6 +555,46 @@ namespace ProjectManagementWebApp.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ProjectManagementWebApp.Models.Semester", b =>
+                {
+                    b.Property<short>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("EndedDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<DateTime>("StartedDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StartedDate");
+
+                    b.ToTable("Semesters");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (short)1,
+                            EndedDate = new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "2019-1",
+                            StartedDate = new DateTime(2019, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = (short)2,
+                            EndedDate = new DateTime(2020, 7, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "2019-2",
+                            StartedDate = new DateTime(2020, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
+                });
+
             modelBuilder.Entity("ProjectManagementWebApp.Models.Student", b =>
                 {
                     b.Property<string>("Id")
@@ -576,9 +675,21 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             modelBuilder.Entity("ProjectManagementWebApp.Models.Project", b =>
                 {
+                    b.HasOne("ProjectManagementWebApp.Models.Faculty", "Faculty")
+                        .WithMany("Projects")
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ProjectManagementWebApp.Models.ProjectType", "ProjectType")
                         .WithMany("Projects")
                         .HasForeignKey("ProjectTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagementWebApp.Models.Semester", "Semester")
+                        .WithMany()
+                        .HasForeignKey("SemesterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

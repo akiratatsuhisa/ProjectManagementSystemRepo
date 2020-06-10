@@ -118,4 +118,10 @@
   <data name="Updated Date" xml:space="preserve">
     <value>Updated Date</value>
   </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Semester</value>
+  </data>
 </root>

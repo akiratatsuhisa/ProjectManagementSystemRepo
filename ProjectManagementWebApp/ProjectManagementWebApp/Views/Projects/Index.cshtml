@@ -8,29 +8,41 @@
 
 <form class="my-3">
     <div class="form-row">
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="orderBy">
+                <select class="custom-select" name="orderBy" asp-items="@ViewBag.OrderBy">
                     <option value="">@Localizer["--Order By--"]</option>
-                    <option value="title-asc">Title Asc</option>
-                    <option value="title-desc">Title Desc</option>
-                    <option value="date-asc">Date Asc</option>
-                    <option value="date-desc">Date Desc</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-lg-4">
             <div class="form-group">
-                <select class="form-control" name="status" asp-items="Html.GetEnumSelectList<ProjectStatus>()">
+                <select class="custom-select" name="type" asp-items="@ViewBag.TypeId">
+                    <option value="">@Localizer["--Project Type--"]</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <select class="custom-select" name="status" asp-items="@ViewBag.Status">
                     <option value="">@Localizer["--Status--"]</option>
                 </select>
             </div>
         </div>
 
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-lg-4">
+            <div class="form-group">
+                <select class="custom-select" name="semester" asp-items="@ViewBag.Semester">
+                    <option value="">@Localizer["--Semester--"]</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
             <div class="input-group">
-                <input class="form-control" name="search" placeholder="@Localizer["Search"]" />
+                <input class="form-control" name="search" placeholder="@Localizer["Search"]" value="@ViewBag.Search" />
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary">@Localizer["Search"]</button>
                 </div>
@@ -46,6 +58,9 @@
                 @Html.DisplayNameFor(model => model.ProjectType)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Semester)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -54,15 +69,21 @@
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class="@item.Status.GetTableBackGroundColor()">
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
@@ -72,6 +93,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">@Localizer["Details"]</a> |

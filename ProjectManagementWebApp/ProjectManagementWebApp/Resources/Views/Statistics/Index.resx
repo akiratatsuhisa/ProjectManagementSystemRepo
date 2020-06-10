@@ -97,16 +97,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="Projects" xml:space="preserve">
-    <value>Projects</value>
-  </data>
-  <data name="Schedules In Week" xml:space="preserve">
-    <value>Schedules In Week</value>
-  </data>
   <data name="Statistics" xml:space="preserve">
     <value>Statistics</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="Semester" xml:space="preserve">
+    <value>Semester</value>
+  </data>
+  <data name="Fetch Summary" xml:space="preserve">
+    <value>Fetch Summary</value>
+  </data>
+  <data name="Summary Projects" xml:space="preserve">
+    <value>Summary Projects</value>
+  </data>
+  <data name="Summary Types" xml:space="preserve">
+    <value>Summary Types</value>
+  </data>
+  <data name="projects in Semester" xml:space="preserve">
+    <value>projects in Semester</value>
+  </data>
+  <data name="types in Semester" xml:space="preserve">
+    <value>types in Semester</value>
+  </data>
+  <data name="students in Semester" xml:space="preserve">
+    <value>students in Semester</value>
+  </data>
+  <data name="Summary Members" xml:space="preserve">
+    <value>Summary Members</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="Percent" xml:space="preserve">
+    <value>Percent</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Grade" xml:space="preserve">
+    <value>Grade</value>
   </data>
 </root>

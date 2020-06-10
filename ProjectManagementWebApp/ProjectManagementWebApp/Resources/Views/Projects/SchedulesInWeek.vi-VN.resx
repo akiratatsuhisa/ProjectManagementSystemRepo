@@ -117,28 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Projects" xml:space="preserve">
-    <value>Đồ án</value>
-  </data>
-  <data name="Details" xml:space="preserve">
-    <value>Chi tiết</value>
-  </data>
-  <data name="Schedules" xml:space="preserve">
-    <value>Lịch trình</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Tìm kiếm</value>
-  </data>
-  <data name="--Status--" xml:space="preserve">
-    <value>--Trạng thái--</value>
-  </data>
-  <data name="--Order By--" xml:space="preserve">
-    <value>--Sắp xếp--</value>
-  </data>
-  <data name="--Project Type--" xml:space="preserve">
-    <value>--Loại đồ án--</value>
-  </data>
-  <data name="--Semester--" xml:space="preserve">
-    <value>--Học kỳ--</value>
+  <data name="Schedules In Week" xml:space="preserve">
+    <value>Lịch trình trong tuần</value>
   </data>
 </root>

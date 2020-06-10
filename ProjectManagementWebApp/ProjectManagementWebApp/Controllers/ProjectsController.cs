@@ -15,6 +15,9 @@ using MimeKit;
 using ProjectManagementWebApp.ViewModels;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.Data.SqlClient;
 
 namespace ProjectManagementWebApp.Controllers
 {
@@ -35,8 +38,9 @@ namespace ProjectManagementWebApp.Controllers
             _localizer = localizer;
         }
 
-        public async Task<IActionResult> Index(string search, ProjectStatus? status, string orderBy)
+        public async Task<IActionResult> Index(string search, short? type, ProjectStatus? status, string orderBy, short? semester)
         {
+            #region LINQ
             var projects = _context.Projects.AsQueryable();
             if (User.IsInRole("Student"))
             {
@@ -44,21 +48,42 @@ namespace ProjectManagementWebApp.Controllers
                     .Include(p => p.ProjectMembers)
                     .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()));
             }
-            else if (User.IsInRole("Lecturer"))
+            else
             {
                 projects = projects
                   .Include(p => p.ProjectLecturers)
                   .Where(p => p.ProjectLecturers.Any(pl => pl.LecturerId == GetUserId()));
             }
+            #endregion
+
+            //#region FromSqlRaw
+            //var tableName = User.IsInRole("Student") ? "ProjectMembers" : "ProjectLecturers";
+            //var columnName = User.IsInRole("Student") ? "StudentId" : "LecturerId";
+            //var userId = new SqlParameter("UserId", GetUserId());
+            //var projects = _context.Projects.FromSqlRaw(
+            //    "Select [Projects].* From [Projects] " +
+            //    $"Inner Join (Select [ProjectId] From [{tableName}] Where [{columnName}] = @UserId) [UserProjects] " +
+            //    "On [Projects].Id = [UserProjects].ProjectId", userId);
+            //#endregion
 
             if (!string.IsNullOrWhiteSpace(search))
             {
                 projects = projects.Where(p => p.Title.Contains(search));
             }
 
+            if (type.HasValue)
+            {
+                projects = projects.Where(p => p.ProjectTypeId == type);
+            }
+
             if (status.HasValue)
             {
                 projects = projects.Where(p => p.Status == status);
+            }
+
+            if (semester.HasValue)
+            {
+                projects = projects.Where(p => p.SemesterId == semester);
             }
 
             switch (orderBy)
@@ -78,8 +103,23 @@ namespace ProjectManagementWebApp.Controllers
                     break;
             }
 
+            var orderByList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = "Title Asc", Value = "title-asc" },
+                new SelectListItem{ Text = "Title Desc", Value = "title-desc" },
+                new SelectListItem{ Text = "Date Asc", Value = "date-asc" },
+                new SelectListItem{ Text = "Date Desc", Value = "date-desc" },
+            };
+
+            ViewBag.Search = search;
+            ViewBag.Status = status;
+            ViewBag.Status = new SelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text", status);
+            ViewBag.Semester = new SelectList(await _context.Semesters.OrderByDescending(s => s.StartedDate).ToListAsync(), "Id", "Name", semester);
+            ViewBag.OrderBy = new SelectList(orderByList, "Value", "Text", orderBy);
+            ViewBag.TypeId = new SelectList(await _context.ProjectTypes.ToListAsync(), "Id", "Name", type);
             return View(await projects
                 .Include(p => p.ProjectType)
+                .Include(p => p.Semester)
                 .AsNoTracking()
                 .ToListAsync());
 
@@ -104,7 +144,10 @@ namespace ProjectManagementWebApp.Controllers
 
             project.ProjectType = await _context.ProjectTypes
                 .AsNoTracking()
-                .FirstOrDefaultAsync(pt => pt.Id == id);
+                .FirstOrDefaultAsync(pt => pt.Id == project.ProjectTypeId);
+            project.Semester = await _context.Semesters
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == project.SemesterId);
             project.ProjectMembers = await _context.ProjectMembers
                 .Where(pm => pm.ProjectId == id)
                 .Include(pm => pm.Student)
@@ -201,6 +244,7 @@ namespace ProjectManagementWebApp.Controllers
             {
                 case ProjectStatus.Continued:
                 case ProjectStatus.Canceled:
+                case ProjectStatus.Discontinued:
                     {
                         project.Status = status;
                         await _context.SaveChangesAsync();
@@ -307,7 +351,7 @@ namespace ProjectManagementWebApp.Controllers
                 var memberInVM = viewModel.ProjectMembers.First(m => m.StudentId == member.StudentId);
                 member.Grade = memberInVM.Grade;
             }
-            project.Status = ProjectStatus.Passed;
+            project.Status = viewModel.Status == ProjectStatus.Passed || viewModel.Status == ProjectStatus.Failed ? viewModel.Status : ProjectStatus.Failed;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { id = viewModel.Id });
         }
@@ -322,6 +366,31 @@ namespace ProjectManagementWebApp.Controllers
             }
 
             return PhysicalFile(filePath, MimeTypes.GetMimeType(fileName));
+        }
+
+        public async Task<IActionResult> SchedulesInWeek()
+        {
+            var today = DateTime.Today;
+            var startDate = today.AddDays(1 - (int)today.DayOfWeek);
+            var endDate = startDate.AddDays(7);
+            startDate = startDate.AddSeconds(-1);
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
+            var projectsInWeek = _context.Projects.AsQueryable();
+            if (User.IsInRole("Student"))
+            {
+                projectsInWeek = projectsInWeek
+                    .Include(p => p.ProjectMembers)
+                    .Where(p => p.ProjectMembers.Any(pm => pm.StudentId == GetUserId()));
+            }
+            if (User.IsInRole("Lecturer"))
+            {
+                projectsInWeek = projectsInWeek
+                    .Include(p => p.ProjectLecturers)
+                    .Where(p => p.ProjectLecturers.Any(pl => pl.LecturerId == GetUserId()));
+            }
+            await projectsInWeek.Include(p => p.ProjectSchedules).Where(p => p.ProjectSchedules.Any(ps => ps.StartedDate > startDate && ps.StartedDate < endDate)).ToListAsync();
+            return View(projectsInWeek);
         }
 
         private bool IsProjectOfUser(int projectId)

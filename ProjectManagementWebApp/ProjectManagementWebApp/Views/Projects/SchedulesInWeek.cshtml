@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ProjectManagementWebApp.Models.Project>
+
+@{
+    ViewData["Title"] = Localizer["Schedules In Week"];
+    DateTime startDate = ViewBag.StartDate;
+    DateTime endDate = ViewBag.EndDate;
+    var dateTimeNow = DateTime.Now;
+}
+
+<div class="col-xl-8 col-lg-10 px-0 mx-auto">
+    <h1 class="text-center">@Localizer["Schedules In Week"]</h1>
+    @foreach (var project in Model)
+    {
+        var scheduleIndex = 1;
+        var schedules = project.ProjectSchedules.OrderBy(ps => ps.ExpiredDate);
+        var href = @Url.Action("Schedules", "Projects", new { projectId = project.Id });
+        <div class="card my-3">
+            <div class="card-body">
+                <h4 class="card-title"><a asp-controller="Projects" asp-action="Details" asp-route-id="@project.Id">@Localizer["Project Title {0}", project.Title]</a></h4>
+                <div class="card-text">
+                    @foreach (var schedule in schedules)
+                    {
+                        if (schedule.StartedDate > startDate && schedule.StartedDate < endDate)
+                        {
+                            <div>
+                                <hr />
+                                <h4>@schedule.Name</h4>
+                                <dl class="row">
+                                    <dt class="col-md-4">@Localizer["Started Date:"]</dt>
+                                    <dd class="col-md-8">@schedule.StartedDate</dd>
+                                    <dt class="col-md-4">@Localizer["Expired Date:"]</dt>
+                                    <dd class="col-md-8">@schedule.ExpiredDate</dd>
+                                </dl>
+                                <a href="@href#week-@scheduleIndex-details" class="btn btn-info">Details</a>
+                                @if (schedule.ExpiredDate > dateTimeNow && project.Status.IsReportable())
+                                {
+                                    <a href="@href#week-@scheduleIndex-reports" class="btn btn-outline-primary">Reports</a>
+                                }
+                                @if (schedule.ExpiredDate < dateTimeNow && User.IsInRole("Lecturer"))
+                                {
+                                    <a href="@href#week-@scheduleIndex-comment" class="btn btn-outline-success">Comment</a>
+                                }
+                            </div>
+                        }
+                        scheduleIndex++;
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

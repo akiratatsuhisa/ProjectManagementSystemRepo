@@ -46,16 +46,39 @@
     <Compile Remove="Data\Migrations\20200413143931_Test.Designer.cs" />
     <Compile Remove="Data\Migrations\20200413144836_Test.cs" />
     <Compile Remove="Data\Migrations\20200413144836_Test.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413145120_InitTables.cs" />
+    <Compile Remove="Data\Migrations\20200413145120_InitTables.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200413145142_InitData.cs" />
+    <Compile Remove="Data\Migrations\20200413145142_InitData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522080835_AlteProjectMembersTableAndProjectLecturersTable.cs" />
+    <Compile Remove="Data\Migrations\20200522080835_AlteProjectMembersTableAndProjectLecturersTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522081602_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522081602_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522082218_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200522083220_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200522083220_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200605162834_x.cs" />
+    <Compile Remove="Data\Migrations\20200605162834_x.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200605163141_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200605163141_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200606112013_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200606112013_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200606114458_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200606114458_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200606121944_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200606121944_InitTablesAndData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="MimeKit" Version="2.6.0" />
     <PackageReference Include="NPOI" Version="2.5.1" />
   </ItemGroup>

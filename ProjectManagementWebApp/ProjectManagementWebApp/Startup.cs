@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Localization;
 using ProjectManagementWebApp.Models;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using ProjectManagementWebApp.Helpers;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using ProjectManagementWebApp.Services;
 
 namespace ProjectManagementWebApp
 {
@@ -38,13 +41,18 @@ namespace ProjectManagementWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Configure Smtp
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            #endregion
+
+            #region Configure Services Identity
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-
                 options.Password = new PasswordOptions
                 {
                     RequireDigit = false,
@@ -61,7 +69,7 @@ namespace ProjectManagementWebApp
                     DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5)
                 };
 
-                options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedAccount = false;
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -77,10 +85,13 @@ namespace ProjectManagementWebApp
                 options.SupportedCultures = _supportedCultures;
                 options.SupportedUICultures = _supportedCultures;
             });
+            #endregion
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization(); 
+                .AddDataAnnotationsLocalization()
+                .AddNewtonsoftJson();
             services.AddRazorPages()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
@@ -148,7 +159,7 @@ namespace ProjectManagementWebApp
             {
                 Id = "f9852731-c13c-4765-bbb1-9c3321da46ae",
                 UserName = "admin",
-                Email = "admin@myweb.com",
+                Email = "akiratatsuhisa@gmail.com",
                 FirstName = "Dat",
                 LastName = "Dang",
                 Gender = true,
@@ -175,7 +186,7 @@ namespace ProjectManagementWebApp
                 LastName = "Nguyễn Mạnh",
                 Gender = true,
                 BirthDate = new DateTime(1980, 12, 24),
-                EmailConfirmed = true,
+                EmailConfirmed = false,
                 Lecturer = new Lecturer
                 {
                     LecturerCode = "nguyenmanhhung",
@@ -197,12 +208,13 @@ namespace ProjectManagementWebApp
                 {
                     Id = "8fb607ee-ccc5-4795-afe3-7455f37dedf3",
                     UserName = "1611061191",
-                    Email = "student1611061191@myweb.com",
+                    Email = "dmdattadmd@gmail.com",
                     FirstName = "Đạt",
                     LastName = "Đặng Minh",
                     Gender = true,
                     BirthDate = new DateTime(1998, 04, 01),
                     EmailConfirmed = true,
+                    PhoneNumber = "0798059927",
                     Student = new Student
                     {
                         StudentCode = "1611061191",
@@ -218,7 +230,7 @@ namespace ProjectManagementWebApp
                     LastName = "Nguyễn Hồng",
                     Gender = true,
                     BirthDate = new DateTime(1998, 06, 02),
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     Student = new Student
                     {
                         StudentCode = "1611062192",
@@ -234,7 +246,7 @@ namespace ProjectManagementWebApp
                     LastName = "Phạm Minh",
                     Gender = true,
                     BirthDate = new DateTime(1998, 08, 03),
-                    EmailConfirmed = true,
+                    EmailConfirmed = false,
                     Student = new Student
                     {
                         StudentCode = "1611062192",
