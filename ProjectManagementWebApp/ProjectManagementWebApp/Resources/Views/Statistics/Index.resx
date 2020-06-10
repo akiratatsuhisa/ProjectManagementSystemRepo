@@ -121,7 +121,25 @@
   <data name="types in Semester" xml:space="preserve">
     <value>types in Semester</value>
   </data>
-  <data name="members in Semester" xml:space="preserve">
-    <value>members in Semester</value>
+  <data name="students in Semester" xml:space="preserve">
+    <value>students in Semester</value>
+  </data>
+  <data name="Summary Members" xml:space="preserve">
+    <value>Summary Members</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="Percent" xml:space="preserve">
+    <value>Percent</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Grade" xml:space="preserve">
+    <value>Grade</value>
   </data>
 </root>

@@ -8,7 +8,7 @@ namespace ProjectManagementWebApp.Helpers
 {
     public static class SeletectListHelper
     {
-        public static IEnumerable<SelectListItem> GetEnumSelectList<T>()
+        public static IEnumerable<SelectListItem> GetEnumSelectList<T>() where T : Enum
         {
             var list = new List<SelectListItem>();
 
