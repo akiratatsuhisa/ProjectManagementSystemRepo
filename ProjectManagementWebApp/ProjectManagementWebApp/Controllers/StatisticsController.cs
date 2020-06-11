@@ -100,7 +100,7 @@ namespace ProjectManagementWebApp.Controllers
             });
         }
 
-        public async Task<IActionResult> SchedulesByWeeks(short semesterId, IEnumerable<ProjectStatus> projectStatuses, DateTime? toDate, int prevWeeks = 4, bool isBeginWeekSunday = false)
+        public async Task<IActionResult> SchedulesByWeeks(short semesterId, IEnumerable<ProjectStatus> projectStatuses, DateTime? toDate, int prevWeeks = 4, bool isBeginWeekMonday = true)
         {
             if (!_context.Semesters.Any(s => s.Id == semesterId))
             {
@@ -139,7 +139,7 @@ namespace ProjectManagementWebApp.Controllers
                 toDate = DateTime.Today;
             }
 
-            toDate = toDate.Value.AddDays(isBeginWeekSunday ? - (int)toDate.Value.DayOfWeek : -(int)toDate.Value.DayOfWeek + 1).AddDays(7);
+            toDate = toDate.Value.AddDays(isBeginWeekMonday ? -(int)toDate.Value.DayOfWeek + 1 : -(int)toDate.Value.DayOfWeek).AddDays(7);
             var fromDate = toDate.Value.AddDays(-7 * prevWeeks);
             var schedules = filterProjects
                 .Include(p => p.ProjectSchedules)

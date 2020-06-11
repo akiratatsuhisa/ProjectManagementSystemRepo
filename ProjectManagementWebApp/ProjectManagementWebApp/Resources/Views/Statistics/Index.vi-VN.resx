@@ -162,4 +162,31 @@
   <data name="Grade" xml:space="preserve">
     <value>Điểm</value>
   </data>
+  <data name="Charts" xml:space="preserve">
+    <value>Biểu đồ</value>
+  </data>
+  <data name="Project schedules by weeks" xml:space="preserve">
+    <value>Lịch trình đồ án theo tuần</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Lọc</value>
+  </data>
+  <data name="Statuses" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Prev Weeks" xml:space="preserve">
+    <value>Tuần trước</value>
+  </data>
+  <data name="To Date" xml:space="preserve">
+    <value>Đến ngày</value>
+  </data>
+  <data name="Chart" xml:space="preserve">
+    <value>Biểu đồ</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Bắt đầu</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Dừng</value>
+  </data>
 </root>

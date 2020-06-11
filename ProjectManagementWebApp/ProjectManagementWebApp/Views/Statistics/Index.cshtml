@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-12 col-lg-6 mb-3">
-        <div class="card" id="summary-types">
+        <div class="card">
             <h5 class="card-header">@Localizer["Summary Types"]</h5>
             <div class="card-body">
                 <form id="summary-form">
@@ -45,7 +45,7 @@
                 </table>
             </div>
             <div class="card-footer text-muted">
-                5 minutes ago
+                ...
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
                 </table>
             </div>
             <div class="card-footer text-muted">
-                5 minutes ago
+                ...
             </div>
         </div>
     </div>
@@ -91,17 +91,17 @@
                 </table>
             </div>
             <div class="card-footer text-muted">
-                5 minutes ago
+                ...
             </div>
         </div>
     </div>
 </div>
 
-<h2>@Localizer["Chart"]</h2>
+<h2 class="text-primary">@Localizer["Charts"]</h2>
 <hr />
 
-<div class="card">
-    <h3 class="card-header text-center text-primary">@Localizer["Project schedules by weeks"]</h3>
+<div class="card" id="schedules-by-weeks-card">
+    <h3 class="card-header text-center">@Localizer["Project schedules by weeks"]</h3>
     <div class="card-body">
         <div class="row">
             <div class="col-12 col-lg-4 mb-3">
@@ -128,12 +128,20 @@
                         }
                     </div>
                     <div class="form-group">
-                        <label>@Localizer["Prev Week"]</label>
+                        <label>@Localizer["Prev Weeks"]</label>
                         <input class="form-control" type="number" name="PrevWeeks" value="4" min="1" max="24" required />
                     </div>
                     <div class="form-group">
                         <label>@Localizer["To Date"]</label>
-                        <input class="form-control" type="date" name="ToDate" />
+                        <div class="input-group">
+                            <div class="input-group-prepend" id="begin-week-group">
+                                <div class="input-group-text">
+                                    <input name="IsBeginWeekMonday" type="checkbox" checked="checked">
+                                </div>
+                                <span class="input-group-text">Monday</span>
+                            </div>
+                            <input class="form-control" type="date" name="ToDate" />
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -155,6 +163,9 @@
                 <canvas id="schedules-by-weeks-chart" height="200"></canvas>
             </div>
         </div>
+    </div>
+    <div class="card-footer text-muted">
+        ...
     </div>
 </div>
 
@@ -204,7 +215,6 @@
                     cardTypes.find('.card-footer').text(date);
 
                     //Grading Points
-
                     var cardGradingPoints = $('#summary-grading-points');
                     cardGradingPoints.find('.card-title span').text(gradingPoints.reduce((total, currentValue) => total += currentValue.count, 0));
                     var tbodyGradingPoints = "";
@@ -245,6 +255,7 @@
                 "ProjectStatuses": schedulesByWeeksFilterForm.find('input[name="ProjectStatuses"]').serializeArray().map(item => item.value),
                 "PrevWeeks": schedulesByWeeksFilterForm.find('input[name="PrevWeeks"]').val(),
                 "ToDate": schedulesByWeeksFilterForm.find('input[name="ToDate"]').val(),
+                "IsBeginWeekMonday": schedulesByWeeksFilterForm.find('input[name="IsBeginWeekMonday"]').is(':checked')
             }
 
             $.ajax({
@@ -256,6 +267,8 @@
                 dataType: 'json'
             })
                 .done(data => {
+                    var dateNow = new Date();
+                    var date = `Last update: ${dateNow.toLocaleDateString()} ${dateNow.toLocaleTimeString()}`;
                     console.log(data);
                     var currentChart = charts['schedules-by-weeks-chart'];
                     var chartLength = currentChart.chart.data.labels.length;
@@ -272,6 +285,8 @@
                         addData(currentChart, data[i].commentsCount, 2);
                         addData(currentChart, data[i].reportsTotal, 3);
                     }
+
+                    $('#schedules-by-weeks-card .card-footer').text(date);
                 })
                 .catch(err => {
                     console.error(err);
@@ -282,6 +297,13 @@
     <script async defer>
         var form = $('#summary-form');
         var schedulesByWeeksFilterForm = $('#schedules-by-weeks-filter-form');
+        var benginWeekGroup = $('#begin-week-group');
+
+        form.submit(function (event) {
+            event.preventDefault();
+            fetchSummary();
+            fetchSchedulesByWeeksChart();
+        });
 
         charts['schedules-by-weeks-chart'] = new Chart(document.getElementById('schedules-by-weeks-chart').getContext('2d'), {
             type: 'bar',
@@ -323,14 +345,6 @@
             }
         });
 
-        console.log(charts['schedules-by-weeks-chart']);
-
-        form.submit(function (event) {
-            event.preventDefault();
-            fetchSummary();
-            fetchSchedulesByWeeksChart();
-        });
-
         $(document).ready(function () {
             fetchSummary();
             schedulesByWeeksFilterForm.find('button[name="btn-start"]').attr('disabled', 'disabled');
@@ -357,6 +371,11 @@
             setTimeout(() => {
                 schedulesByWeeksFilterForm.find('button[name="btn-start"]').removeAttr('disabled');
             }, 1000);
+        });
+
+        benginWeekGroup.find('input[name="IsBeginWeekMonday"]').first().change(function (event) {
+            var content = $(this).is(':checked') ? 'Monday' : 'Sunday';
+            benginWeekGroup.find('span.input-group-text').text(content);
         });
     </script>
 }
