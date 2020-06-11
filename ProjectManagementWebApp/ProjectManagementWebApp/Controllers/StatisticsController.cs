@@ -97,6 +97,93 @@ namespace ProjectManagementWebApp.Controllers
             });
         }
 
+        public async Task<IActionResult> SchedulesByWeeks(short semesterId, IEnumerable<ProjectStatus> projectStatuses, DateTime? toDate, int prevWeeks = 4)
+        {
+            if (!_context.Semesters.Any(s => s.Id == semesterId))
+            {
+                ModelState.AddModelError("SemesterId", "Invalid semester id.");
+            }
+
+            if (prevWeeks < 1)
+            {
+                ModelState.AddModelError("PrevWeeks", "Invalid prev weeks.");
+            }
+
+            if (toDate.HasValue && toDate > DateTime.Today)
+            {
+                ModelState.AddModelError("PrevWeeks", "Invalid to date.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var filterProjects = _context.Projects
+                .Include(p => p.ProjectLecturers)
+                .Where(p => p.ProjectLecturers
+                    .Any(pl => pl.LecturerId == GetUserId()) &&
+                    p.SemesterId == semesterId
+                );
+
+            if (projectStatuses?.Count() > 0)
+            {
+                filterProjects = filterProjects.Where(p => projectStatuses.Contains(p.Status));
+            }
+
+            if (!toDate.HasValue)
+            {
+                toDate = DateTime.Today;
+            }
+            else
+            {
+                toDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 0);
+            }
+
+            toDate = toDate.Value.AddDays(-(int)toDate.Value.DayOfWeek).AddDays(7);
+            var fromDate = toDate.Value.AddDays(-7 * prevWeeks);
+            var schedules = filterProjects
+                .Include(p => p.ProjectSchedules)
+                .SelectMany(p => p.ProjectSchedules)
+                .Where(ps => ps.StartedDate >= fromDate && ps.StartedDate < toDate.Value)
+                .Include(ps => ps.ProjectScheduleReports);
+
+            var filterSchedules = await schedules
+                .Select(ps => new
+                {
+                    ps.StartedDate,
+                    ps.ExpiredDate,
+                    ReportsCount = ps.ProjectScheduleReports.Count,
+                    IsCommented = ps.Rating.HasValue
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var schedulesByWeeks = new List<object>();
+
+            for (int i = 1; i <= prevWeeks; i++)
+            {
+                var currentDate = toDate.Value.AddDays(-(i * 7));
+
+                var weekSchedules = filterSchedules
+                    .Where(ps => ps.StartedDate >= currentDate);
+                filterSchedules = filterSchedules
+                    .Where(ps => ps.StartedDate < currentDate)
+                    .ToList();
+                schedulesByWeeks.Add(new
+                {
+                    Date = currentDate,
+                    ProjectReportedsCount = weekSchedules.Count(ps => ps.ReportsCount > 0),
+                    ReportedsTotal = weekSchedules.Sum(ps => ps.ReportsCount),
+                    CommentedsCount = weekSchedules.Count(ps => ps.IsCommented),
+                    Count = weekSchedules.Count()
+                });
+            }
+            schedulesByWeeks.Reverse();
+
+            return Ok(schedulesByWeeks);
+        }
+
         private string GetUserId() => _userManager.GetUserId(User);
 
         private object GradePoint(IEnumerable<ProjectMember> members, Func<ProjectMember, bool> func, string name)
