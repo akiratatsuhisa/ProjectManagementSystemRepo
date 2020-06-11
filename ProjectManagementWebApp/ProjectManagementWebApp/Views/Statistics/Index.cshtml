@@ -8,7 +8,7 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-6 mx-auto">
+    <div class="col-12 col-lg-6 mb-3">
         <form id="summary-form">
             <div class="form-group">
                 <label>@Localizer["Semester"]</label>
@@ -20,32 +20,8 @@
             </div>
         </form>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-12 mb-3">
-        <div class="card" id="summary-statuses">
-            <h5 class="card-header">@Localizer["Summary Projects"]</h5>
-            <div class="card-body">
-                <h5 class="card-title"><span></span> @Localizer["projects in Semester"]</h5>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>@Localizer["Status"]</th>
-                            <th>@Localizer["Count"]</th>
-                            <th>@Localizer["Percent"]</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer text-muted">
-                5 minutes ago
-            </div>
-        </div>
-    </div>
-    <div class="col-12 mb-3">
+    <div class="col-12 col-lg-6 mb-3">
         <div class="card" id="summary-types">
             <h5 class="card-header">@Localizer["Summary Types"]</h5>
             <div class="card-body">
@@ -67,7 +43,31 @@
             </div>
         </div>
     </div>
-    <div class="col-12 mb-3">
+
+    <div class="col-12 col-lg-6 mb-3">
+        <div class="card" id="summary-statuses">
+            <h5 class="card-header">@Localizer["Summary Projects"]</h5>
+            <div class="card-body">
+                <h5 class="card-title"><span></span> @Localizer["projects in Semester"]</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Count"]</th>
+                            <th>@Localizer["Percent"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted">
+                5 minutes ago
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3">
         <div class="card" id="summary-grading-points">
             <h5 class="card-header">@Localizer["Summary Students"]</h5>
             <div class="card-body">
@@ -91,60 +91,70 @@
     </div>
 </div>
 
+<h2>@Localizer["Chart"]</h2>
 <hr />
 
 <div class="card">
-    <h3 class="card-header text-center text-primary">@Localizer["Project schedules by weeks Filter"]</h3>
+    <h3 class="card-header text-center text-primary">@Localizer["Project schedules by weeks"]</h3>
     <div class="card-body">
-        <form id="schedules-by-weeks-filter-form">
-            <div class="form-group">
-                <label>@Localizer["Semester"]</label>
-                <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
-                </select>
+        <div class="row">
+            <div class="col-12 col-lg-4 mb-3">
+                <h4>@Localizer["Filter"]</h4>
+                <form id="schedules-by-weeks-filter-form">
+                    <div class="form-group">
+                        <label>@Localizer["Semester"]</label>
+                        <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["Statuses"]</label>
+                        @{
+                            IEnumerable<SelectListItem> projectStatuses = ViewBag.ProjectStatuses;
+                            var statusIndex = 1;
+                        }
+                        @foreach (var option in projectStatuses)
+                        {
+                            <div class="custom-control custom-checkbox">
+                                <input name="ProjectStatuses" type="checkbox" class="custom-control-input" id="status-@statusIndex" value="@option.Value">
+                                <label class="custom-control-label" for="status-@statusIndex">@option.Text</label>
+                            </div>
+                            statusIndex++;
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["Prev Week"]</label>
+                        <input class="form-control" type="number" name="PrevWeeks" value="4" min="1" max="24" required />
+                    </div>
+                    <div class="form-group">
+                        <label>@Localizer["To Date"]</label>
+                        <input class="form-control" type="date" name="ToDate" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" name="btn-start" class="btn btn-success btn-block">@Localizer["Start"]</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <button type="button" name="btn-stop" class="btn btn-danger btn-block">@Localizer["Stop"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label>@Localizer["Statuses"]</label>
-                <select name="ProjectStatuses" class="custom-select" asp-items="ViewBag.ProjectStatuses">
-                </select>
-            </div>
-            <div class="form-group">
-                <label>@Localizer["Prev Week"]</label>
-                <input class="form-control" type="number" name="PrevWeeks" value="4" min="1" max="24" required />
-            </div>
-            <div class="form-group">
-                <label>@Localizer["To Date"]</label>
-                <input class="form-control" type="date" name="ToDate" />
-            </div>
-        </form>
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-6">
-                    <button name="btn-start" class="btn btn-success btn-block">@Localizer["Start"]</button>
-                </div>
-                <div class="col-md-6">
-                    <button name="btn-stop" class="btn btn-danger btn-block">@Localizer["Stop"]</button>
-                </div>
+
+            <div class="col-12 col-lg-8 mb-3">
+                <h4>@Localizer["Chart"]</h4>
+                <canvas id="schedules-by-weeks-chart" height="200"></canvas>
             </div>
         </div>
     </div>
 </div>
-
-
-<div class="row">
-    <div class="col-12 mb-3">
-        <div class="card">
-            <h5 class="card-header  bg-success">Featured</h5>
-            <div class="card-body">
-                <canvas id="myChart1" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @section Scripts {
     <script>
-        var globalLoopTime = 3000;
+        var globalLoopTime = 10000;
         var intervalIds = {};
         var charts = {};
 
@@ -153,23 +163,15 @@
         }
 
         function stopInterval(key) {
-            clearInterval(intervalIds[key]);
+            if (!intervalIds[key]) {
+                clearInterval(intervalIds[key]);
+            }
         }
-    </script>
-    <script type="text/javascript" src="~/chartjs/Chart.min.js"></script>
-    <script async defer>
-        var form = $('#summary-form');
-
-        form.submit(function (event) {
-            event.preventDefault();
-            fetchSummary();
-        });
 
         function fetchSummary() {
             var selectedSemester = form.find('select[name="SemesterId"]').val();
             $.get('/Statistics/Summary', { "semesterId": selectedSemester })
                 .done(data => {
-                    console.log(data);
                     var dateNow = new Date();
                     var date = `Last update: ${dateNow.toLocaleDateString()} ${dateNow.toLocaleTimeString()}`;
                     const { statuses, types, gradingPoints } = data;
@@ -212,53 +214,123 @@
                 });
         }
 
-        $(document).ready(function () {
-            fetchSummary();
+        function addData(chart, label, data, index) {
+            chart.data.labels.push(label);
+            chart.data.datasets[index].data.push(data);
+            chart.update();
+        }
+
+        function removeData(chart) {
+            chart.data.labels.pop();
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.pop();
+            });
+            chart.update();
+        }
+
+
+        function fetchSchedulesByWeeksChart() {
+            var query = {
+                "SemesterId": schedulesByWeeksFilterForm.find('select[name="SemesterId"]').val(),
+                "ProjectStatuses": schedulesByWeeksFilterForm.find('input[name="ProjectStatuses"]').serializeArray().map(item => item.value),
+                "PrevWeeks": schedulesByWeeksFilterForm.find('input[name="PrevWeeks"]').val(),
+                "ToDate": schedulesByWeeksFilterForm.find('input[name="ToDate"]').val(),
+            }
+
+            $.ajax({
+                url: '/Statistics/SchedulesByWeeks',
+                type: 'GET',
+                data: query,
+                traditional: true,
+                contentType: 'application/json',
+                dataType: 'json'
+            })
+                .done(data => {
+                    console.log(data);
+                    var currentChart = charts['schedules-by-weeks-chart'];
+                    var chartLength = currentChart.chart.data.labels.length;
+                    for (var i = 0; i < chartLength; i++) {
+                        removeData(currentChart);
+                    }
+
+
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }
+    </script>
+    <script type="text/javascript" src="~/chartjs/Chart.min.js"></script>
+    <script async defer>
+        var form = $('#summary-form');
+        var schedulesByWeeksFilterForm = $('#schedules-by-weeks-filter-form');
+
+        charts['schedules-by-weeks-chart'] = new Chart(document.getElementById('schedules-by-weeks-chart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: Array(4).fill(" "),
+                datasets: [{
+                    label: '# of Votes',
+                    data: Array(4).fill(0),
+                    backgroundColor:
+                        'rgba(255, 99, 132, 0.2)'
+                },
+                {
+                    label: '# of Votes',
+                    data: Array(4).fill(0),
+                    backgroundColor:
+                        'rgba(54, 162, 235, 0.2)'
+                },
+                {
+                    label: '# of Votes',
+                    data: Array(4).fill(0),
+                    backgroundColor:
+                        'rgba(255, 206, 86, 0.2)'
+                }, {
+                    label: '# of Votes',
+                    data: Array(4).fill(0),
+                    backgroundColor:
+                        'rgba(75, 192, 192, 0.2)'
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
         });
 
-        var ctx1 = document.getElementById('myChart1').getContext('2d');
-        renderChart(ctx1);
+        console.log(charts['schedules-by-weeks-chart']);
 
+        form.submit(function (event) {
+            event.preventDefault();
+            fetchSummary();
+            fetchSchedulesByWeeksChart();
+        });
 
-        function renderChart(context) {
-            return new Chart(context, {
-                type: 'bar',
-                data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+        $(document).ready(function () {
+            fetchSummary();
+            schedulesByWeeksFilterForm.find('button[name="btn-start"]').attr('disabled', 'disabled');
+            startInterval('schedules-by-weeks-chart', () => fetchSchedulesByWeeksChart(), globalLoopTime);
+        });
 
-        }
+        schedulesByWeeksFilterForm.find('button[name="btn-start"]').click(function (event) {
+            event.preventDefault();
+            startInterval('schedules-by-weeks-chart', () => fetchSchedulesByWeeksChart(), globalLoopTime);
+            schedulesByWeeksFilterForm.find('button[name="btn-start"]').attr('disabled', 'disabled');
+            schedulesByWeeksFilterForm.find('button[name="btn-stop"]').removeAttr('disabled');
+        });
+
+        schedulesByWeeksFilterForm.find('button[name="btn-stop"]').click(function (event) {
+            event.preventDefault();
+            stopInterval('schedules-by-weeks-chart');
+            schedulesByWeeksFilterForm.find('button[name="btn-start"]').removeAttr('disabled');
+            schedulesByWeeksFilterForm.find('button[name="btn-stop"]').attr('disabled', 'disabled');
+        });
     </script>
 }
 
