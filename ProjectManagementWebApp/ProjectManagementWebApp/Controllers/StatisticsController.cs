@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectManagementWebApp.Data;
+using ProjectManagementWebApp.Helpers;
 using ProjectManagementWebApp.Models;
 
 namespace ProjectManagementWebApp.Controllers
@@ -31,6 +33,7 @@ namespace ProjectManagementWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.SemesterId = new SelectList(await _context.Semesters.OrderByDescending(s => s.StartedDate).ToListAsync(), "Id", "Name");
+            ViewBag.ProjectStatuses = new MultiSelectList(SeletectListHelper.GetEnumSelectList<ProjectStatus>(), "Value", "Text");
             return View();
         }
 

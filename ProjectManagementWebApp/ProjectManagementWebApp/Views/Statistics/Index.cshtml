@@ -8,7 +8,7 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 mx-auto">
         <form id="summary-form">
             <div class="form-group">
                 <label>@Localizer["Semester"]</label>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="row">
-    <div class="col-12 col-lg-4 mb-3">
+    <div class="col-12 mb-3">
         <div class="card" id="summary-statuses">
             <h5 class="card-header">@Localizer["Summary Projects"]</h5>
             <div class="card-body">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3">
+    <div class="col-12 mb-3">
         <div class="card" id="summary-types">
             <h5 class="card-header">@Localizer["Summary Types"]</h5>
             <div class="card-body">
@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-lg-4 mb-3">
+    <div class="col-12 mb-3">
         <div class="card" id="summary-grading-points">
             <h5 class="card-header">@Localizer["Summary Students"]</h5>
             <div class="card-body">
@@ -93,6 +93,43 @@
 
 <hr />
 
+<div class="card">
+    <h3 class="card-header text-center text-primary">@Localizer["Project schedules by weeks Filter"]</h3>
+    <div class="card-body">
+        <form id="schedules-by-weeks-filter-form">
+            <div class="form-group">
+                <label>@Localizer["Semester"]</label>
+                <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
+                </select>
+            </div>
+            <div class="form-group">
+                <label>@Localizer["Statuses"]</label>
+                <select name="ProjectStatuses" class="custom-select" asp-items="ViewBag.ProjectStatuses">
+                </select>
+            </div>
+            <div class="form-group">
+                <label>@Localizer["Prev Week"]</label>
+                <input class="form-control" type="number" name="PrevWeeks" value="4" min="1" max="24" required />
+            </div>
+            <div class="form-group">
+                <label>@Localizer["To Date"]</label>
+                <input class="form-control" type="date" name="ToDate" />
+            </div>
+        </form>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <button name="btn-start" class="btn btn-success btn-block">@Localizer["Start"]</button>
+                </div>
+                <div class="col-md-6">
+                    <button name="btn-stop" class="btn btn-danger btn-block">@Localizer["Stop"]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="row">
     <div class="col-12 mb-3">
         <div class="card">
@@ -102,10 +139,23 @@
             </div>
         </div>
     </div>
- </div>
+</div>
 
 
 @section Scripts {
+    <script>
+        var globalLoopTime = 3000;
+        var intervalIds = {};
+        var charts = {};
+
+        function startInterval(key, callback, loopTime) {
+            intervalIds[key] = setInterval(callback, loopTime);
+        }
+
+        function stopInterval(key) {
+            clearInterval(intervalIds[key]);
+        }
+    </script>
     <script type="text/javascript" src="~/chartjs/Chart.min.js"></script>
     <script async defer>
         var form = $('#summary-form');
@@ -133,7 +183,7 @@
                     );
                     cardStatuses.find('table tbody').html(tbodyStatuses);
                     cardStatuses.find('.card-footer').text(date);
-                    
+
                     //Types
                     var cardTypes = $('#summary-types');
                     cardTypes.find('.card-title span').text(types.length);
@@ -146,7 +196,7 @@
                     cardTypes.find('.card-footer').text(date);
 
                     //Grading Points
-                    
+
                     var cardGradingPoints = $('#summary-grading-points');
                     cardGradingPoints.find('.card-title span').text(gradingPoints.reduce((total, currentValue) => total += currentValue.count, 0));
                     var tbodyGradingPoints = "";
@@ -167,9 +217,9 @@
         });
 
         var ctx1 = document.getElementById('myChart1').getContext('2d');
-         renderChart(ctx1);
+        renderChart(ctx1);
 
-        
+
         function renderChart(context) {
             return new Chart(context, {
                 type: 'bar',
