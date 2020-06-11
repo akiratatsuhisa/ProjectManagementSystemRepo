@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -280,11 +281,18 @@ namespace ProjectManagementWebApp.Areas.Administrator.Controllers
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
-                catch (Exception ex)
+                catch (TransactionException ex)
                 {
                     _logger.LogError(ex.Message);
                     await transaction.RollbackAsync();
                     ModelState.AddModelError(string.Empty, _localizer["Someone import file as same time with you. Try it later."]);
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    await transaction.RollbackAsync();
+                    ModelState.AddModelError(string.Empty, _localizer["Error {0}.", ex.Message]);
                     return View();
                 }
             }

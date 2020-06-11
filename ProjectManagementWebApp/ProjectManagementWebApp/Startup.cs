@@ -52,7 +52,7 @@ namespace ProjectManagementWebApp
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
-                options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
                 options.Password = new PasswordOptions
                 {
                     RequireDigit = false,
