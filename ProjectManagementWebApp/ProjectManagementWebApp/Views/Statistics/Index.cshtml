@@ -7,18 +7,24 @@
 <h2>@Localizer["Summary"]</h2>
 <hr />
 
+
 <div class="row">
     <div class="col-12 col-lg-6 mb-3">
-        <form id="summary-form">
-            <div class="form-group">
-                <label>@Localizer["Semester"]</label>
-                <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
-                </select>
+        <div class="card" id="summary-types">
+            <h5 class="card-header">@Localizer["Summary Types"]</h5>
+            <div class="card-body">
+                <form id="summary-form">
+                    <div class="form-group">
+                        <label>@Localizer["Semester"]</label>
+                        <select name="SemesterId" class="custom-select" asp-items="ViewBag.SemesterId">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">@Localizer["Fetch Summary"]</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block">@Localizer["Fetch Summary"]</button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <div class="col-12 col-lg-6 mb-3">
@@ -163,7 +169,7 @@
         }
 
         function stopInterval(key) {
-            if (!intervalIds[key]) {
+            if (intervalIds[key]) {
                 clearInterval(intervalIds[key]);
             }
         }
@@ -214,8 +220,12 @@
                 });
         }
 
-        function addData(chart, label, data, index) {
+        function addLabel(chart, label) {
             chart.data.labels.push(label);
+            chart.update();
+        }
+
+        function addData(chart, data, index) {
             chart.data.datasets[index].data.push(data);
             chart.update();
         }
@@ -253,7 +263,15 @@
                         removeData(currentChart);
                     }
 
-
+                    var length = data.length;
+                    for (var i = 0; i < length; i++) {
+                        let label = new Date(data[i].date).toLocaleDateString();
+                        addLabel(currentChart, label);
+                        addData(currentChart, data[i].count, 0);
+                        addData(currentChart, data[i].reportsCount, 1);
+                        addData(currentChart, data[i].commentsCount, 2);
+                        addData(currentChart, data[i].reportsTotal, 3);
+                    }
                 })
                 .catch(err => {
                     console.error(err);
@@ -270,25 +288,25 @@
             data: {
                 labels: Array(4).fill(" "),
                 datasets: [{
-                    label: '# of Votes',
-                    data: Array(4).fill(0),
+                    label: 'Schedules Total',
+                    data: Array(4).fill(30),
                     backgroundColor:
                         'rgba(255, 99, 132, 0.2)'
                 },
                 {
-                    label: '# of Votes',
-                    data: Array(4).fill(0),
+                    label: '# of Reports',
+                    data: Array(4).fill(10),
                     backgroundColor:
                         'rgba(54, 162, 235, 0.2)'
                 },
                 {
-                    label: '# of Votes',
-                    data: Array(4).fill(0),
+                    label: '# of Comments',
+                    data: Array(4).fill(5),
                     backgroundColor:
                         'rgba(255, 206, 86, 0.2)'
                 }, {
-                    label: '# of Votes',
-                    data: Array(4).fill(0),
+                    label: '# of Reports Count',
+                    data: Array(4).fill(50),
                     backgroundColor:
                         'rgba(75, 192, 192, 0.2)'
                 }]
@@ -297,6 +315,7 @@
                 scales: {
                     yAxes: [{
                         ticks: {
+                            stepSize: 1,
                             beginAtZero: true
                         }
                     }]
@@ -315,21 +334,29 @@
         $(document).ready(function () {
             fetchSummary();
             schedulesByWeeksFilterForm.find('button[name="btn-start"]').attr('disabled', 'disabled');
+            fetchSchedulesByWeeksChart();
             startInterval('schedules-by-weeks-chart', () => fetchSchedulesByWeeksChart(), globalLoopTime);
         });
 
         schedulesByWeeksFilterForm.find('button[name="btn-start"]').click(function (event) {
             event.preventDefault();
+            fetchSchedulesByWeeksChart();
             startInterval('schedules-by-weeks-chart', () => fetchSchedulesByWeeksChart(), globalLoopTime);
+
             schedulesByWeeksFilterForm.find('button[name="btn-start"]').attr('disabled', 'disabled');
-            schedulesByWeeksFilterForm.find('button[name="btn-stop"]').removeAttr('disabled');
+            setTimeout(() => {
+                schedulesByWeeksFilterForm.find('button[name="btn-stop"]').removeAttr('disabled');
+            }, 1000);
         });
 
         schedulesByWeeksFilterForm.find('button[name="btn-stop"]').click(function (event) {
             event.preventDefault();
             stopInterval('schedules-by-weeks-chart');
-            schedulesByWeeksFilterForm.find('button[name="btn-start"]').removeAttr('disabled');
+
             schedulesByWeeksFilterForm.find('button[name="btn-stop"]').attr('disabled', 'disabled');
+            setTimeout(() => {
+                schedulesByWeeksFilterForm.find('button[name="btn-start"]').removeAttr('disabled');
+            }, 1000);
         });
     </script>
 }

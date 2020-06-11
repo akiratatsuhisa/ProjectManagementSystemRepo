@@ -68,6 +68,8 @@
     <Compile Remove="Data\Migrations\20200606114458_InitTablesAndData.Designer.cs" />
     <Compile Remove="Data\Migrations\20200606121944_InitTablesAndData.cs" />
     <Compile Remove="Data\Migrations\20200606121944_InitTablesAndData.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200606124410_InitTablesAndData.cs" />
+    <Compile Remove="Data\Migrations\20200606124410_InitTablesAndData.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -30,16 +30,6 @@ namespace ProjectManagementWebApp.Data.Migrations
                 maxLength: 256,
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "LecturerId",
-                table: "AspNetUsers",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "StudentId",
-                table: "AspNetUsers",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Audits",
                 columns: table => new
@@ -442,14 +432,6 @@ namespace ProjectManagementWebApp.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "LastName",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "LecturerId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "StudentId",
                 table: "AspNetUsers");
         }
     }

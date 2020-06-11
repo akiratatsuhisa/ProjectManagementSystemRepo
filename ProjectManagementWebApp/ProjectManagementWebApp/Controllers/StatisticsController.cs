@@ -100,7 +100,7 @@ namespace ProjectManagementWebApp.Controllers
             });
         }
 
-        public async Task<IActionResult> SchedulesByWeeks(short semesterId, IEnumerable<ProjectStatus> projectStatuses, DateTime? toDate, int prevWeeks = 4)
+        public async Task<IActionResult> SchedulesByWeeks(short semesterId, IEnumerable<ProjectStatus> projectStatuses, DateTime? toDate, int prevWeeks = 4, bool isBeginWeekSunday = false)
         {
             if (!_context.Semesters.Any(s => s.Id == semesterId))
             {
@@ -138,12 +138,8 @@ namespace ProjectManagementWebApp.Controllers
             {
                 toDate = DateTime.Today;
             }
-            else
-            {
-                toDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 0);
-            }
 
-            toDate = toDate.Value.AddDays(-(int)toDate.Value.DayOfWeek).AddDays(7);
+            toDate = toDate.Value.AddDays(isBeginWeekSunday ? - (int)toDate.Value.DayOfWeek : -(int)toDate.Value.DayOfWeek + 1).AddDays(7);
             var fromDate = toDate.Value.AddDays(-7 * prevWeeks);
             var schedules = filterProjects
                 .Include(p => p.ProjectSchedules)
@@ -176,10 +172,10 @@ namespace ProjectManagementWebApp.Controllers
                 schedulesByWeeks.Add(new
                 {
                     Date = currentDate,
-                    ProjectReportedsCount = weekSchedules.Count(ps => ps.ReportsCount > 0),
-                    ReportedsTotal = weekSchedules.Sum(ps => ps.ReportsCount),
-                    CommentedsCount = weekSchedules.Count(ps => ps.IsCommented),
-                    Count = weekSchedules.Count()
+                    Count = weekSchedules.Count(),
+                    ReportsCount = weekSchedules.Count(ps => ps.ReportsCount > 0),
+                    CommentsCount = weekSchedules.Count(ps => ps.IsCommented),
+                    ReportsTotal = weekSchedules.Sum(ps => ps.ReportsCount)
                 });
             }
             schedulesByWeeks.Reverse();

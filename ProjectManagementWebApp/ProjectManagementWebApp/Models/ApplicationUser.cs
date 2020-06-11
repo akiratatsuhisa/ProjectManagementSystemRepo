@@ -29,11 +29,7 @@ namespace ProjectManagementWebApp.Models
         [Display(Name = "Birth date", Prompt = "Date of birth")]
         public DateTime? BirthDate { get; set; }
 
-        public string StudentId { get; set; }
-
         public virtual Student Student { get; set; }
-
-        public string LecturerId { get; set; }
 
         public virtual Lecturer Lecturer { get; set; }
 
